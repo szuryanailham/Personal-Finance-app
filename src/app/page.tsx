@@ -1,69 +1,96 @@
-import Image from "next/image";
+"use client"
+
+import { SummaryCard } from "@/components/cards/summaryCard";
+import { ExampleChart } from "@/components/chart/chartComponent";
+import WalletIcon from "@/components/images/icons/Wallet.svg";
+import IncomeIcon from "@/components/images/icons/incomeIcon.svg";
+import SavingIcon from "@/components/images/icons/SavingIcon.svg";
+import ExpenseIcon from "@/components/images/icons/ExpenseIcon.svg";
+import { SearchHeader } from "@/components/header/SearchHeader";
+import { TransactionTable } from "@/components/table/TableComponent";
+import { LoadingState } from "@/components/ui/spinner";
+import { useTransactions } from "@/hooks/use-transactions";
+import { useTransactionStat } from "@/hooks/use-transaction-stat";
+import { useDebouncedValue } from "@/hooks/use-debounced-value";
+import type { TransactionStat } from "@/lib/api/transaction";
+import { getMonthRange, toLocalDateString } from "@/lib/date";
+import { cn } from "@/lib/utils";
+import { useMemo, useState } from "react";
+
+const HOME_TRANSACTION_LIMIT = 10;
+
+const SUMMARY_CONFIG: { title: string; key: keyof TransactionStat; icon: typeof WalletIcon }[] = [
+  { title: "Total Balance", key: "totalBalance", icon: WalletIcon },
+  { title: "Total Income", key: "totalIncome", icon: IncomeIcon },
+  { title: "Total Saving", key: "totalSaving", icon: SavingIcon },
+  { title: "Total Expense", key: "totalExpense", icon: ExpenseIcon },
+];
 
 export default function Home() {
+  const [query, setQuery] = useState("");
+  const [date, setDate] = useState<Date | undefined>(undefined);
+  const trimmedQuery = query.trim();
+  const debouncedQuery = useDebouncedValue(trimmedQuery);
+  const dateFilter = date ? toLocalDateString(date) : "";
+  const { transactions, isLoading, isFetching, error } = useTransactions(
+    HOME_TRANSACTION_LIMIT,
+    0,
+    debouncedQuery,
+    dateFilter
+  );
+
+  const isSearching = trimmedQuery !== debouncedQuery || isFetching;
+  const { startDate, endDate } = useMemo(() => getMonthRange(), []);
+  const { stat, isLoading: isStatLoading, error: statError } = useTransactionStat(startDate, endDate);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div className="mx-auto w-full py-4">
+      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4 xl:gap-8">
+        {SUMMARY_CONFIG.map(({ title, key, icon }) => (
+          <SummaryCard
+            key={key}
+            title={title}
+            icon={icon}
+            total={stat?.[key].amount ?? 0}
+            percentage={stat?.[key].changePercentage ?? 0}
+            isLoading={isStatLoading}
+          />
+        ))}
+      </section>
+      {statError && <p className="mt-2 text-sm text-destructive">{statError}</p>}
+
+      {/* Chart */}
+      <section className="mt-8 min-w-0 overflow-hidden">
+        <ExampleChart />
+      </section>
+
+      {/* Search & filter */}
+      <section className="mt-8">
+        <SearchHeader
+          query={query}
+          date={date}
+          onQueryChange={setQuery}
+          onDateChange={setDate}
+          isSearching={isSearching}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+        {error ? (
+          <p className="mt-4 text-sm text-destructive">{error}</p>
+        ) : isLoading ? (
+          <LoadingState label="Memuat transaksi..." className="mt-4" />
+        ) : (
+          // Data lama tetap tampil (diredupkan) selama hasil search baru dimuat
+          <div
+            className={cn("transition-opacity", isSearching && "pointer-events-none opacity-50")}
+            aria-busy={isSearching}
           >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
+            <TransactionTable
+              transactions={transactions}
+              limit={HOME_TRANSACTION_LIMIT}
+              detailHref="/transaction"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+          </div>
+        )}
+      </section>
     </div>
   );
 }
