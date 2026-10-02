@@ -7,7 +7,6 @@ import TransactionMenuLogo from "@/components/images/icons/wallet-02.svg"
 import SettingMenuLogo from "@/components/images/icons/settings-01.svg"
 import SecurityMenuLogo from "@/components/images/icons/shield-tick.svg"
 import HelpCenterMenuLogo from "@/components/images/icons/help-circle.svg"
-import DarkModeMenuLogo from "@/components/images/icons/moon-01.svg"
 
 import {
   Sidebar,
@@ -20,6 +19,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { NavUser, type SidebarUser } from "@/components/ui/nav-user"
+import { DarkModeToggle } from "@/components/sidebar/dark-mode-toggle"
 
 
 const CURRENT_USER: SidebarUser = {
@@ -50,7 +50,7 @@ export function AppSidebar() {
             {/* Home */}
             <SidebarMenuItem>
               <SidebarMenuButton
-                render={<Link href="/" />}
+                render={<Link href="/dashboard" />}
                 className="gap-3 px-3 py-2.5 h-auto"
               >
                 <div className="size-6 relative">
@@ -209,35 +209,7 @@ export function AppSidebar() {
 
                {/* dark mode */}
 
-              <SidebarMenuItem>
-              <SidebarMenuButton
-                role="switch"
-                aria-checked={false}
-                className="gap-3 px-3 py-2.5 h-auto"
-              >
-                <span
-                  aria-hidden="true"
-                  className={`size-6 shrink-0 ${ICON_SQUARE_COLOR}`}
-                  style={{
-                    maskImage: `url(${DarkModeMenuLogo.src})`,
-                    maskSize: "contain",
-                    maskRepeat: "no-repeat",
-                    maskPosition: "center",
-                  }}
-                />
-                <span className="text-sm font-medium ">
-                  Dark mode
-                </span>
-
-                {/* Toggle (view only) */}
-                <span
-                  aria-hidden="true"
-                  className="ml-auto flex h-5 w-9 shrink-0 items-center rounded-full bg-white/30 p-0.5"
-                >
-                  <span className="size-4 rounded-full bg-white shadow-sm" />
-                </span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
+              <DarkModeToggle />
 
 
           </SidebarMenu>

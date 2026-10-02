@@ -43,9 +43,9 @@ export default function TransactionPage() {
   const isSearching = trimmedQuery !== debouncedQuery || isFetching;
 
   return (
-    <div className="mx-auto w-full pb-4">
+    <div className="mx-auto w-full pb-8">
       {/* Search & filter */}
-      <section className="mt-8">
+      <section>
         <SearchHeader
           query={query}
           date={date}
@@ -63,11 +63,13 @@ export default function TransactionPage() {
             className={cn("transition-opacity", isSearching && "pointer-events-none opacity-50")}
             aria-busy={isSearching}
           >
-        <TableTransactionDetail
-                transactions={transactions}
-                onEdit={(trx) => { /* buka form edit */ }}
-                onDelete={(trx) => { /* konfirmasi & hapus */ }}
-                />
+            <TableTransactionDetail
+              transactions={transactions}
+              onEdit={(trx) => { /* buka form edit */ }}
+              onDelete={(trx) => { /* konfirmasi & hapus */ }}
+              onBulkUpdate={(selected) => { /* buka form bulk update */ }}
+              onBulkDelete={(selected) => { /* konfirmasi & hapus massal */ }}
+            />
 
             <TablePagination
               currentPage={paging?.currentPage ?? page}

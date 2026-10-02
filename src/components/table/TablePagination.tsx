@@ -9,6 +9,11 @@ interface TablePaginationProps {
   className?: string
 }
 
+const NAV_BUTTON_CLASS =
+  "border-[#6359E9] text-[#6359E9] hover:bg-[#6359E9]/10 hover:text-[#6359E9]"
+const ACTIVE_PAGE_CLASS = "bg-[#6359E9] text-white hover:bg-[#6359E9]/90"
+const INACTIVE_PAGE_CLASS = "text-[#6359E9] hover:bg-[#6359E9]/10 hover:text-[#6359E9]"
+
 // Jumlah nomor halaman yang tampil di sekitar halaman aktif
 const SIBLING_COUNT = 1
 
@@ -50,6 +55,7 @@ export function TablePagination({
         variant="outline"
         size="sm"
         disabled={disabled || isFirst}
+        className={NAV_BUTTON_CLASS}
         onClick={() => onPageChange(currentPage - 1)}
       >
         Prev
@@ -61,6 +67,7 @@ export function TablePagination({
             variant={item === currentPage ? "default" : "ghost"}
             size="sm"
             disabled={disabled}
+            className={item === currentPage ? ACTIVE_PAGE_CLASS : INACTIVE_PAGE_CLASS}
             aria-current={item === currentPage ? "page" : undefined}
             onClick={() => onPageChange(item)}
           >
@@ -76,6 +83,7 @@ export function TablePagination({
         variant="outline"
         size="sm"
         disabled={disabled || isLast}
+        className={NAV_BUTTON_CLASS}
         onClick={() => onPageChange(currentPage + 1)}
       >
         Next

@@ -1,5 +1,6 @@
 import * as React from "react"
 
+import { useTransactionRevision } from "@/components/header/transaction-revision-context"
 import type { Transaction } from "@/components/table/TableComponent"
 import { fetchTransactions, type Paging } from "@/lib/api/transaction"
 
@@ -28,7 +29,9 @@ export function useTransactions(
   search = "",
   date = ""
 ): UseTransactionsResult {
-  const requestKey = `${limit}|${skip}|${search}|${date}`
+  // revision ikut di key agar data di-fetch ulang setelah transaksi dibuat/diubah
+  const { revision } = useTransactionRevision()
+  const requestKey = `${limit}|${skip}|${search}|${date}|${revision}`
   const [state, setState] = React.useState<SettledState>({
     transactions: [],
     paging: null,

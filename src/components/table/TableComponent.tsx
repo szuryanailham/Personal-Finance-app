@@ -17,8 +17,12 @@ export type TransactionType = "income" | "expense" | "saving"
 export interface Transaction {
   transactionCode: string
   date: Date
+  /** Nama transaksi (transactionName di backend) */
   description: string
+  /** Catatan tambahan (description di backend) */
+  note: string
   category: string
+  categoryId: string
   type: TransactionType
   amount: number
 }

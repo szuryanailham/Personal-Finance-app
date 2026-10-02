@@ -9,13 +9,16 @@ import ExpenseIcon from "@/components/images/icons/ExpenseIcon.svg";
 import { SearchHeader } from "@/components/header/SearchHeader";
 import { TransactionTable } from "@/components/table/TableComponent";
 import { LoadingState } from "@/components/ui/spinner";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircleIcon } from "lucide-react";
 import { useTransactions } from "@/hooks/use-transactions";
 import { useTransactionStat } from "@/hooks/use-transaction-stat";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import type { TransactionStat } from "@/lib/api/transaction";
-import { getMonthRange, toLocalDateString } from "@/lib/date";
+import { toLocalDateString } from "@/lib/date";
+import { toStatQuery, useTransactionFilter } from "@/components/header/transaction-filter-context";
 import { cn } from "@/lib/utils";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const HOME_TRANSACTION_LIMIT = 10;
 
@@ -26,7 +29,7 @@ const SUMMARY_CONFIG: { title: string; key: keyof TransactionStat; icon: typeof 
   { title: "Total Expense", key: "totalExpense", icon: ExpenseIcon },
 ];
 
-export default function Home() {
+export default function DashboardPage() {
   const [query, setQuery] = useState("");
   const [date, setDate] = useState<Date | undefined>(undefined);
   const trimmedQuery = query.trim();
@@ -40,8 +43,15 @@ export default function Home() {
   );
 
   const isSearching = trimmedQuery !== debouncedQuery || isFetching;
-  const { startDate, endDate } = useMemo(() => getMonthRange(), []);
-  const { stat, isLoading: isStatLoading, error: statError } = useTransactionStat(startDate, endDate);
+  const { filter, setIsFilterLoading } = useTransactionFilter();
+  const statQuery = useMemo(() => toStatQuery(filter), [filter]);
+  const { stat, isLoading: isStatLoading, error: statError } = useTransactionStat(statQuery);
+
+  // Status loading stat diteruskan ke header agar tombol filter ikut menampilkan spinner
+  useEffect(() => {
+    setIsFilterLoading(isStatLoading);
+  }, [isStatLoading, setIsFilterLoading]);
+  useEffect(() => () => setIsFilterLoading(false), [setIsFilterLoading]);
 
   return (
     <div className="mx-auto w-full py-4">
@@ -57,7 +67,13 @@ export default function Home() {
           />
         ))}
       </section>
-      {statError && <p className="mt-2 text-sm text-destructive">{statError}</p>}
+      {statError && (
+        <Alert variant="destructive" className="mt-4">
+          <AlertCircleIcon />
+          <AlertTitle>Failed to load summary</AlertTitle>
+          <AlertDescription>{statError}</AlertDescription>
+        </Alert>
+      )}
 
       {/* Chart */}
       <section className="mt-8 min-w-0 overflow-hidden">

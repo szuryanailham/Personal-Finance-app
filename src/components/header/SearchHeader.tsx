@@ -5,7 +5,7 @@ import { cn } from "cn"
 import { Input } from "@/components/ui/input"
 import { ACCENT_ICON_CLASS, ACCENT_OUTLINE_CLASS } from "@/lib/styles"
 import { toLocalDateString } from "@/lib/date"
-import { Button } from "../ui/button"
+import { AddActionMenu } from "./add-action-menu"
 import { Spinner } from "@/components/ui/spinner"
 
 
@@ -55,10 +55,8 @@ export function SearchHeader({
   isSearching = false,
 }: SearchHeaderProps) {
   return (
-    <header className="flex w-full flex-col gap-4 py-6 sm:flex-row sm:items-center sm:justify-between px-7 py-6">
-      <Button className={ACTION_BUTTON_CLASS} variant="outline" size="lg">
-            Add Transaction
-        </Button>
+    <header className="flex w-full flex-col gap-4 py-6 sm:flex-row sm:items-center sm:justify-between">
+      <AddActionMenu triggerClassName={ACTION_BUTTON_CLASS} />
 
       <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
         <div className="group/accent relative w-full sm:w-64">
