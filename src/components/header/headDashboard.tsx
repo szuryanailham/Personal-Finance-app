@@ -1,10 +1,9 @@
 "use client"
 
 import { usePathname } from "next/navigation"
-import { Download } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { FilterDrawer } from "@/components/header/filter-drawer"
 import { ImportDrawer } from "@/components/header/import-drawer"
+import { ExportDrawer } from "@/components/header/export-drawer"
 import { useTransactionFilter } from "@/components/header/transaction-filter-context"
 import { ACCENT_OUTLINE_CLASS } from "@/lib/styles"
 
@@ -13,10 +12,9 @@ const DASHBOARD_PATH = "/dashboard"
 
 interface HeadDashboardProps {
   title: string
-  onExport?: () => void
 }
 
-export function HeadDashboard({ title, onExport }: HeadDashboardProps) {
+export function HeadDashboard({ title }: HeadDashboardProps) {
   const isDashboard = usePathname() === DASHBOARD_PATH
   const { filter, setFilter, isFilterLoading } = useTransactionFilter()
   return (
@@ -26,10 +24,7 @@ export function HeadDashboard({ title, onExport }: HeadDashboardProps) {
       <div className="flex items-center gap-4">
         {isDashboard && <FilterDrawer value={filter} onApply={setFilter} isLoading={isFilterLoading} />}
         <ImportDrawer triggerClassName={ACTION_BUTTON_CLASS} />
-        <Button className={ACTION_BUTTON_CLASS} variant="outline" size="lg" onClick={onExport}>
-          <Download data-icon="inline-start" />
-          Export
-        </Button>
+        <ExportDrawer triggerClassName={ACTION_BUTTON_CLASS} />
       </div>
     </header>
   )

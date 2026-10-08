@@ -2,7 +2,7 @@
 
 import { cn } from "cn"
 import { ChevronDown } from "lucide-react"
-import { useMemo, useState } from "react"
+import { useMemo, useSyncExternalStore } from "react"
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
 
 import { buttonVariants } from "@/components/ui/button"
@@ -32,6 +32,44 @@ const PERIOD_OPTIONS: { value: StatisticPeriod; label: string }[] = [
   { value: "Monthly", label: "Monthly" },
   { value: "Weekly", label: "Weekly" },
 ]
+
+const DEFAULT_PERIOD: StatisticPeriod = "Monthly"
+const PERIOD_STORAGE_KEY = "transaction-chart-period"
+
+// Listener untuk perubahan di tab yang sama (event "storage" hanya terpicu dari tab lain)
+const periodListeners = new Set<() => void>()
+
+function subscribePeriod(onChange: () => void): () => void {
+  periodListeners.add(onChange)
+  window.addEventListener("storage", onChange)
+  return () => {
+    periodListeners.delete(onChange)
+    window.removeEventListener("storage", onChange)
+  }
+}
+
+// Nilai di localStorage tidak bisa dipercaya, jadi hanya opsi yang dikenal yang diterima
+function readStoredPeriod(): StatisticPeriod {
+  try {
+    const raw = window.localStorage.getItem(PERIOD_STORAGE_KEY)
+    const option = PERIOD_OPTIONS.find((item) => item.value === raw)
+    return option?.value ?? DEFAULT_PERIOD
+  } catch {
+    return DEFAULT_PERIOD // storage diblokir (mis. private mode)
+  }
+}
+
+function writeStoredPeriod(period: StatisticPeriod): void {
+  try {
+    window.localStorage.setItem(PERIOD_STORAGE_KEY, period)
+  } catch {
+    // storage penuh/diblokir: periode tidak tersimpan, tapi aplikasi tetap jalan
+  }
+  periodListeners.forEach((listener) => listener())
+}
+
+// Saat SSR belum ada localStorage, jadi server & hydration awal memakai default
+const getServerPeriodSnapshot = (): StatisticPeriod => DEFAULT_PERIOD
 
 const weekdayFormatter = new Intl.DateTimeFormat("en-US", { weekday: "short" })
 
@@ -81,8 +119,9 @@ const buildYTicks = (data: FinanceDatum[]): number[] => {
   return Array.from({ length: Y_TICK_COUNT }, (_, i) => i * step)
 }
 
-export function ExampleChart() {
-  const [period, setPeriod] = useState<StatisticPeriod>("Monthly")
+export function TransactionChart() {
+  // Periode disimpan di localStorage agar tetap sama setelah halaman di-refresh
+  const period = useSyncExternalStore(subscribePeriod, readStoredPeriod, getServerPeriodSnapshot)
   const { statistic, isLoading, error } = useTransactionStatistic(period)
   const data = useMemo(() => (statistic?.items ?? []).map(toFinanceDatum), [statistic])
   const yTicks = buildYTicks(data)
@@ -96,7 +135,7 @@ export function ExampleChart() {
           <select
             aria-label="Filter period"
             value={period}
-            onChange={(event) => setPeriod(event.target.value as StatisticPeriod)}
+            onChange={(event) => writeStoredPeriod(event.target.value as StatisticPeriod)}
             className={cn(
               buttonVariants({ variant: "outline", size: "lg" }),
               PERIOD_SELECT_CLASS

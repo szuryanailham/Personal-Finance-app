@@ -26,6 +26,12 @@ export function getYearRange(date: Date = new Date()): DateRange {
   return { startDate: toLocalDateString(firstDay), endDate: toLocalDateString(lastDay) }
 }
 
+// `days` hari terakhir termasuk hari ini (days = 1 → hanya hari ini)
+export function getLastDaysRange(days: number, today: Date = new Date()): DateRange {
+  const start = new Date(today.getFullYear(), today.getMonth(), today.getDate() - (days - 1))
+  return { startDate: toLocalDateString(start), endDate: toLocalDateString(today) }
+}
+
 const DAYS_IN_WEEK = 7
 
 // Senin s/d Minggu dari minggu milik `date`

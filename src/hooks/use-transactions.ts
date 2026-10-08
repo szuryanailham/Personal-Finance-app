@@ -2,7 +2,13 @@ import * as React from "react"
 
 import { useTransactionRevision } from "@/components/header/transaction-revision-context"
 import type { Transaction } from "@/components/table/TableComponent"
-import { fetchTransactions, type Paging } from "@/lib/api/transaction"
+import {
+  DEFAULT_TRANSACTION_LIST_FILTER,
+  fetchTransactions,
+  resolveDateRange,
+  type Paging,
+  type TransactionListFilter,
+} from "@/lib/api/transaction"
 
 interface UseTransactionsResult {
   transactions: Transaction[]
@@ -27,11 +33,18 @@ export function useTransactions(
   limit: number,
   skip = 0,
   search = "",
-  date = ""
+  date = "",
+  filter: TransactionListFilter = DEFAULT_TRANSACTION_LIST_FILTER
 ): UseTransactionsResult {
   // revision ikut di key agar data di-fetch ulang setelah transaksi dibuat/diubah
   const { revision } = useTransactionRevision()
-  const requestKey = `${limit}|${skip}|${search}|${date}|${revision}`
+  const type = filter.type === "all" ? undefined : filter.type
+  const categoryId = filter.categoryId ?? undefined
+  const range = resolveDateRange(filter.dateRange)
+  const startDate = range?.startDate
+  const endDate = range?.endDate
+  const { sort } = filter
+  const requestKey = `${limit}|${skip}|${search}|${date}|${startDate ?? ""}|${endDate ?? ""}|${type ?? ""}|${categoryId ?? ""}|${sort}|${revision}`
   const [state, setState] = React.useState<SettledState>({
     transactions: [],
     paging: null,
@@ -42,7 +55,18 @@ export function useTransactions(
   React.useEffect(() => {
     const controller = new AbortController()
 
-    fetchTransactions({ limit, skip, search, date, signal: controller.signal })
+    fetchTransactions({
+      limit,
+      skip,
+      search,
+      date,
+      startDate,
+      endDate,
+      type,
+      categoryId,
+      sort,
+      signal: controller.signal,
+    })
       .then(({ transactions, paging }) =>
         setState({ transactions, paging, error: null, settledKey: requestKey })
       )
@@ -53,7 +77,7 @@ export function useTransactions(
       })
 
     return () => controller.abort()
-  }, [limit, skip, search, date, requestKey])
+  }, [limit, skip, search, date, startDate, endDate, type, categoryId, sort, requestKey])
 
   // Diturunkan dari key agar tidak perlu setState sinkron di dalam effect
   const isFetching = state.settledKey !== requestKey

@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { useRouter } from "next/navigation"
 import {
   AlertCircleIcon,
   CloudUpload,
@@ -10,14 +11,17 @@ import {
   ShieldCheck,
   Upload,
   X,
-  type LucideIcon,
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { saveBlob } from "@/lib/download"
 import { downloadImportTemplate } from "@/lib/api/transaction"
+import { uploadImportFile } from "@/lib/api/transaction-import"
+import { saveImportedTransactions } from "@/lib/import-store"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
+import { InfoSection } from "@/components/header/info-section"
 import {
   Drawer,
   DrawerClose,
@@ -34,9 +38,11 @@ const MAX_FILE_SIZE_MB = 5
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
 // Dipakai jika backend tidak mengirim nama file lewat Content-Disposition
 const FALLBACK_TEMPLATE_FILE_NAME = "transaction-template.xlsx"
+const IMPORT_REVIEW_PATH = "/transaction/import-review"
 
 interface ImportDrawerProps {
   triggerClassName?: string
+  /** Override aksi import; default: upload ke backend lalu buka halaman review */
   onImport?: (file: File) => void
 }
 
@@ -57,43 +63,12 @@ function validateFile(file: File): string | null {
   return null
 }
 
-interface InfoSectionProps {
-  step: number
-  icon: LucideIcon
-  title: string
-  subtitle: string
-  children?: React.ReactNode
-}
-
-function InfoSection({ step, icon: Icon, title, subtitle, children }: InfoSectionProps) {
-  return (
-    <section className="flex items-start gap-3">
-      <div className="relative flex size-10 shrink-0 items-center justify-center rounded-full bg-[#6359E9]/10 text-[#6359E9]">
-        <Icon className="size-5" />
-        <span className="absolute -top-1 -right-1 flex size-5 items-center justify-center rounded-full bg-[#6359E9] text-[10px] font-semibold text-white ring-2 ring-background">
-          {step}
-        </span>
-      </div>
-      <div className="flex flex-col gap-1">
-        <h3 className="text-sm font-semibold">{title}</h3>
-        <p className="text-xs text-muted-foreground">{subtitle}</p>
-        {children}
-      </div>
-    </section>
-  )
-}
-
-function saveBlob(blob: Blob, fileName: string) {
-  const url = URL.createObjectURL(blob)
-  const link = document.createElement("a")
-  link.href = url
-  link.download = fileName
-  link.click()
-  URL.revokeObjectURL(url)
-}
-
 export function ImportDrawer({ triggerClassName, onImport }: ImportDrawerProps) {
   const isMobile = useIsMobile()
+  const router = useRouter()
+  const [open, setOpen] = React.useState(false)
+  const [isUploading, setIsUploading] = React.useState(false)
+  const [uploadError, setUploadError] = React.useState<string | null>(null)
   const inputRef = React.useRef<HTMLInputElement>(null)
   const [file, setFile] = React.useState<File | null>(null)
   const [error, setError] = React.useState<string | null>(null)
@@ -118,17 +93,21 @@ export function ImportDrawer({ triggerClassName, onImport }: ImportDrawerProps) 
     if (!nextFile) return
     const validationError = validateFile(nextFile)
     setError(validationError)
+    setUploadError(null)
     setFile(validationError ? null : nextFile)
   }
 
   function clearFile() {
     setFile(null)
     setError(null)
+    setUploadError(null)
     if (inputRef.current) inputRef.current.value = ""
   }
 
   // Drawer ditutup → pilihan file dibuang supaya tidak terbawa ke pembukaan berikutnya
   function handleOpenChange(nextOpen: boolean) {
+    if (isUploading) return
+    setOpen(nextOpen)
     if (!nextOpen) {
       clearFile()
       setIsDragging(false)
@@ -147,13 +126,33 @@ export function ImportDrawer({ triggerClassName, onImport }: ImportDrawerProps) 
     selectFile(event.dataTransfer.files[0])
   }
 
-  function handleImport() {
-    if (!file || !onImport) return
-    onImport(file)
+  async function handleImport() {
+    if (!file) return
+    if (onImport) {
+      onImport(file)
+      return
+    }
+
+    setIsUploading(true)
+    setUploadError(null)
+    try {
+      const result = await uploadImportFile(file)
+      saveImportedTransactions(result.data?.transactions ?? [])
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : "Gagal mengimpor file")
+      return
+    } finally {
+      setIsUploading(false)
+    }
+
+    setOpen(false)
+    clearFile()
+    router.push(IMPORT_REVIEW_PATH)
   }
 
   return (
     <Drawer
+      open={open}
       onOpenChange={handleOpenChange}
       showSwipeHandle={isMobile}
       swipeDirection={isMobile ? "down" : "right"}
@@ -255,6 +254,14 @@ export function ImportDrawer({ triggerClassName, onImport }: ImportDrawerProps) 
             </Alert>
           )}
 
+          {uploadError && (
+            <Alert variant="destructive">
+              <AlertCircleIcon />
+              <AlertTitle>Import failed</AlertTitle>
+              <AlertDescription>{uploadError}</AlertDescription>
+            </Alert>
+          )}
+
           {file && (
             <div className="flex items-center gap-3 rounded-lg border border-[#8C89B4]/40 p-3">
               <div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-[#6359E9]/10 text-[#6359E9]">
@@ -281,10 +288,11 @@ export function ImportDrawer({ triggerClassName, onImport }: ImportDrawerProps) 
           <DrawerClose render={<Button variant="outline" className="h-[34px] flex-1 border-[#8C89B4]">Close</Button>} />
           <Button
             onClick={handleImport}
-            disabled={!file || !onImport}
+            disabled={!file || isUploading}
             className="h-[34px] flex-1 bg-[#6359E9] text-white hover:bg-[#6359E9]/90"
           >
-            Import
+            {isUploading && <Loader2 data-icon="inline-start" className="animate-spin" />}
+            {isUploading ? "Importing..." : "Import"}
           </Button>
         </DrawerFooter>
       </DrawerContent>

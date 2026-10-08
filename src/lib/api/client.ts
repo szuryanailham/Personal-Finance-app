@@ -13,6 +13,8 @@ export interface Paging {
   currentPage: number
   totalPage: number
   size: number
+  /** Total baris di semua halaman; opsional agar tetap jalan dengan backend lama */
+  totalItem?: number
 }
 
 type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE"
@@ -68,12 +70,17 @@ function parseFileName(contentDisposition: string | null): string | null {
 }
 
 // Untuk endpoint yang mengembalikan file (bukan JSON ApiResponse)
-export async function apiDownload(path: string, errorLabel: string): Promise<DownloadedFile> {
+export async function apiDownload(
+  path: string,
+  errorLabel: string,
+  params?: URLSearchParams
+): Promise<DownloadedFile> {
   if (!API_TOKEN) {
     throw new Error("NEXT_PUBLIC_API_TOKEN belum diset di .env.local")
   }
 
-  const res = await fetch(`${API_BASE_URL}${path}`, {
+  const query = params ? `?${params}` : ""
+  const res = await fetch(`${API_BASE_URL}${path}${query}`, {
     headers: { Authorization: `Bearer ${API_TOKEN}` },
   })
 
@@ -95,4 +102,26 @@ export function apiGet<T>(
   signal?: AbortSignal
 ): Promise<ApiResponse<T>> {
   return apiRequest<T>(path, `memuat ${errorLabel}`, { params, signal })
+}
+
+// Upload multipart/form-data. Response dikembalikan apa adanya karena bentuknya bisa berbeda dari ApiResponse
+export async function apiUpload<T>(path: string, formData: FormData, errorLabel: string): Promise<T> {
+  if (!API_TOKEN) {
+    throw new Error("NEXT_PUBLIC_API_TOKEN belum diset di .env.local")
+  }
+
+  // Content-Type sengaja tidak diset agar browser mengisi boundary multipart sendiri
+  const res = await fetch(`${API_BASE_URL}${path}`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${API_TOKEN}` },
+    body: formData,
+  })
+
+  const json = (await res.json().catch(() => null)) as (T & { errors?: string | null }) | null
+
+  if (!res.ok || !json) {
+    throw new Error(json?.errors ?? `Gagal ${errorLabel} (HTTP ${res.status})`)
+  }
+
+  return json
 }

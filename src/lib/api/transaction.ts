@@ -1,4 +1,5 @@
 import type { Transaction, TransactionType } from "@/components/table/TableComponent"
+import { getLastDaysRange, type DateRange } from "@/lib/date"
 import { apiDownload, apiGet, apiRequest, type DownloadedFile, type Paging } from "./client"
 
 export type { Paging }
@@ -21,11 +22,56 @@ export interface TransactionPage {
   paging: Paging | null
 }
 
+// Nilai `sort` yang diterima backend (lihat enum TransactionSort di API)
+export type TransactionSortValue = "date" | "-date" | "amount" | "-amount" | "name" | "-name"
+
+export const DEFAULT_TRANSACTION_SORT: TransactionSortValue = "date"
+
+export type TransactionDatePreset = "all" | "today" | "last7" | "last14"
+
+/** Preset disimpan apa adanya (bukan tanggal) agar "today" selalu dihitung ulang saat fetch */
+export type TransactionDateFilter =
+  | { preset: TransactionDatePreset }
+  | { preset: "custom"; startDate: string; endDate: string } // format "YYYY-MM-DD"
+
+/** Filter daftar transaksi; type "all" = tanpa filter tipe, categoryId null = semua kategori */
+export interface TransactionListFilter {
+  type: TransactionType | "all"
+  categoryId: string | null
+  dateRange: TransactionDateFilter
+  sort: TransactionSortValue
+}
+
+export const DEFAULT_TRANSACTION_LIST_FILTER: TransactionListFilter = {
+  type: "all",
+  categoryId: null,
+  dateRange: { preset: "all" },
+  sort: DEFAULT_TRANSACTION_SORT,
+}
+
+const PRESET_DAYS: Record<Exclude<TransactionDatePreset, "all">, number> = {
+  today: 1,
+  last7: 7,
+  last14: 14,
+}
+
+/** Ubah filter tanggal jadi rentang konkret; null = tanpa filter tanggal */
+export function resolveDateRange(filter: TransactionDateFilter, today: Date = new Date()): DateRange | null {
+  if (filter.preset === "all") return null
+  if (filter.preset === "custom") return { startDate: filter.startDate, endDate: filter.endDate }
+  return getLastDaysRange(PRESET_DAYS[filter.preset], today)
+}
+
 interface FetchTransactionsParams {
   limit: number
   skip?: number
   search?: string
   date?: string // format "YYYY-MM-DD"
+  startDate?: string // format "YYYY-MM-DD"
+  endDate?: string // format "YYYY-MM-DD"
+  type?: TransactionType
+  categoryId?: string
+  sort?: TransactionSortValue
   signal?: AbortSignal
 }
 
@@ -53,12 +99,23 @@ export async function fetchTransactions({
   skip = 0,
   search,
   date,
+  startDate,
+  endDate,
+  type,
+  categoryId,
+  sort = DEFAULT_TRANSACTION_SORT,
   signal,
 }: FetchTransactionsParams): Promise<TransactionPage> {
-  const params = new URLSearchParams({ limit: String(limit), skip: String(skip) })
+  // Default "date" = tanggal terbaru dulu, supaya halaman pertama berisi transaksi terbaru
+  const params = new URLSearchParams({ limit: String(limit), skip: String(skip), sort })
   const keyword = search?.trim()
   if (keyword) params.set("search", keyword)
   if (date) params.set("date", date)
+  if (startDate) params.set("startDate", startDate)
+  if (endDate) params.set("endDate", endDate)
+  // Backend memakai enum uppercase (INCOME/EXPENSE/SAVING)
+  if (type) params.set("type", type.toUpperCase())
+  if (categoryId) params.set("categoryId", categoryId)
 
   const body = await apiGet<TransactionResponse[]>("/api/transaction", params, "transaksi", signal)
 
@@ -112,6 +169,28 @@ export async function deleteTransaction(transactionCode: string): Promise<void> 
 
 export function downloadImportTemplate(): Promise<DownloadedFile> {
   return apiDownload("/api/transaction/import/template", "mengunduh template")
+}
+
+export type ExportPeriod = "all" | "yearly" | "monthly" | "weekly" | "custom"
+
+export type ExportQuery =
+  | { period: Exclude<ExportPeriod, "custom"> }
+  | { period: "custom"; startDate: string; endDate: string } // format "YYYY-MM-DD"
+
+// Backend menamai rentang tanggal bebas "manual", bukan "custom"
+const EXPORT_MANUAL_PERIOD = "manual"
+
+// "all" tidak mengirim `period` sehingga backend mengekspor semua transaksi
+function toExportParams(query: ExportQuery): URLSearchParams {
+  if (query.period === "all") return new URLSearchParams()
+  if (query.period === "custom") {
+    return new URLSearchParams({ period: EXPORT_MANUAL_PERIOD, startDate: query.startDate, endDate: query.endDate })
+  }
+  return new URLSearchParams({ period: query.period })
+}
+
+export function exportTransactions(query: ExportQuery): Promise<DownloadedFile> {
+  return apiDownload("/api/transaction/export", "mengekspor transaksi", toExportParams(query))
 }
 
 export interface BulkResult {

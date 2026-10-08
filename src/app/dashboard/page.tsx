@@ -1,7 +1,6 @@
 "use client"
-
 import { SummaryCard } from "@/components/cards/summaryCard";
-import { ExampleChart } from "@/components/chart/chartComponent";
+import { TransactionChart } from "@/components/chart/transaction-chart";
 import WalletIcon from "@/components/images/icons/Wallet.svg";
 import IncomeIcon from "@/components/images/icons/incomeIcon.svg";
 import SavingIcon from "@/components/images/icons/SavingIcon.svg";
@@ -14,6 +13,7 @@ import { AlertCircleIcon } from "lucide-react";
 import { useTransactions } from "@/hooks/use-transactions";
 import { useTransactionStat } from "@/hooks/use-transaction-stat";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
+import { useHiddenAmounts } from "@/hooks/use-hidden-amounts";
 import type { TransactionStat } from "@/lib/api/transaction";
 import { toLocalDateString } from "@/lib/date";
 import { toStatQuery, useTransactionFilter } from "@/components/header/transaction-filter-context";
@@ -46,6 +46,7 @@ export default function DashboardPage() {
   const { filter, setIsFilterLoading } = useTransactionFilter();
   const statQuery = useMemo(() => toStatQuery(filter), [filter]);
   const { stat, isLoading: isStatLoading, error: statError } = useTransactionStat(statQuery);
+  const { isHidden: isAmountHidden, toggleHidden: toggleAmountHidden } = useHiddenAmounts();
 
   // Status loading stat diteruskan ke header agar tombol filter ikut menampilkan spinner
   useEffect(() => {
@@ -64,6 +65,8 @@ export default function DashboardPage() {
             total={stat?.[key].amount ?? 0}
             percentage={stat?.[key].changePercentage ?? 0}
             isLoading={isStatLoading}
+            isHidden={isAmountHidden}
+            onToggleHidden={toggleAmountHidden}
           />
         ))}
       </section>
@@ -77,7 +80,7 @@ export default function DashboardPage() {
 
       {/* Chart */}
       <section className="mt-8 min-w-0 overflow-hidden">
-        <ExampleChart />
+        <TransactionChart />
       </section>
 
       {/* Search & filter */}

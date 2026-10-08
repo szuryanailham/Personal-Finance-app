@@ -7,7 +7,8 @@ import { ACCENT_ICON_CLASS, ACCENT_OUTLINE_CLASS } from "@/lib/styles"
 import { toLocalDateString } from "@/lib/date"
 import { AddActionMenu } from "./add-action-menu"
 import { Spinner } from "@/components/ui/spinner"
-
+import { TransactionFilterDrawer } from "./transaction-filter-drawer"
+import type { TransactionListFilter } from "@/lib/api/transaction"
 
 interface SearchHeaderProps {
   query: string
@@ -15,6 +16,9 @@ interface SearchHeaderProps {
   onQueryChange?: (query: string) => void
   onDateChange?: (date: Date | undefined) => void
   isSearching?: boolean
+  /** Tombol filter transaksi hanya tampil jika `filter` & `onFilterChange` diisi */
+  filter?: TransactionListFilter
+  onFilterChange?: (filter: TransactionListFilter) => void
 }
 
 // Date -> "YYYY-MM-DD" (format yang sama dengan parameter `date` di API)
@@ -53,14 +57,18 @@ export function SearchHeader({
   onQueryChange,
   onDateChange,
   isSearching = false,
+  filter,
+  onFilterChange,
 }: SearchHeaderProps) {
   return (
     <header className="flex w-full flex-col gap-4 py-6 sm:flex-row sm:items-center sm:justify-between">
       <AddActionMenu triggerClassName={ACTION_BUTTON_CLASS} />
 
       <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+        {filter && onFilterChange && (
+          <TransactionFilterDrawer value={filter} onApply={onFilterChange} />
+        )}
         <div className="group/accent relative w-full sm:w-64">
-          {/* Ikon search berganti spinner selama jeda ketik / request berjalan */}
           {isSearching ? (
             <Spinner className={cn(INPUT_ICON_CLASS, "animate-spin")} />
           ) : (
@@ -85,7 +93,6 @@ export function SearchHeader({
             className={cn(ACCENT_INPUT_CLASS, date && "pr-14")}
             aria-label="Filter by date"
           />
-          {/* Tombol reset hanya muncul saat tanggal terisi; diletakkan di kiri ikon picker bawaan browser */}
           {date && (
             <button
               type="button"

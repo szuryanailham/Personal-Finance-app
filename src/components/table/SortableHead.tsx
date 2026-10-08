@@ -31,16 +31,24 @@ function compareTransactions(a: Transaction, b: Transaction, key: SortKey): numb
   return a[key].localeCompare(b[key], "id-ID", { sensitivity: "base", numeric: true })
 }
 
+// Urutan default: tanggal terbaru dulu; di tanggal yang sama, kode transaksi
+// (TRX-yyyyMMdd-NNN, berurutan saat dibuat) terbesar = yang paling baru dibuat
+function compareNewestFirst(a: Transaction, b: Transaction): number {
+  return (
+    compareTransactions(b, a, "date") || compareTransactions(b, a, "transactionCode")
+  )
+}
+
 function sortTransactions(
   transactions: readonly Transaction[],
   sort: SortState | null
 ): readonly Transaction[] {
-  if (!sort) return transactions
+  if (!sort) return [...transactions].sort(compareNewestFirst)
   const factor = sort.direction === "asc" ? 1 : -1
   return [...transactions].sort((a, b) => compareTransactions(a, b, sort.key) * factor)
 }
 
-// Klik pertama: asc, klik kedua: desc, klik ketiga: kembali ke urutan awal
+// Klik pertama: asc, klik kedua: desc, klik ketiga: kembali ke urutan default (terbaru dulu)
 export function useTransactionSort(transactions: readonly Transaction[]) {
   const [sort, setSort] = useState<SortState | null>(null)
   const sorted = useMemo(() => sortTransactions(transactions, sort), [transactions, sort])

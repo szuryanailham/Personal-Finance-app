@@ -1,10 +1,28 @@
 import { Button } from "@/components/ui/button"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { cn } from "@/lib/utils"
+
+export const PAGE_SIZE_OPTIONS = [10, 50, 100] as const
+export const DEFAULT_PAGE_SIZE = PAGE_SIZE_OPTIONS[0]
 
 interface TablePaginationProps {
   currentPage: number
   totalPage: number
+  pageSize: number
+  /** Jumlah baris yang tampil di halaman ini */
+  itemCount: number
+  /** Total baris di semua halaman; tanpa ini teks "dari N" disembunyikan */
+  totalItem?: number
   onPageChange: (page: number) => void
+  onPageSizeChange: (size: number) => void
+  /** Pilihan jumlah baris per halaman; default PAGE_SIZE_OPTIONS */
+  pageSizeOptions?: readonly number[]
   disabled?: boolean
   className?: string
 }
@@ -34,60 +52,108 @@ function buildPageItems(currentPage: number, totalPage: number): PageItem[] {
   ]
 }
 
+// Contoh: halaman 2, size 10, 7 baris, total 17 -> "Menampilkan 11–17 dari 17"
+function buildRangeLabel(
+  currentPage: number,
+  pageSize: number,
+  itemCount: number,
+  totalItem?: number
+): string {
+  if (itemCount === 0) return "Tidak ada data"
+  const from = (currentPage - 1) * pageSize + 1
+  const to = from + itemCount - 1
+  const total = totalItem === undefined ? "" : ` dari ${totalItem.toLocaleString("id-ID")}`
+  return `Menampilkan ${from}–${to}${total}`
+}
+
 export function TablePagination({
   currentPage,
   totalPage,
+  pageSize,
+  itemCount,
+  totalItem,
   onPageChange,
+  onPageSizeChange,
+  pageSizeOptions = PAGE_SIZE_OPTIONS,
   disabled = false,
   className,
 }: TablePaginationProps) {
-  if (totalPage <= 1) return null
-
   const isFirst = currentPage <= 1
   const isLast = currentPage >= totalPage
 
   return (
-    <nav
-      aria-label="Pagination"
-      className={cn("mt-4 flex items-center justify-center gap-1", className)}
-    >
-      <Button
-        variant="outline"
-        size="sm"
-        disabled={disabled || isFirst}
-        className={NAV_BUTTON_CLASS}
-        onClick={() => onPageChange(currentPage - 1)}
-      >
-        Prev
-      </Button>
-      {buildPageItems(currentPage, totalPage).map((item) =>
-        typeof item === "number" ? (
-          <Button
-            key={item}
-            variant={item === currentPage ? "default" : "ghost"}
-            size="sm"
-            disabled={disabled}
-            className={item === currentPage ? ACTIVE_PAGE_CLASS : INACTIVE_PAGE_CLASS}
-            aria-current={item === currentPage ? "page" : undefined}
-            onClick={() => onPageChange(item)}
-          >
-            {item}
-          </Button>
-        ) : (
-          <span key={item} className="px-2 text-sm text-slate-400">
-            …
-          </span>
-        )
+    <div
+      className={cn(
+        "mt-4 flex flex-col items-center gap-3 text-sm text-slate-500 sm:flex-row sm:justify-between",
+        className
       )}
-      <Button
-        variant="outline"
-        size="sm"
-        disabled={disabled || isLast}
-        className={NAV_BUTTON_CLASS}
-        onClick={() => onPageChange(currentPage + 1)}
-      >
-        Next
-      </Button>
-    </nav>
+    >
+      <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
+          <span>Baris per halaman</span>
+          <Select
+            value={pageSize}
+            onValueChange={(value) => value !== null && onPageSizeChange(Number(value))}
+            disabled={disabled}
+          >
+            <SelectTrigger size="sm" aria-label="Baris per halaman" className="min-w-16">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {pageSizeOptions.map((size) => (
+                <SelectItem key={size} value={size}>
+                  {size}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <span aria-live="polite">
+          {buildRangeLabel(currentPage, pageSize, itemCount, totalItem)}
+        </span>
+      </div>
+
+      {totalPage > 1 && (
+        <nav aria-label="Pagination" className="flex items-center gap-1">
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={disabled || isFirst}
+            className={NAV_BUTTON_CLASS}
+            onClick={() => onPageChange(currentPage - 1)}
+          >
+            Prev
+          </Button>
+          {buildPageItems(currentPage, totalPage).map((item) =>
+            typeof item === "number" ? (
+              <Button
+                key={item}
+                variant={item === currentPage ? "default" : "ghost"}
+                size="sm"
+                disabled={disabled}
+                className={item === currentPage ? ACTIVE_PAGE_CLASS : INACTIVE_PAGE_CLASS}
+                aria-current={item === currentPage ? "page" : undefined}
+                onClick={() => onPageChange(item)}
+              >
+                {item}
+              </Button>
+            ) : (
+              <span key={item} className="px-2 text-sm text-slate-400">
+                …
+              </span>
+            )
+          )}
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={disabled || isLast}
+            className={NAV_BUTTON_CLASS}
+            onClick={() => onPageChange(currentPage + 1)}
+          >
+            Next
+          </Button>
+        </nav>
+      )}
+    </div>
   )
 }
