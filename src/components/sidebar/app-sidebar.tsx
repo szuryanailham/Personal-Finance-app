@@ -1,6 +1,6 @@
 import Image from "next/image"
 import Link from "next/link"
-import sidebarLogo from "@/components/images/sidebar/sidebar-header.svg"
+import sidebarLogo from "@/components/images/sidebar/artoku-logo.png"
 import anylisisMenuLogo from "@/components/images/icons/bar-line-chart.svg"
 import accountMenuLogo from "@/components/images/icons/user-03.svg"
 import TransactionMenuLogo from "@/components/images/icons/wallet-02.svg"
@@ -35,11 +35,12 @@ export function AppSidebar() {
   return (
     <Sidebar className="overflow-hidden rounded-r-2xl">
       <SidebarHeader>
-        <div className="flex items-center px-3 py-3">
+        <div className="flex items-center">
           <Image
             src={sidebarLogo}
-            alt="Smart Budget"
+            alt="Artoku"
             priority
+            className="h-28 w-auto"
           />
         </div>
       </SidebarHeader>
@@ -51,7 +52,7 @@ export function AppSidebar() {
             <SidebarMenuItem>
               <SidebarMenuButton
                 render={<Link href="/dashboard" />}
-                className="gap-3 px-3 py-2.5 h-auto"
+                className="gap-3 px-3 h-auto"
               >
                 <div className="size-6 relative">
                   <div className={`size-2 left-[13.50px] top-[2px] absolute ${ICON_SQUARE_COLOR}`} />
@@ -69,7 +70,7 @@ export function AppSidebar() {
             {/* #Anylisis */}
             <SidebarMenuItem>
               <SidebarMenuButton
-                render={<Link href="/dashboard" />}
+                render={<Link href="/analysis" />}
                 className="gap-3 px-3 py-2.5 h-auto"
               >
                 <span

@@ -4,8 +4,8 @@ import { useTransactionRevision } from "@/components/header/transaction-revision
 import type { Transaction } from "@/components/table/TableComponent"
 import {
   DEFAULT_TRANSACTION_LIST_FILTER,
+  dateFilterKey,
   fetchTransactions,
-  resolveDateRange,
   type Paging,
   type TransactionListFilter,
 } from "@/lib/api/transaction"
@@ -40,11 +40,9 @@ export function useTransactions(
   const { revision } = useTransactionRevision()
   const type = filter.type === "all" ? undefined : filter.type
   const categoryId = filter.categoryId ?? undefined
-  const range = resolveDateRange(filter.dateRange)
-  const startDate = range?.startDate
-  const endDate = range?.endDate
-  const { sort } = filter
-  const requestKey = `${limit}|${skip}|${search}|${date}|${startDate ?? ""}|${endDate ?? ""}|${type ?? ""}|${categoryId ?? ""}|${sort}|${revision}`
+  const { dateRange, sort } = filter
+  const dateKey = dateFilterKey(dateRange)
+  const requestKey = `${limit}|${skip}|${search}|${date}|${dateKey}|${type ?? ""}|${categoryId ?? ""}|${sort}|${revision}`
   const [state, setState] = React.useState<SettledState>({
     transactions: [],
     paging: null,
@@ -60,8 +58,7 @@ export function useTransactions(
       skip,
       search,
       date,
-      startDate,
-      endDate,
+      dateRange,
       type,
       categoryId,
       sort,
@@ -77,7 +74,9 @@ export function useTransactions(
       })
 
     return () => controller.abort()
-  }, [limit, skip, search, date, startDate, endDate, type, categoryId, sort, requestKey])
+    // dateRange diwakili dateKey (ada di requestKey), jadi object-nya tidak perlu jadi dependency
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [limit, skip, search, date, dateKey, type, categoryId, sort, requestKey])
 
   // Diturunkan dari key agar tidak perlu setState sinkron di dalam effect
   const isFetching = state.settledKey !== requestKey

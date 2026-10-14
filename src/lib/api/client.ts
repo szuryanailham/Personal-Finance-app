@@ -1,5 +1,52 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080"
-const API_TOKEN = process.env.NEXT_PUBLIC_API_TOKEN
+import { getSessionToken, redirectToLogin } from "@/lib/auth"
+
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080"
+
+const SESSION_EXPIRED_MESSAGE = "Sesi login berakhir, silakan login kembali"
+const HTTP_UNAUTHORIZED = 401
+// Fallback bila header Retry-After tidak terbaca (mis. belum di-expose via CORS)
+const RETRY_AFTER_MESSAGE_PATTERN = /try again in (\d+) second/i
+
+export class ApiError extends Error {
+  readonly status: number
+  /** Detik sampai request boleh dicoba lagi (HTTP 429), null bila tidak ada */
+  readonly retryAfterSeconds: number | null
+
+  constructor(message: string, status: number, retryAfterSeconds: number | null) {
+    super(message)
+    this.name = "ApiError"
+    this.status = status
+    this.retryAfterSeconds = retryAfterSeconds
+  }
+}
+
+function toPositiveInt(value: string | null | undefined): number | null {
+  const parsed = Number(value)
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : null
+}
+
+function parseRetryAfter(res: Response, message: string): number | null {
+  return (
+    toPositiveInt(res.headers.get("Retry-After")) ??
+    toPositiveInt(RETRY_AFTER_MESSAGE_PATTERN.exec(message)?.[1])
+  )
+}
+
+function requireToken(): string {
+  const token = getSessionToken()
+  if (!token) {
+    redirectToLogin()
+    throw new Error(SESSION_EXPIRED_MESSAGE)
+  }
+  return token
+}
+
+// Token ditolak backend (expired / dicabut) → paksa login ulang
+function assertAuthorized(res: Response, isPublic: boolean): void {
+  if (isPublic || res.status !== HTTP_UNAUTHORIZED) return
+  redirectToLogin()
+  throw new Error(SESSION_EXPIRED_MESSAGE)
+}
 
 // Bentuk response dari backend Spring Boot
 export interface ApiResponse<T> {
@@ -24,19 +71,18 @@ interface ApiRequestOptions {
   params?: URLSearchParams
   body?: unknown
   signal?: AbortSignal
+  /** true untuk endpoint tanpa autentikasi (mis. login) */
+  isPublic?: boolean
 }
 
 export async function apiRequest<T>(
   path: string,
   errorLabel: string,
-  { method = "GET", params, body, signal }: ApiRequestOptions = {}
+  { method = "GET", params, body, signal, isPublic = false }: ApiRequestOptions = {}
 ): Promise<ApiResponse<T>> {
-  if (!API_TOKEN) {
-    throw new Error("NEXT_PUBLIC_API_TOKEN belum diset di .env.local")
-  }
-
   const query = params ? `?${params}` : ""
-  const headers: HeadersInit = { Authorization: `Bearer ${API_TOKEN}` }
+  const headers: Record<string, string> = {}
+  if (!isPublic) headers.Authorization = `Bearer ${requireToken()}`
   if (body !== undefined) headers["Content-Type"] = "application/json"
 
   const res = await fetch(`${API_BASE_URL}${path}${query}`, {
@@ -45,11 +91,13 @@ export async function apiRequest<T>(
     body: body === undefined ? undefined : JSON.stringify(body),
     signal,
   })
+  assertAuthorized(res, isPublic)
 
   const json = (await res.json().catch(() => null)) as ApiResponse<T> | null
 
   if (!res.ok || !json) {
-    throw new Error(json?.errors ?? `Gagal ${errorLabel} (HTTP ${res.status})`)
+    const message = json?.errors ?? `Gagal ${errorLabel} (HTTP ${res.status})`
+    throw new ApiError(message, res.status, parseRetryAfter(res, message))
   }
 
   return json
@@ -75,14 +123,12 @@ export async function apiDownload(
   errorLabel: string,
   params?: URLSearchParams
 ): Promise<DownloadedFile> {
-  if (!API_TOKEN) {
-    throw new Error("NEXT_PUBLIC_API_TOKEN belum diset di .env.local")
-  }
-
+  const token = requireToken()
   const query = params ? `?${params}` : ""
   const res = await fetch(`${API_BASE_URL}${path}${query}`, {
-    headers: { Authorization: `Bearer ${API_TOKEN}` },
+    headers: { Authorization: `Bearer ${token}` },
   })
+  assertAuthorized(res, false)
 
   if (!res.ok) {
     const json = (await res.json().catch(() => null)) as ApiResponse<unknown> | null
@@ -106,16 +152,14 @@ export function apiGet<T>(
 
 // Upload multipart/form-data. Response dikembalikan apa adanya karena bentuknya bisa berbeda dari ApiResponse
 export async function apiUpload<T>(path: string, formData: FormData, errorLabel: string): Promise<T> {
-  if (!API_TOKEN) {
-    throw new Error("NEXT_PUBLIC_API_TOKEN belum diset di .env.local")
-  }
-
+  const token = requireToken()
   // Content-Type sengaja tidak diset agar browser mengisi boundary multipart sendiri
   const res = await fetch(`${API_BASE_URL}${path}`, {
     method: "POST",
-    headers: { Authorization: `Bearer ${API_TOKEN}` },
+    headers: { Authorization: `Bearer ${token}` },
     body: formData,
   })
+  assertAuthorized(res, false)
 
   const json = (await res.json().catch(() => null)) as (T & { errors?: string | null }) | null
 

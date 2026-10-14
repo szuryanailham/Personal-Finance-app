@@ -10,6 +10,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { LOGIN_PATH, clearSession } from "@/lib/auth"
 
 export interface SidebarUser {
   name: string
@@ -33,9 +34,9 @@ function getInitials(name: string): string {
 export function NavUser({ user }: NavUserProps) {
   const router = useRouter()
 
-  // TODO: ganti dengan logout ke API (hapus token/session) saat auth sudah ada
   const handleLogout = () => {
-    router.push("/")
+    clearSession()
+    router.replace(LOGIN_PATH)
   }
 
   return (

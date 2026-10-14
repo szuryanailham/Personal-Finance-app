@@ -21,7 +21,8 @@ const OPTION_ROW_CLASS =
 interface FilterSectionProps {
   id: string
   title: string
-  searchPlaceholder: string
+  /** Jika tidak diisi, input pencarian disembunyikan */
+  searchPlaceholder?: string
   options: FilterSectionOption[]
   value: string
   onChange: (value: string) => void
@@ -51,17 +52,19 @@ export function FilterSection({
       <h3 id={titleId} className="text-sm font-medium">
         {title}
       </h3>
-      <div className="relative">
-        <SearchIcon className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
-        <Input
-          type="search"
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder={searchPlaceholder}
-          aria-label={`Search ${title.toLowerCase()}`}
-          className="h-9 pl-8"
-        />
-      </div>
+      {searchPlaceholder && (
+        <div className="relative">
+          <SearchIcon className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            type="search"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder={searchPlaceholder}
+            aria-label={`Search ${title.toLowerCase()}`}
+            className="h-9 pl-8"
+          />
+        </div>
+      )}
       <RadioGroup
         aria-labelledby={titleId}
         value={value}

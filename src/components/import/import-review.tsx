@@ -24,6 +24,7 @@ import {
   type ReviewPatch,
   type ReviewRow,
 } from "./import-review-model"
+import { withMinLoading } from "@/lib/async"
 import { ImportReviewTable } from "./import-review-table"
 
 const TRANSACTION_PATH = "/transaction"
@@ -31,10 +32,6 @@ const TRANSACTION_PATH = "/transaction"
 const MIN_IMPORT_DELAY_MS = 1200
 const REVIEW_PAGE_SIZE_OPTIONS = [5, 10, 15, 100] as const
 const DEFAULT_REVIEW_PAGE_SIZE = REVIEW_PAGE_SIZE_OPTIONS[1]
-
-function wait(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
 
 const MISSING_CATEGORY_PREFIX = "Category not found:"
 const UUID_PATTERN = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi
@@ -156,7 +153,7 @@ export function ImportReview({ importId, initialRows }: ImportReviewProps) {
     setIsSubmitting(true)
     setSubmitError(null)
     try {
-      await Promise.all([bulkCreateTransactions(validRows.map(toBulkTransactionItem)), wait(MIN_IMPORT_DELAY_MS)])
+      await withMinLoading(bulkCreateTransactions(validRows.map(toBulkTransactionItem)), MIN_IMPORT_DELAY_MS)
       notifyTransactionsChanged()
 
       const submitted = new Set(validRows.map((row) => row.row))

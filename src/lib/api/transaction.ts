@@ -1,5 +1,4 @@
 import type { Transaction, TransactionType } from "@/components/table/TableComponent"
-import { getLastDaysRange, type DateRange } from "@/lib/date"
 import { apiDownload, apiGet, apiRequest, type DownloadedFile, type Paging } from "./client"
 
 export type { Paging }
@@ -49,26 +48,37 @@ export const DEFAULT_TRANSACTION_LIST_FILTER: TransactionListFilter = {
   sort: DEFAULT_TRANSACTION_SORT,
 }
 
-const PRESET_DAYS: Record<Exclude<TransactionDatePreset, "all">, number> = {
-  today: 1,
-  last7: 7,
-  last14: 14,
+// Nilai `period` di backend (enum TransactionDatePeriod); "today" dihitung di timezone server
+const DATE_PERIOD: Record<TransactionDateFilter["preset"], string> = {
+  all: "ALL",
+  today: "TODAY",
+  last7: "LAST_7_DAYS",
+  last14: "LAST_14_DAYS",
+  custom: "MANUAL",
 }
 
-/** Ubah filter tanggal jadi rentang konkret; null = tanpa filter tanggal */
-export function resolveDateRange(filter: TransactionDateFilter, today: Date = new Date()): DateRange | null {
-  if (filter.preset === "all") return null
-  if (filter.preset === "custom") return { startDate: filter.startDate, endDate: filter.endDate }
-  return getLastDaysRange(PRESET_DAYS[filter.preset], today)
+// startDate/endDate hanya dibaca backend saat period=MANUAL; "all" tidak perlu dikirim
+function setDateParams(params: URLSearchParams, filter: TransactionDateFilter): void {
+  if (filter.preset === "all") return
+  params.set("period", DATE_PERIOD[filter.preset])
+  if (filter.preset === "custom") {
+    params.set("startDate", filter.startDate)
+    params.set("endDate", filter.endDate)
+  }
+}
+
+/** Key stabil untuk filter tanggal, dipakai sebagai dependency fetch */
+export function dateFilterKey(filter: TransactionDateFilter): string {
+  return filter.preset === "custom" ? `custom:${filter.startDate}:${filter.endDate}` : filter.preset
 }
 
 interface FetchTransactionsParams {
   limit: number
   skip?: number
   search?: string
-  date?: string // format "YYYY-MM-DD"
-  startDate?: string // format "YYYY-MM-DD"
-  endDate?: string // format "YYYY-MM-DD"
+  /** Satu hari spesifik ("YYYY-MM-DD"); jika diisi, backend mengabaikan `dateRange` */
+  date?: string
+  dateRange?: TransactionDateFilter
   type?: TransactionType
   categoryId?: string
   sort?: TransactionSortValue
@@ -99,8 +109,7 @@ export async function fetchTransactions({
   skip = 0,
   search,
   date,
-  startDate,
-  endDate,
+  dateRange = DEFAULT_TRANSACTION_LIST_FILTER.dateRange,
   type,
   categoryId,
   sort = DEFAULT_TRANSACTION_SORT,
@@ -111,8 +120,7 @@ export async function fetchTransactions({
   const keyword = search?.trim()
   if (keyword) params.set("search", keyword)
   if (date) params.set("date", date)
-  if (startDate) params.set("startDate", startDate)
-  if (endDate) params.set("endDate", endDate)
+  else setDateParams(params, dateRange)
   // Backend memakai enum uppercase (INCOME/EXPENSE/SAVING)
   if (type) params.set("type", type.toUpperCase())
   if (categoryId) params.set("categoryId", categoryId)
@@ -149,22 +157,42 @@ export async function createTransaction({
 // PATCH bersifat parsial: field yang tidak dikirim tidak diubah oleh backend
 export type TransactionPatch = Partial<TransactionInput>
 
-export async function updateTransaction(
-  transactionCode: string,
-  { transactionName, ...rest }: TransactionPatch
-): Promise<void> {
-  const body: Partial<CreateTransactionRequest> =
-    transactionName === undefined ? rest : { transactonName: transactionName, ...rest }
+/** Body PATCH /api/transaction/{transactionCode}; contoh: { transactonName: "...", amount: 20000 } */
+export type UpdateTransactionRequest = Partial<CreateTransactionRequest>
+
+// Field undefined dibuang agar hanya field yang diubah yang terkirim ke backend
+function toUpdateTransactionRequest({ transactionName, ...rest }: TransactionPatch): UpdateTransactionRequest {
+  const request: UpdateTransactionRequest = { transactonName: transactionName, ...rest }
+  return Object.fromEntries(
+    Object.entries(request).filter(([, value]) => value !== undefined)
+  ) as UpdateTransactionRequest
+}
+
+export async function updateTransaction(transactionCode: string, patch: TransactionPatch): Promise<void> {
+  const body = toUpdateTransactionRequest(patch)
   await apiRequest(`/api/transaction/${encodeURIComponent(transactionCode)}`, "mengubah transaksi", {
     method: "PATCH",
     body,
   })
 }
 
-export async function deleteTransaction(transactionCode: string): Promise<void> {
-  await apiRequest(`/api/transaction/${encodeURIComponent(transactionCode)}`, "menghapus transaksi", {
+// Mengembalikan `message` dari response backend untuk ditampilkan sebagai notifikasi
+export async function deleteTransaction(transactionCode: string): Promise<string | null> {
+  const body = await apiRequest(
+    `/api/transaction/${encodeURIComponent(transactionCode)}`,
+    "menghapus transaksi",
+    { method: "DELETE" }
+  )
+  return body.message
+}
+
+// Satu request untuk banyak transaksi; backend menghapus semua kode di `transactionCodes`
+export async function deleteTransactions(transactionCodes: readonly string[]): Promise<string | null> {
+  const body = await apiRequest("/api/transaction/bulk", "menghapus transaksi", {
     method: "DELETE",
+    body: { transactionCodes },
   })
+  return body.message
 }
 
 export function downloadImportTemplate(): Promise<DownloadedFile> {

@@ -1,7 +1,10 @@
 "use client"
 
 import { SearchHeader } from '@/components/header/SearchHeader'
-import { TransactionTable } from '@/components/table/TableComponent';
+import { TransactionTable, type Transaction } from '@/components/table/TableComponent';
+import { BulkUpdateTransactionDialog } from '@/components/table/bulk-update-transaction-dialog';
+import { DeleteTransactionDialog } from '@/components/table/delete-transaction-dialog';
+import { EditTransactionDialog } from '@/components/table/edit-transaction-dialog';
 import { DEFAULT_PAGE_SIZE, TablePagination } from '@/components/table/TablePagination';
 import TableTransactionDetail from '@/components/table/TableTransactionDetail';
 import { LoadingState } from '@/components/ui/spinner';
@@ -19,6 +22,12 @@ export default function TransactionPage() {
   // Jumlah baris per halaman yang diminta ke backend (?limit=)
   const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
   const [filter, setFilter] = useState<TransactionListFilter>(DEFAULT_TRANSACTION_LIST_FILTER);
+  // Transaksi yang sedang dikonfirmasi untuk dihapus; array kosong = dialog tertutup
+  const [deleting, setDeleting] = useState<readonly Transaction[]>([]);
+  // Transaksi yang sedang diedit; null = dialog tertutup
+  const [editing, setEditing] = useState<Transaction | null>(null);
+  // Transaksi yang sedang di-bulk update; array kosong = dialog tertutup
+  const [bulkUpdating, setBulkUpdating] = useState<readonly Transaction[]>([]);
   const trimmedQuery = query.trim();
   const debouncedQuery = useDebouncedValue(trimmedQuery);
   const dateFilter = date ? toLocalDateString(date) : "";
@@ -78,10 +87,10 @@ export default function TransactionPage() {
           >
             <TableTransactionDetail
               transactions={transactions}
-              onEdit={(trx) => { /* buka form edit */ }}
-              onDelete={(trx) => { /* konfirmasi & hapus */ }}
-              onBulkUpdate={(selected) => { /* buka form bulk update */ }}
-              onBulkDelete={(selected) => { /* konfirmasi & hapus massal */ }}
+              onEdit={setEditing}
+              onDelete={(trx) => setDeleting([trx])}
+              onBulkUpdate={setBulkUpdating}
+              onBulkDelete={setDeleting}
             />
 
             <TablePagination
@@ -96,6 +105,9 @@ export default function TransactionPage() {
             />
           </div>
         )}
+        <EditTransactionDialog transaction={editing} onClose={() => setEditing(null)} />
+        <BulkUpdateTransactionDialog transactions={bulkUpdating} onClose={() => setBulkUpdating([])} />
+        <DeleteTransactionDialog transactions={deleting} onClose={() => setDeleting([])} />
       </section>
     </div>
   )

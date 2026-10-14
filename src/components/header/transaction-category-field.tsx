@@ -23,6 +23,14 @@ interface TransactionCategoryFieldProps {
   enabled: boolean
   idPrefix: string
   label?: string
+  /** Kategori yang terpilih di awal (form edit); default kategori pertama */
+  selected?: Category
+}
+
+// Dropdown hanya memuat 10 kategori pertama, jadi kategori terpilih disisipkan jika tidak ikut termuat
+function withSelected(categories: Category[], selected?: Category): Category[] {
+  if (!selected || categories.some((c) => c.id === selected.id)) return categories
+  return [selected, ...categories]
 }
 
 function CategoryOption({ category }: { category: Category }) {
@@ -38,8 +46,10 @@ export function TransactionCategoryField({
   enabled,
   idPrefix,
   label = "Category",
+  selected,
 }: TransactionCategoryFieldProps) {
-  const { categories, isLoading, error, reload } = useCategories(enabled, DROPDOWN_CATEGORY_LIMIT)
+  const { categories: fetched, isLoading, error, reload } = useCategories(enabled, DROPDOWN_CATEGORY_LIMIT)
+  const categories = withSelected(fetched, selected)
   const triggerId = `${idPrefix}-select`
 
   return (
@@ -63,7 +73,7 @@ export function TransactionCategoryField({
       ) : categories.length === 0 ? (
         <p className="text-sm text-muted-foreground">Belum ada kategori. Tambahkan kategori terlebih dahulu.</p>
       ) : (
-        <Select name="categoryId" defaultValue={categories[0].id}>
+        <Select name="categoryId" defaultValue={selected?.id ?? categories[0].id}>
           <SelectTrigger id={triggerId} className="h-11 w-full px-3">
             <SelectValue>
               {(value: string) => {

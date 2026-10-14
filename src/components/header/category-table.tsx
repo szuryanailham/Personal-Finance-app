@@ -13,6 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import type { Category } from "@/lib/api/category"
+import { withMinLoading } from "@/lib/async"
 import { CATEGORY_OPTIONS } from "./category-type-field"
 
 const TYPE_LABEL = Object.fromEntries(CATEGORY_OPTIONS.map((o) => [o.value, o.label]))
@@ -40,7 +41,7 @@ function CategoryRow({ category, isEditing, onEdit, onDelete }: CategoryRowProps
   async function handleConfirmDelete() {
     setIsDeleting(true)
     try {
-      await onDelete(category)
+      await withMinLoading(onDelete(category))
     } finally {
       setIsDeleting(false)
       setIsConfirming(false)
@@ -62,8 +63,16 @@ function CategoryRow({ category, isEditing, onEdit, onDelete }: CategoryRowProps
             >
               Cancel
             </Button>
-            <Button size="sm" variant="destructive" onClick={handleConfirmDelete} disabled={isDeleting}>
-              {isDeleting ? <Spinner className="animate-spin" /> : "Delete"}
+            <Button
+              size="sm"
+              variant="destructive"
+              onClick={handleConfirmDelete}
+              disabled={isDeleting}
+              aria-busy={isDeleting}
+              className="gap-2"
+            >
+              {isDeleting && <Spinner className="text-current" />}
+              {isDeleting ? "Deleting..." : "Delete"}
             </Button>
           </div>
         ) : (
@@ -108,7 +117,7 @@ export function CategoryTable({ categories, isLoading, editingId, onEdit, onDele
           {isLoading ? (
             <TableRow>
               <TableCell colSpan={3} className="h-20 text-center text-muted-foreground">
-                <Spinner className="mx-auto animate-spin" />
+                <Spinner className="mx-auto" />
               </TableCell>
             </TableRow>
           ) : categories.length === 0 ? (

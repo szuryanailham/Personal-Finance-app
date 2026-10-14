@@ -20,31 +20,14 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Spinner } from "@/components/ui/spinner"
 import { Textarea } from "@/components/ui/textarea"
-import { createTransaction, type TransactionInput } from "@/lib/api/transaction"
+import { createTransaction } from "@/lib/api/transaction"
 import { TransactionCategoryField } from "./transaction-category-field"
+import { toTransactionInput } from "./transaction-form"
+import { wait, withMinLoading } from "@/lib/async"
 import { useTransactionRevision } from "./transaction-revision-context"
 
 const INPUT_CLASS = "h-11 px-3"
-const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/
-const MIN_LOADING_MS = 600
 const SUCCESS_ALERT_MS = 1500
-
-function wait(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
-function toTransactionInput(form: HTMLFormElement): TransactionInput | null {
-  const data = new FormData(form)
-  const transactionName = String(data.get("transactionName") ?? "").trim()
-  const categoryId = String(data.get("categoryId") ?? "")
-  const date = String(data.get("date") ?? "")
-  const amount = Number(data.get("amount"))
-  const description = String(data.get("description") ?? "").trim()
-
-  if (!transactionName || !categoryId || !DATE_PATTERN.test(date)) return null
-  if (!Number.isFinite(amount) || amount <= 0) return null
-  return { transactionName, amount, description, categoryId, date }
-}
 
 function toErrorMessage(err: unknown): string {
   return err instanceof Error ? err.message : "Terjadi kesalahan"
@@ -87,7 +70,7 @@ export function AddTransactionDialog({ open, onOpenChange }: AddTransactionDialo
     setError(null)
     setIsSubmitting(true)
     try {
-      await Promise.all([createTransaction(input), wait(MIN_LOADING_MS)])
+      await withMinLoading(createTransaction(input))
     } catch (err: unknown) {
       setError(toErrorMessage(err))
       return

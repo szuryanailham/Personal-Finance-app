@@ -3,7 +3,7 @@
 import * as React from "react"
 
 interface TransactionRevisionContextValue {
-  /** Naik setiap kali data transaksi berubah (create/update/delete) */
+  /** Naik setiap kali data transaksi atau kategori berubah (create/update/delete) */
   revision: number
   /** Panggil setelah mutasi berhasil agar tabel, stat, dan chart fetch ulang */
   notifyTransactionsChanged: () => void

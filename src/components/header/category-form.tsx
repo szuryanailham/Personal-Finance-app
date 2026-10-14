@@ -6,18 +6,12 @@ import { Field, FieldGroup } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Spinner } from "@/components/ui/spinner"
+import { withMinLoading } from "@/lib/async"
 import type { Category, CategoryInput, CategoryType } from "@/lib/api/category"
 import { CATEGORY_OPTIONS, CategoryTypeField } from "./category-type-field"
 
 const INPUT_CLASS = "h-11 px-3"
 const NAME_MAX_LENGTH = 100 // sama dengan validasi @Size di backend
-// Jeda minimum agar spinner tidak berkedip saat response backend sangat cepat
-const MIN_LOADING_MS = 600
-
-function wait(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
 const CATEGORY_TYPES: readonly string[] = CATEGORY_OPTIONS.map((option) => option.value)
 
 function isCategoryType(value: unknown): value is CategoryType {
@@ -55,7 +49,7 @@ export function CategoryForm({ editing, onSubmit, onCancelEdit }: CategoryFormPr
 
     setIsSubmitting(true)
     try {
-      const [isSaved] = await Promise.all([onSubmit(input), wait(MIN_LOADING_MS)])
+      const isSaved = await withMinLoading(onSubmit(input))
       if (isSaved && !editing) form.reset()
     } finally {
       setIsSubmitting(false)
@@ -100,10 +94,10 @@ export function CategoryForm({ editing, onSubmit, onCancelEdit }: CategoryFormPr
         <Button
           type="submit"
           disabled={isSubmitting}
-          aria-busy={isSubmitting}  
+          aria-busy={isSubmitting}
           className="h-11 min-w-40 gap-2 bg-[#6359E9] px-6 text-white hover:bg-[#6359E9]/90"
         >
-          {isSubmitting && <Spinner className="animate-spin" />}
+          {isSubmitting && <Spinner className="text-white" />}
           {submitLabel(Boolean(editing), isSubmitting)}
         </Button>
       </div>

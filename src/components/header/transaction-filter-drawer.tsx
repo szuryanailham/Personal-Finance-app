@@ -80,20 +80,27 @@ function isDefaultFilter(filter: TransactionListFilter): boolean {
 }
 
 interface CustomDateRangeProps {
+  /** Prefix id input supaya unik jika dipakai di lebih dari satu drawer */
+  idPrefix?: string
   startDate: string
   endDate: string
   onChange: (field: "startDate" | "endDate", value: string) => void
 }
 
-function CustomDateRange({ startDate, endDate, onChange }: CustomDateRangeProps) {
+export function CustomDateRange({
+  idPrefix = "trx-filter",
+  startDate,
+  endDate,
+  onChange,
+}: CustomDateRangeProps) {
   const isRangeInvalid = Boolean(startDate && endDate && startDate > endDate)
 
   return (
     <div className="grid grid-cols-2 gap-3">
       <Field>
-        <FieldLabel htmlFor="trx-filter-start-date">Start date</FieldLabel>
+        <FieldLabel htmlFor={`${idPrefix}-start-date`}>Start date</FieldLabel>
         <Input
-          id="trx-filter-start-date"
+          id={`${idPrefix}-start-date`}
           type="date"
           value={startDate}
           max={endDate || undefined}
@@ -102,9 +109,9 @@ function CustomDateRange({ startDate, endDate, onChange }: CustomDateRangeProps)
         />
       </Field>
       <Field>
-        <FieldLabel htmlFor="trx-filter-end-date">End date</FieldLabel>
+        <FieldLabel htmlFor={`${idPrefix}-end-date`}>End date</FieldLabel>
         <Input
-          id="trx-filter-end-date"
+          id={`${idPrefix}-end-date`}
           type="date"
           value={endDate}
           min={startDate || undefined}

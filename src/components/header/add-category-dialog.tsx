@@ -21,6 +21,7 @@ import {
 } from "@/lib/api/category"
 import { CategoryForm } from "./category-form"
 import { CategoryTable } from "./category-table"
+import { useTransactionRevision } from "./transaction-revision-context"
 
 interface AddCategoryDialogProps {
   open: boolean
@@ -34,6 +35,7 @@ function toErrorMessage(err: unknown): string {
 // Dialog kelola kategori: form tambah/edit di atas, tabel daftar kategori di bawah
 export function AddCategoryDialog({ open, onOpenChange }: AddCategoryDialogProps) {
   const { categories, isLoading, error: loadError, reload } = useCategories(open)
+  const { notifyTransactionsChanged } = useTransactionRevision()
   const [editing, setEditing] = useState<Category | null>(null)
   const [actionError, setActionError] = useState<string | null>(null)
 
@@ -51,6 +53,8 @@ export function AddCategoryDialog({ open, onOpenChange }: AddCategoryDialogProps
     try {
       await action()
       reload()
+      // Nama/tipe kategori ikut tampil di tabel, stat, dan pie diagram, jadi semuanya perlu fetch ulang
+      notifyTransactionsChanged()
       return true
     } catch (err: unknown) {
       setActionError(toErrorMessage(err))
