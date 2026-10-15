@@ -1,3 +1,4 @@
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Select,
@@ -31,6 +32,8 @@ const NAV_BUTTON_CLASS =
   "border-[#6359E9] text-[#6359E9] hover:bg-[#6359E9]/10 hover:text-[#6359E9]"
 const ACTIVE_PAGE_CLASS = "bg-[#6359E9] text-white hover:bg-[#6359E9]/90"
 const INACTIVE_PAGE_CLASS = "text-[#6359E9] hover:bg-[#6359E9]/10 hover:text-[#6359E9]"
+// Teks Prev/Next disembunyikan di mobile agar nomor halaman muat dalam satu baris
+const NAV_LABEL_CLASS = "max-md:hidden"
 
 // Jumlah nomor halaman yang tampil di sekitar halaman aktif
 const SIBLING_COUNT = 1
@@ -108,7 +111,8 @@ export function TablePagination({
             </SelectContent>
           </Select>
         </div>
-        <span aria-live="polite">
+        {/* Teks rentang data disembunyikan di mobile agar baris pagination tetap ringkas */}
+        <span aria-live="polite" className="max-md:hidden">
           {buildRangeLabel(currentPage, pageSize, itemCount, totalItem)}
         </span>
       </div>
@@ -121,8 +125,10 @@ export function TablePagination({
             disabled={disabled || isFirst}
             className={NAV_BUTTON_CLASS}
             onClick={() => onPageChange(currentPage - 1)}
+            aria-label="Previous page"
           >
-            Prev
+            <ChevronLeftIcon />
+            <span className={NAV_LABEL_CLASS}>Prev</span>
           </Button>
           {buildPageItems(currentPage, totalPage).map((item) =>
             typeof item === "number" ? (
@@ -149,8 +155,10 @@ export function TablePagination({
             disabled={disabled || isLast}
             className={NAV_BUTTON_CLASS}
             onClick={() => onPageChange(currentPage + 1)}
+            aria-label="Next page"
           >
-            Next
+            <span className={NAV_LABEL_CLASS}>Next</span>
+            <ChevronRightIcon />
           </Button>
         </nav>
       )}

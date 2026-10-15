@@ -10,7 +10,11 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { useCurrentUser } from "@/hooks/use-current-user"
+import { getFullName } from "@/lib/api/user"
 import { LOGIN_PATH, clearSession } from "@/lib/auth"
+
+const LOADING_NAME = "Memuat..."
 
 export interface SidebarUser {
   name: string
@@ -33,6 +37,10 @@ function getInitials(name: string): string {
 
 export function NavUser({ user }: NavUserProps) {
   const router = useRouter()
+  const { user: currentUser, isLoading } = useCurrentUser()
+  // Nama dari /api/users/me; bila gagal dimuat, tetap pakai nama default dari props
+  const fetchedName = currentUser ? getFullName(currentUser) : ""
+  const displayName = fetchedName || (isLoading ? LOADING_NAME : user.name)
 
   const handleLogout = () => {
     clearSession()
@@ -52,17 +60,17 @@ export function NavUser({ user }: NavUserProps) {
               {user.avatarUrl && (
                 <Avatar.Image
                   src={user.avatarUrl}
-                  alt={user.name}
+                  alt={displayName}
                   className="size-full object-cover"
                 />
               )}
               <Avatar.Fallback className="text-sm font-semibold text-white">
-                {getInitials(user.name)}
+                {getInitials(displayName)}
               </Avatar.Fallback>
             </Avatar.Root>
 
             <div className="grid flex-1 text-left leading-tight">
-              <span className="truncate text-sm font-semibold">{user.name}</span>
+              <span className="truncate text-sm font-semibold">{displayName}</span>
               <span className="truncate text-xs opacity-70">{user.role}</span>
             </div>
 

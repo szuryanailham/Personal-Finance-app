@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { ChevronDownIcon, FolderPlusIcon, ReceiptIcon } from "lucide-react"
+import { ChevronDownIcon, FolderPlusIcon, PlusIcon, ReceiptIcon } from "lucide-react"
 import { cn } from "cn"
 import { Button } from "@/components/ui/button"
 import {
@@ -17,11 +17,17 @@ type ActiveDialog = "transaction" | "category" | null
 
 interface AddActionMenuProps {
   triggerClassName?: string
+  /** `floating`: tombol bulat melayang di pojok kanan bawah (untuk mobile) */
+  variant?: "button" | "floating"
 }
+
+const FLOATING_TRIGGER_CLASS =
+  "fixed right-5 bottom-5 z-40 size-14 rounded-full bg-[#6359E9] text-white shadow-lg hover:bg-[#6359E9]/90 [&_svg:not([class*='size-'])]:size-6"
 
 // Tombol "Add" dengan dropdown; tiap item membuka dialog masing-masing.
 // Dialog dirender di luar menu agar tetap terbuka setelah menu tertutup.
-export function AddActionMenu({ triggerClassName }: AddActionMenuProps) {
+export function AddActionMenu({ triggerClassName, variant = "button" }: AddActionMenuProps) {
+  const isFloating = variant === "floating"
   const [activeDialog, setActiveDialog] = useState<ActiveDialog>(null)
 
   function handleOpenChange(dialog: Exclude<ActiveDialog, null>) {
@@ -33,13 +39,24 @@ export function AddActionMenu({ triggerClassName }: AddActionMenuProps) {
       <DropdownMenu>
         <DropdownMenuTrigger
           render={
-            <Button className={cn("gap-2", triggerClassName)} variant="outline" size="lg">
-              Add New
-              <ChevronDownIcon className="size-4" />
-            </Button>
+            isFloating ? (
+              <Button className={cn(FLOATING_TRIGGER_CLASS, triggerClassName)} aria-label="Add new">
+                <PlusIcon />
+              </Button>
+            ) : (
+              <Button className={cn("gap-2", triggerClassName)} variant="outline" size="lg">
+                Add New
+                <ChevronDownIcon className="size-4" />
+              </Button>
+            )
           }
         />
-        <DropdownMenuContent align="start" className="min-w-44">
+        <DropdownMenuContent
+          align={isFloating ? "end" : "start"}
+          side={isFloating ? "top" : "bottom"}
+          sideOffset={isFloating ? 8 : 4}
+          className="min-w-44"
+        >
           <DropdownMenuItem onClick={() => setActiveDialog("transaction")}>
             <ReceiptIcon />
             Add Transaction

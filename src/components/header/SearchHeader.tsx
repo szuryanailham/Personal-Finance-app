@@ -26,7 +26,12 @@ function toInputValue(date?: Date): string {
   return date ? toLocalDateString(date) : ""
 }
 
-const ACTION_BUTTON_CLASS = `min-w-28 px-5 ${ACCENT_OUTLINE_CLASS}`
+// Mobile: satu baris [Search | Date | Filter]; Add New jadi tombol float.
+// sm ke atas: Add New di kiri, Filter/Search/Date di kanan.
+const ACTION_BUTTON_CLASS = cn("min-w-28 px-5 max-sm:hidden sm:mr-auto", ACCENT_OUTLINE_CLASS)
+
+// Di mobile input berbagi lebar sama rata; sm ke atas lebarnya tetap
+const INPUT_WRAPPER_CLASS = "group/accent relative min-w-0 flex-1 sm:flex-none"
 
 // Input search & date disamakan dengan tombol Export (outline ungu, tinggi h-9)
 const ACCENT_INPUT_CLASS = cn(
@@ -61,50 +66,53 @@ export function SearchHeader({
   onFilterChange,
 }: SearchHeaderProps) {
   return (
-    <header className="flex w-full flex-col gap-4 py-6 sm:flex-row sm:items-center sm:justify-between">
+    // Urutan DOM mengikuti layout desktop; `max-sm:order-*` menyusun ulang untuk mobile
+    <header className="flex w-full items-center gap-2 py-6 sm:gap-3">
       <AddActionMenu triggerClassName={ACTION_BUTTON_CLASS} />
+      <AddActionMenu variant="floating" triggerClassName="sm:hidden" />
 
-      <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-        {filter && onFilterChange && (
+      {filter && onFilterChange && (
+        <div className="flex shrink-0 max-sm:order-3">
           <TransactionFilterDrawer value={filter} onApply={onFilterChange} />
-        )}
-        <div className="group/accent relative w-full sm:w-64">
-          {isSearching ? (
-            <Spinner className={cn(INPUT_ICON_CLASS, "animate-spin")} />
-          ) : (
-            <SearchIcon className={INPUT_ICON_CLASS} />
-          )}
-          <Input
-            type="search"
-            placeholder="Search transaction..."
-            value={query}
-            onChange={(e) => onQueryChange?.(e.target.value)}
-            className={ACCENT_INPUT_CLASS}
-            aria-label="Search transaction"
-          />
         </div>
+      )}
 
-        <div className="group/accent relative w-full sm:w-48">
-          <CalendarIcon className={INPUT_ICON_CLASS} />
-          <Input
-            type="date"
-            value={toInputValue(date)}
-            onChange={(e) => onDateChange?.(fromInputValue(e.target.value))}
-            className={cn(ACCENT_INPUT_CLASS, date && "pr-14")}
-            aria-label="Filter by date"
-          />
-          {date && (
-            <button
-              type="button"
-              onClick={() => onDateChange?.(undefined)}
-              className={RESET_BUTTON_CLASS}
-              aria-label="Reset date filter"
-              title="Reset date"
-            >
-              <XIcon className="size-3.5" />
-            </button>
-          )}
-        </div>
+      <div className={cn(INPUT_WRAPPER_CLASS, "max-sm:order-1 sm:w-64")}>
+        {isSearching ? (
+          <Spinner className={cn(INPUT_ICON_CLASS, "animate-spin")} />
+        ) : (
+          <SearchIcon className={INPUT_ICON_CLASS} />
+        )}
+        <Input
+          type="search"
+          placeholder="Search transaction..."
+          value={query}
+          onChange={(e) => onQueryChange?.(e.target.value)}
+          className={ACCENT_INPUT_CLASS}
+          aria-label="Search transaction"
+        />
+      </div>
+
+      <div className={cn(INPUT_WRAPPER_CLASS, "max-sm:order-2 sm:w-48")}>
+        <CalendarIcon className={INPUT_ICON_CLASS} />
+        <Input
+          type="date"
+          value={toInputValue(date)}
+          onChange={(e) => onDateChange?.(fromInputValue(e.target.value))}
+          className={cn(ACCENT_INPUT_CLASS, date && "pr-14")}
+          aria-label="Filter by date"
+        />
+        {date && (
+          <button
+            type="button"
+            onClick={() => onDateChange?.(undefined)}
+            className={RESET_BUTTON_CLASS}
+            aria-label="Reset date filter"
+            title="Reset date"
+          >
+            <XIcon className="size-3.5" />
+          </button>
+        )}
       </div>
     </header>
   )

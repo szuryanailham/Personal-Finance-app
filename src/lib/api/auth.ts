@@ -16,6 +16,16 @@ export async function login(request: LoginRequest): Promise<AuthSession> {
   return res.data
 }
 
+export async function loginWithGoogle(idToken: string): Promise<AuthSession> {
+  const res = await apiRequest<AuthSession>("/api/auth/google", "login dengan Google", {
+    method: "POST",
+    body: { idToken },
+    isPublic: true,
+  })
+  if (!res.data?.token || !res.data.expiredAt) throw new Error("Response login Google tidak valid")
+  return res.data
+}
+
 export interface SignUpRequest {
   firstName: string
   lastName: string
