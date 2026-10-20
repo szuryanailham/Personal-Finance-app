@@ -88,18 +88,20 @@ export function AddTransactionDialog({ open, onOpenChange }: AddTransactionDialo
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-xl p-6">
+      {/* Tinggi dibatasi layar; di mobile hanya area field yang di-scroll, header & tombol tetap terlihat */}
+      <DialogContent className="flex max-h-[calc(100svh-2rem)] flex-col p-4 sm:max-w-xl sm:p-6">
         {/* Form diletakkan di dalam DialogContent karena konten dirender lewat portal */}
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit} className="flex min-h-0 flex-col gap-4">
           <DialogHeader>
-            <div className="mb-2">
-              <Image src={createTransactionIcon} alt="" width={52} height={53} />
+            <div className="mb-1 sm:mb-2">
+              <Image src={createTransactionIcon} alt="" width={52} height={53} className="size-10 sm:size-[52px]" />
             </div>
             <DialogTitle>Add Transaction</DialogTitle>
             <DialogDescription>
              Fill Out the Transaction Form Below
             </DialogDescription>
           </DialogHeader>
+          <div className="-mx-1 min-h-0 flex-1 overflow-y-auto px-1 pb-1 flex flex-col gap-4">
           {error && (
             <Alert variant="destructive">
               <AlertDescription>{error}</AlertDescription>
@@ -140,11 +142,12 @@ export function AddTransactionDialog({ open, onOpenChange }: AddTransactionDialo
               </Field>
               <Field>
                 <Label htmlFor="transaction-description">Description</Label>
-                <Textarea id="transaction-description" name="description" rows={4} className="min-h-24 px-3 py-2" />
+                <Textarea id="transaction-description" name="description" rows={3} className="min-h-20 px-3 py-2 sm:min-h-24" />
               </Field>
             </FieldGroup>
           </fieldset>
-          <DialogFooter className="-mx-6 -mb-6 mt-2 grid grid-cols-2 gap-4 px-6 py-5">
+          </div>
+          <DialogFooter className="-mx-4 -mb-4 grid grid-cols-2 gap-3 px-4 py-4 sm:-mx-6 sm:-mb-6 sm:mt-2 sm:gap-4 sm:px-6 sm:py-5">
             <DialogClose
               disabled={isLocked}
               render={<Button type="button" variant="outline" className="h-11 w-full px-6">Cancel</Button>}

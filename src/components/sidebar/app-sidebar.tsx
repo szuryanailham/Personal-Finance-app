@@ -2,7 +2,6 @@ import Image from "next/image"
 import Link from "next/link"
 import sidebarLogo from "@/components/images/sidebar/artoku-logo.png"
 import anylisisMenuLogo from "@/components/images/icons/bar-line-chart.svg"
-import accountMenuLogo from "@/components/images/icons/user-03.svg"
 import TransactionMenuLogo from "@/components/images/icons/wallet-02.svg"
 import SettingMenuLogo from "@/components/images/icons/settings-01.svg"
 import SecurityMenuLogo from "@/components/images/icons/shield-tick.svg"
@@ -111,35 +110,11 @@ export function AppSidebar() {
               </SidebarMenuButton>
             </SidebarMenuItem>
 
-            {/* account */}
-
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                render={<Link href="/account" />}
-                className="gap-3 px-3 py-2.5 h-auto"
-              >
-                <span
-                  aria-hidden="true"
-                  className={`size-6 shrink-0 ${ICON_SQUARE_COLOR}`}
-                  style={{
-                    maskImage: `url(${accountMenuLogo.src})`,
-                    maskSize: "contain",
-                    maskRepeat: "no-repeat",
-                    maskPosition: "center",
-                  }}
-                />
-                <span className="text-sm font-medium ">
-                  Account
-                </span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-
             {/* settings */}
 
             <SidebarMenuItem>
               <SidebarMenuButton
-                render={<Link href="/account" />}
+                render={<Link href="/settings" />}
                 className="gap-3 px-3 py-2.5 h-auto"
               >
                 <span

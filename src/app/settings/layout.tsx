@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { AppShell } from "@/components/layout/app-shell";
 
 export const metadata: Metadata = {
-  title: "Account",
+  title: "Settings",
 };
 
-export default function AccountLayout({ children }: LayoutProps<"/account">) {
-  return <AppShell title="Account">{children}</AppShell>;
+export default function SettingsLayout({ children }: LayoutProps<"/settings">) {
+  return <AppShell title="Settings">{children}</AppShell>;
 }

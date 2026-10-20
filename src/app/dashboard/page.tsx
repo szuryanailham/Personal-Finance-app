@@ -1,10 +1,7 @@
 "use client"
 import { SummaryCard } from "@/components/cards/summaryCard";
 import { TransactionChart } from "@/components/chart/transaction-chart";
-import WalletIcon from "@/components/images/icons/Wallet.svg";
-import IncomeIcon from "@/components/images/icons/incomeIcon.svg";
-import SavingIcon from "@/components/images/icons/SavingIcon.svg";
-import ExpenseIcon from "@/components/images/icons/ExpenseIcon.svg";
+import { SUMMARY_CONFIG } from "@/components/cards/summary-config";
 import { SearchHeader } from "@/components/header/SearchHeader";
 import { TransactionTable } from "@/components/table/TableComponent";
 import { LoadingState } from "@/components/ui/spinner";
@@ -14,20 +11,12 @@ import { useTransactions } from "@/hooks/use-transactions";
 import { useTransactionStat } from "@/hooks/use-transaction-stat";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import { useHiddenAmounts } from "@/hooks/use-hidden-amounts";
-import type { TransactionStat } from "@/lib/api/transaction";
 import { toLocalDateString } from "@/lib/date";
 import { toStatQuery, useTransactionFilter } from "@/components/header/transaction-filter-context";
 import { cn } from "@/lib/utils";
 import { useEffect, useMemo, useState } from "react";
 
 const HOME_TRANSACTION_LIMIT = 10;
-
-const SUMMARY_CONFIG: { title: string; key: keyof TransactionStat; icon: typeof WalletIcon }[] = [
-  { title: "Total Balance", key: "totalBalance", icon: WalletIcon },
-  { title: "Total Income", key: "totalIncome", icon: IncomeIcon },
-  { title: "Total Saving", key: "totalSaving", icon: SavingIcon },
-  { title: "Total Expense", key: "totalExpense", icon: ExpenseIcon },
-];
 
 export default function DashboardPage() {
   const [query, setQuery] = useState("");

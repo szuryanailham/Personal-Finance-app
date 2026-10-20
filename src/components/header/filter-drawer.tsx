@@ -2,7 +2,14 @@
 
 import * as React from "react"
 import Image from "next/image"
-import { AlertCircleIcon } from "lucide-react"
+import {
+  AlertCircleIcon,
+  CalendarDaysIcon,
+  CalendarRangeIcon,
+  CalendarIcon,
+  SlidersHorizontalIcon,
+  type LucideIcon,
+} from "lucide-react"
 
 import filterIcon from "@/components/images/icons/filter-horizontal.svg"
 import { useIsMobile } from "@/hooks/use-mobile"
@@ -30,20 +37,86 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Spinner } from "@/components/ui/spinner"
 import type { FilterPeriod, TransactionFilter } from "@/components/header/transaction-filter-context"
 
-const FILTER_OPTIONS: { value: FilterPeriod; label: string; description: string }[] = [
-  { value: "yearly", label: "Yearly", description: "Transactions this year" },
-  { value: "monthly", label: "Monthly", description: "Transactions this month" },
-  { value: "weekly", label: "Weekly", description: "Transactions this week" },
-  { value: "custom", label: "Custom", description: "Pick your own date range" },
-]
+type FilterDrawerVariant = "default" | "mobile"
+
+interface FilterOption {
+  value: FilterPeriod
+  label: string
+  description: string
+}
+
+interface FilterCopy {
+  title: string
+  description?: string
+  options: FilterOption[]
+  startDate: string
+  endDate: string
+  invalidRangeTitle: string
+  invalidRangeDescription: string
+  cancel: string
+  apply: string
+}
+
+const FILTER_ICONS: Record<FilterPeriod, LucideIcon> = {
+  yearly: CalendarRangeIcon,
+  monthly: CalendarDaysIcon,
+  weekly: CalendarIcon,
+  custom: SlidersHorizontalIcon,
+}
+
+const FILTER_COPY: Record<FilterDrawerVariant, FilterCopy> = {
+  default: {
+    title: "Filter Summary & Transactions",
+    description: "Select filters to customize your financial data.",
+    options: [
+      { value: "yearly", label: "Yearly", description: "Transactions this year" },
+      { value: "monthly", label: "Monthly", description: "Transactions this month" },
+      { value: "weekly", label: "Weekly", description: "Transactions this week" },
+      { value: "custom", label: "Custom", description: "Pick your own date range" },
+    ],
+    startDate: "Start date",
+    endDate: "End date",
+    invalidRangeTitle: "Invalid date range",
+    invalidRangeDescription: "End date must be on or after start date.",
+    cancel: "Cancel",
+    apply: "Apply Filter",
+  },
+  mobile: {
+    title: "Filter Ringkasan & Transaksi",
+    options: [
+      { value: "yearly", label: "Tahunan", description: "Transaksi tahun ini" },
+      { value: "monthly", label: "Bulanan", description: "Transaksi bulan ini" },
+      { value: "weekly", label: "Mingguan", description: "Transaksi minggu ini" },
+      { value: "custom", label: "Atur Sendiri", description: "Pilih rentang tanggal sendiri" },
+    ],
+    startDate: "Tanggal mulai",
+    endDate: "Tanggal akhir",
+    invalidRangeTitle: "Rentang tanggal tidak valid",
+    invalidRangeDescription: "Tanggal akhir harus sama atau setelah tanggal mulai.",
+    cancel: "Batal",
+    apply: "Terapkan",
+  },
+}
 
 interface FilterDrawerProps {
   value: TransactionFilter
   onApply: (filter: TransactionFilter) => void
   isLoading?: boolean
+  // Tombol pemicu kustom (mis. di header mobile); default memakai tombol ikon filter
+  trigger?: React.ReactElement
+  // "mobile": teks bahasa Indonesia, ikon per opsi, tanpa deskripsi drawer
+  variant?: FilterDrawerVariant
 }
 
-export function FilterDrawer({ value, onApply, isLoading = false }: FilterDrawerProps) {
+export function FilterDrawer({
+  value,
+  onApply,
+  isLoading = false,
+  trigger,
+  variant = "default",
+}: FilterDrawerProps) {
+  const copy = FILTER_COPY[variant]
+  const showIcons = variant === "mobile"
   const [open, setOpen] = React.useState(false)
   const [period, setPeriod] = React.useState<FilterPeriod>(value.period)
   const [startDate, setStartDate] = React.useState("")
@@ -79,21 +152,21 @@ export function FilterDrawer({ value, onApply, isLoading = false }: FilterDrawer
     >
       <DrawerTrigger
         render={
-          <Button variant="ghost" size="icon-lg" aria-label="Filter" aria-busy={isLoading}>
-            {isLoading ? (
-              <Spinner className="size-6" />
-            ) : (
-              <Image src={filterIcon} alt="" width={24} height={24} />
-            )}
-          </Button>
+          trigger ?? (
+            <Button variant="ghost" size="icon-lg" aria-label="Filter" aria-busy={isLoading}>
+              {isLoading ? (
+                <Spinner className="size-6" />
+              ) : (
+                <Image src={filterIcon} alt="" width={24} height={24} />
+              )}
+            </Button>
+          )
         }
       />
       <DrawerContent className="py-5 px-3">
         <DrawerHeader>
-        <DrawerTitle>Filter Summary & Transactions</DrawerTitle>
-        <DrawerDescription>
-          Select filters to customize your financial data.
-        </DrawerDescription>
+          <DrawerTitle>{copy.title}</DrawerTitle>
+          {copy.description && <DrawerDescription>{copy.description}</DrawerDescription>}
         </DrawerHeader>
         <div className="flex-1 scroll-fade overflow-y-auto p-4 py-5">
           <RadioGroup
@@ -101,15 +174,21 @@ export function FilterDrawer({ value, onApply, isLoading = false }: FilterDrawer
             onValueChange={(value) => setPeriod(value as FilterPeriod)}
             className="gap-2"
           >
-            {FILTER_OPTIONS.map((option) => {
+            {copy.options.map((option) => {
               const id = `filter-${option.value}`
+              const OptionIcon = FILTER_ICONS[option.value]
               return (
                 <FieldLabel
                   key={option.value}
                   htmlFor={id}
                   className="border-[#8C89B4]"
                 >
-                  <Field orientation="horizontal">
+                  <Field orientation="horizontal" className="items-center">
+                    {showIcons && (
+                      <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#6359E9]/10 text-[#6359E9]">
+                        <OptionIcon className="size-5" aria-hidden />
+                      </span>
+                    )}
                     <FieldContent>
                       <FieldTitle>{option.label}</FieldTitle>
                       <FieldDescription>{option.description}</FieldDescription>
@@ -128,7 +207,7 @@ export function FilterDrawer({ value, onApply, isLoading = false }: FilterDrawer
           {isCustom && (
             <div className="mt-4 grid grid-cols-2 gap-3">
               <Field>
-                <FieldLabel htmlFor="filter-start-date">Start date</FieldLabel>
+                <FieldLabel htmlFor="filter-start-date">{copy.startDate}</FieldLabel>
                 <Input
                   id="filter-start-date"
                   type="date"
@@ -138,7 +217,7 @@ export function FilterDrawer({ value, onApply, isLoading = false }: FilterDrawer
                 />
               </Field>
               <Field>
-                <FieldLabel htmlFor="filter-end-date">End date</FieldLabel>
+                <FieldLabel htmlFor="filter-end-date">{copy.endDate}</FieldLabel>
                 <Input
                   id="filter-end-date"
                   type="date"
@@ -151,18 +230,18 @@ export function FilterDrawer({ value, onApply, isLoading = false }: FilterDrawer
               {isRangeInvalid && (
                 <Alert variant="destructive" className="col-span-2">
                   <AlertCircleIcon />
-                  <AlertTitle>Invalid date range</AlertTitle>
-                  <AlertDescription>End date must be on or after start date.</AlertDescription>
+                  <AlertTitle>{copy.invalidRangeTitle}</AlertTitle>
+                  <AlertDescription>{copy.invalidRangeDescription}</AlertDescription>
                 </Alert>
               )}
             </div>
           )}
         </div>
         <DrawerFooter className="flex-row gap-3">
-          <DrawerClose render={<Button variant="outline" className="h-[34px] flex-1 border-[#8C89B4]">Cancel</Button>} />
+          <DrawerClose render={<Button variant="outline" className="h-[34px] flex-1 border-[#8C89B4]">{copy.cancel}</Button>} />
           <Button onClick={handleApply} disabled={isApplyDisabled}
             className="h-[34px] flex-1 bg-[#6359E9] text-white hover:bg-[#6359E9]/90">
-            Apply Filter
+            {copy.apply}
           </Button>
         </DrawerFooter>
       </DrawerContent>
