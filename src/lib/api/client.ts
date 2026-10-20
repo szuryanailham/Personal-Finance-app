@@ -1,6 +1,8 @@
 import { getSessionToken, redirectToLogin } from "@/lib/auth"
 
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080"
+// Default kosong → request relatif ke /api/* yang di-proxy oleh rewrites di next.config.ts.
+// Isi NEXT_PUBLIC_API_BASE_URL hanya bila ingin memanggil backend langsung (butuh CORS)
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? ""
 
 const SESSION_EXPIRED_MESSAGE = "Sesi login berakhir, silakan login kembali"
 const HTTP_UNAUTHORIZED = 401
