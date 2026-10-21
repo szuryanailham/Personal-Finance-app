@@ -20,7 +20,7 @@ const MENU_ITEMS: MenuItem[] = [
   { label: "Ringkasan", href: "/summary", icon: LayoutDashboardIcon },
   { label: "Analisis", href: "/analysis", icon: ChartColumnIcon },
   { label: "Tanggal", href: "#", icon: CalendarDaysIcon },
-  { label: "Import", href: "#", icon: UploadIcon },
+  { label: "Import", href: "/import", icon: UploadIcon },
   { label: "Export", href: "#", icon: DownloadIcon },
 ];
 
