@@ -7,21 +7,21 @@ import featureIcon3 from "@/components/images/icons/icon-fiture-3.svg";
 const PRODUCT_ITEMS = [
   {
     icon: featureIcon,
-    title: "Pahami Pengeluaranmu",
+    title: "Understand Your Spending",
     subtitle:
-      "Lihat dengan jelas ke mana uangmu pergi lewat kategori, grafik, dan wawasan bulanan.",
+      "See exactly where your money goes with clear categories, charts, and monthly insights.",
   },
   {
     icon: featureIcon2,
-    title: "Kelola Uang Tanpa Ribet",
+    title: "Manage Money Effortlessly",
     subtitle:
-      "Catat, import, dan atur transaksi dalam hitungan detik agar keuanganmu selalu terbarui.",
+      "Record, import, and organize transactions in seconds so your finances stay up to date.",
   },
   {
     icon: featureIcon3,
-    title: "Bangun Kebiasaan Finansial yang Lebih Baik",
+    title: "Build Better Financial Habits",
     subtitle:
-      "Kenali pola, kendalikan pengeluaran, dan ambil keputusan lebih cerdas demi masa depan finansial yang lebih sehat.",
+      "Spot patterns, control expenses, and make smarter decisions for a healthier financial future.",
   },
 ] as const;
 
@@ -32,10 +32,10 @@ export function ProductsSection() {
       className="flex flex-col items-center gap-4 px-4 py-20 text-center md:py-28"
     >
       <h2 className="max-w-3xl font-display text-4xl leading-tight font-normal tracking-wide text-slate-900 md:text-5xl">
-        Produk yang Kami Kerjakan
+        Product WE WORK WITH
       </h2>
       <p className="max-w-2xl font-manrope text-base leading-relaxed text-slate-600 md:text-lg">
-        Artoku menghadirkan wawasan finansial yang jelas dan pengelolaan uang yang lebih cerdas.
+        Artoku delivers clear financial insights and smarter money management.
       </p>
       <ol className="mt-12 grid w-full max-w-6xl divide-y divide-slate-200 text-center md:grid-cols-3 md:divide-x md:divide-y-0">
         {PRODUCT_ITEMS.map((item) => (
