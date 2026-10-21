@@ -52,7 +52,7 @@ export function SettingsForm({ user }: SettingsFormProps) {
           <FieldGroup>
             <div className="grid gap-5 sm:grid-cols-2">
               <Field>
-                <Label htmlFor="settings-first-name">First Name</Label>
+                <Label htmlFor="settings-first-name">Nama Depan</Label>
                 <Input
                   id="settings-first-name"
                   name="firstName"
@@ -64,7 +64,7 @@ export function SettingsForm({ user }: SettingsFormProps) {
                 />
               </Field>
               <Field>
-                <Label htmlFor="settings-last-name">Last Name</Label>
+                <Label htmlFor="settings-last-name">Nama Belakang</Label>
                 <Input
                   id="settings-last-name"
                   name="lastName"

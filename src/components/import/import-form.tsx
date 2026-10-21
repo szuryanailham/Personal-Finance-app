@@ -70,8 +70,8 @@ export function ImportForm({ state, className }: ImportFormProps) {
         <InfoSection
           step={1}
           icon={FileSpreadsheet}
-          title="Select and upload the file of your choice"
-          subtitle="Use our template so every column matches the expected format."
+          title="Unduh template dan isi sesuai data transaksi kamu"
+          subtitle="Pakai template kami supaya setiap kolom sesuai format yang diharapkan."
         >
           <Button
             type="button"
@@ -85,19 +85,19 @@ export function ImportForm({ state, className }: ImportFormProps) {
             ) : (
               <Download data-icon="inline-start" />
             )}
-            {isDownloading ? "Downloading..." : "Download template"}
+            {isDownloading ? "Mengunduh..." : "Unduh template"}
           </Button>
         </InfoSection>
 
         <InfoSection
           step={2}
           icon={ShieldCheck}
-          title="Review your data before importing"
-          subtitle="Make sure dates, amounts and categories are filled in correctly."
+          title="Review datamu sebelum import"
+          subtitle="Pastikan tanggal, jumlah, dan kategori sudah terisi dengan benar."
         />
       </div>
 
-      <ErrorAlert title="Download failed" message={downloadError} />
+      <ErrorAlert title="Gagal mengunduh" message={downloadError} />
 
       <label
         htmlFor={inputId}
@@ -116,10 +116,10 @@ export function ImportForm({ state, className }: ImportFormProps) {
           <CloudUpload className="size-6" />
         </div>
         <p className="text-sm">
-          <span className="font-semibold text-[#6359E9]">Click to upload</span> or drag and drop
+          <span className="font-semibold text-[#6359E9]">Klik untuk upload</span> atau seret dan lepas
         </p>
         <p className="text-xs text-muted-foreground">
-          {ACCEPTED_EXTENSIONS.map((ext) => ext.slice(1).toUpperCase()).join(" or ")} (max.{" "}
+          {ACCEPTED_EXTENSIONS.map((ext) => ext.slice(1).toUpperCase()).join(" atau ")} (maks.{" "}
           {MAX_FILE_SIZE_MB} MB)
         </p>
         <input
@@ -132,8 +132,8 @@ export function ImportForm({ state, className }: ImportFormProps) {
         />
       </label>
 
-      <ErrorAlert title="Invalid file" message={error} />
-      <ErrorAlert title="Import failed" message={uploadError} />
+      <ErrorAlert title="File tidak valid" message={error} />
+      <ErrorAlert title="Import gagal" message={uploadError} />
 
       {file && (
         <div className="flex items-center gap-3 rounded-lg border border-[#8C89B4]/40 p-3">
@@ -148,7 +148,7 @@ export function ImportForm({ state, className }: ImportFormProps) {
             type="button"
             variant="ghost"
             size="icon-sm"
-            aria-label="Remove file"
+            aria-label="Hapus file"
             onClick={clearFile}
           >
             <X />

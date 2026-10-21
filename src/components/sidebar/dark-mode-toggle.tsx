@@ -26,7 +26,7 @@ export function DarkModeToggle() {
             maskPosition: "center",
           }}
         />
-        <span className="text-sm font-medium">Dark mode</span>
+        <span className="text-sm font-medium">Mode gelap</span>
 
         <span
           aria-hidden="true"

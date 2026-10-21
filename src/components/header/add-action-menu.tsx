@@ -40,12 +40,12 @@ export function AddActionMenu({ triggerClassName, variant = "button" }: AddActio
         <DropdownMenuTrigger
           render={
             isFloating ? (
-              <Button className={cn(FLOATING_TRIGGER_CLASS, triggerClassName)} aria-label="Add new">
+              <Button className={cn(FLOATING_TRIGGER_CLASS, triggerClassName)} aria-label="Tambah baru">
                 <PlusIcon />
               </Button>
             ) : (
               <Button className={cn("gap-2", triggerClassName)} variant="outline" size="lg">
-                Add New
+                Tambah Baru
                 <ChevronDownIcon className="size-4" />
               </Button>
             )
@@ -59,7 +59,7 @@ export function AddActionMenu({ triggerClassName, variant = "button" }: AddActio
         >
           <DropdownMenuItem onClick={() => setActiveDialog("transaction")}>
             <ReceiptIcon />
-            Add Transaction
+            Tambah Transaksi
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setActiveDialog("category")}>
             <FolderPlusIcon />

@@ -100,7 +100,7 @@ export function LoginForm() {
         </FieldGroup>
         {hasLoginFailed && (
           <p role="alert" className="text-center text-sm text-destructive">
-            Failed login
+            Login gagal
           </p>
         )}
         <Button
@@ -108,9 +108,9 @@ export function LoginForm() {
           className="h-11 w-full bg-[#6359E9] text-white hover:bg-[#6359E9]/90"
         >
           {isSubmitting && <Spinner />}
-          {isSubmitting ? "Signing in..." : "Sign In"}
+          {isSubmitting ? "Memproses..." : "Login"}
         </Button>
-        <FieldSeparator>or</FieldSeparator>
+        <FieldSeparator>atau</FieldSeparator>
         <GoogleLoginButton onCredential={handleGoogleCredential} onError={toast.error} />
       </fieldset>
     </form>

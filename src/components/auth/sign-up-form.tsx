@@ -60,7 +60,7 @@ export function SignUpForm() {
       })
       router.push(`/sign-up/verify?${params}`)
     } catch (err) {
-      setErrorMessage(err instanceof Error ? err.message : "Gagal sign up")
+      setErrorMessage(err instanceof Error ? err.message : "Gagal mendaftar")
     } finally {
       setIsSubmitting(false)
     }
@@ -72,7 +72,7 @@ export function SignUpForm() {
         <FieldGroup>
           <div className="grid gap-4 sm:grid-cols-2">
             <Field>
-              <Label htmlFor="sign-up-first-name">First Name</Label>
+              <Label htmlFor="sign-up-first-name">Nama Depan</Label>
               <Input
                 id="sign-up-first-name"
                 name="firstName"
@@ -84,7 +84,7 @@ export function SignUpForm() {
               />
             </Field>
             <Field>
-              <Label htmlFor="sign-up-last-name">Last Name</Label>
+              <Label htmlFor="sign-up-last-name">Nama Belakang</Label>
               <Input
                 id="sign-up-last-name"
                 name="lastName"
@@ -122,7 +122,7 @@ export function SignUpForm() {
             />
           </Field>
           <Field>
-            <Label htmlFor="sign-up-confirm-password">Confirm Password</Label>
+            <Label htmlFor="sign-up-confirm-password">Konfirmasi Password</Label>
             <Input
               id="sign-up-confirm-password"
               name="confirmPassword"
@@ -142,13 +142,13 @@ export function SignUpForm() {
             />
             <Label htmlFor="sign-up-agree" className="text-sm font-normal leading-snug">
               <span>
-                I agree to the{" "}
+                Saya setuju dengan{" "}
                 <Link href="/terms" className={LINK_CLASS}>
-                  Terms of Service
+                  Syarat Layanan
                 </Link>{" "}
-                and{" "}
+                dan{" "}
                 <Link href="/privacy-policy" className={LINK_CLASS}>
-                  Privacy Policy
+                  Kebijakan Privasi
                 </Link>
               </span>
             </Label>
@@ -165,7 +165,7 @@ export function SignUpForm() {
           className="h-11 w-full bg-[#6359E9] text-white hover:bg-[#6359E9]/90"
         >
           {isSubmitting && <Spinner />}
-          {isSubmitting ? "Creating account..." : "Sign Up"}
+          {isSubmitting ? "Membuat akun..." : "Daftar"}
         </Button>
       </fieldset>
     </form>

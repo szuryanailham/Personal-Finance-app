@@ -29,8 +29,8 @@ const MIN_BAR_GROUP_WIDTH = 56
 const PERIOD_SELECT_CLASS = `min-w-28 cursor-pointer appearance-none pr-9 pl-5 ${ACCENT_OUTLINE_CLASS}`
 
 const PERIOD_OPTIONS: { value: StatisticPeriod; label: string }[] = [
-  { value: "Monthly", label: "Monthly" },
-  { value: "Weekly", label: "Weekly" },
+  { value: "Monthly", label: "Bulanan" },
+  { value: "Weekly", label: "Mingguan" },
 ]
 
 const DEFAULT_PERIOD: StatisticPeriod = "Monthly"
@@ -71,7 +71,7 @@ function writeStoredPeriod(period: StatisticPeriod): void {
 // Saat SSR belum ada localStorage, jadi server & hydration awal memakai default
 const getServerPeriodSnapshot = (): StatisticPeriod => DEFAULT_PERIOD
 
-const weekdayFormatter = new Intl.DateTimeFormat("en-US", { weekday: "short" })
+const weekdayFormatter = new Intl.DateTimeFormat("id-ID", { weekday: "short" })
 
 // Contoh label: "Tue 22"
 const toFinanceDatum = (item: StatisticItem): FinanceDatum => ({
@@ -133,7 +133,7 @@ export function TransactionChart() {
       <div className="flex justify-end">
         <div className="group/accent relative">
           <select
-            aria-label="Filter period"
+            aria-label="Filter periode"
             value={period}
             onChange={(event) => writeStoredPeriod(event.target.value as StatisticPeriod)}
             className={cn(

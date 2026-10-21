@@ -66,20 +66,20 @@ const FILTER_ICONS: Record<FilterPeriod, LucideIcon> = {
 
 const FILTER_COPY: Record<FilterDrawerVariant, FilterCopy> = {
   default: {
-    title: "Filter Summary & Transactions",
-    description: "Select filters to customize your financial data.",
+    title: "Filter Ringkasan & Transaksi",
+    description: "Pilih filter untuk menyesuaikan data keuanganmu.",
     options: [
-      { value: "yearly", label: "Yearly", description: "Transactions this year" },
-      { value: "monthly", label: "Monthly", description: "Transactions this month" },
-      { value: "weekly", label: "Weekly", description: "Transactions this week" },
-      { value: "custom", label: "Custom", description: "Pick your own date range" },
+      { value: "yearly", label: "Tahunan", description: "Transaksi tahun ini" },
+      { value: "monthly", label: "Bulanan", description: "Transaksi bulan ini" },
+      { value: "weekly", label: "Mingguan", description: "Transaksi minggu ini" },
+      { value: "custom", label: "Atur Sendiri", description: "Pilih rentang tanggal sendiri" },
     ],
-    startDate: "Start date",
-    endDate: "End date",
-    invalidRangeTitle: "Invalid date range",
-    invalidRangeDescription: "End date must be on or after start date.",
-    cancel: "Cancel",
-    apply: "Apply Filter",
+    startDate: "Tanggal mulai",
+    endDate: "Tanggal akhir",
+    invalidRangeTitle: "Rentang tanggal tidak valid",
+    invalidRangeDescription: "Tanggal akhir harus sama atau setelah tanggal mulai.",
+    cancel: "Batal",
+    apply: "Terapkan Filter",
   },
   mobile: {
     title: "Filter Ringkasan & Transaksi",

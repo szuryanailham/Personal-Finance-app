@@ -35,7 +35,7 @@ export function AddCategoryDialog({ open, onOpenChange }: AddCategoryDialogProps
               <Image src={createTransactionIcon} alt="" width={52} height={53} />
             </div>
             <DialogTitle>{manager.editing ? "Edit Kategori" : "Tambah Kategori"}</DialogTitle>
-            <DialogDescription>Kelola kategori untuk transaksi Anda</DialogDescription>
+            <DialogDescription>Kelola kategori untuk transaksi kamu</DialogDescription>
           </DialogHeader>
 
           <CategoryManagerContent manager={manager} />

@@ -44,11 +44,11 @@ export function ImportReviewFilters({ review, className }: ReviewPartProps) {
         />
         <Input
           type="search"
-          placeholder="Search name or category..."
+          placeholder="Cari nama atau kategori..."
           value={query}
           onChange={(e) => review.changeQuery(e.target.value)}
           className={cn("h-[34px] pl-8 placeholder:text-[#716EC9]/70", ACCENT_OUTLINE_CLASS)}
-          aria-label="Search imported rows"
+          aria-label="Cari baris import"
         />
       </div>
       <Button
@@ -63,7 +63,7 @@ export function ImportReviewFilters({ review, className }: ReviewPartProps) {
         )}
       >
         <CircleAlertIcon data-icon="inline-start" />
-        Error only ({invalidCount})
+        Hanya Error ({invalidCount})
       </Button>
     </div>
   )
@@ -75,7 +75,7 @@ export function ImportReviewActions({ review, className }: ReviewPartProps) {
   return (
     <div className={cn("flex gap-3", className)}>
       <Button variant="outline" className="h-[34px] border-[#8C89B4]" onClick={review.cancel} disabled={isSubmitting}>
-        Cancel
+        Batal
       </Button>
       <Button
         onClick={review.submit}
@@ -102,7 +102,7 @@ export function ImportReviewAlerts({ review }: ReviewPartProps) {
           <AlertDescription>{categoryError}</AlertDescription>
           <AlertAction>
             <Button type="button" size="sm" variant="outline" onClick={review.reloadCategories}>
-              Retry
+              Coba Lagi
             </Button>
           </AlertAction>
         </Alert>

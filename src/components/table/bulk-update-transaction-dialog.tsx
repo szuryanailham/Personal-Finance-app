@@ -102,7 +102,7 @@ export function BulkUpdateTransactionDialog({ transactions, onClose }: BulkUpdat
     e.preventDefault()
     const patch = toBulkPatch(e.currentTarget, toggles)
     if (!patch || Object.keys(patch).length === 0) {
-      setError("Pilih minimal satu field dan isi nilainya dengan benar")
+      setError("Pilih minimal satu kolom dan isi nilainya dengan benar")
       return
     }
 
@@ -130,9 +130,9 @@ export function BulkUpdateTransactionDialog({ transactions, onClose }: BulkUpdat
             <div className="mb-2 flex size-[52px] items-center justify-center rounded-full bg-[#6359E9]/10 text-[#6359E9]">
               <PencilIcon />
             </div>
-            <DialogTitle>Bulk Update Transaction</DialogTitle>
+            <DialogTitle>Update Massal Transaksi</DialogTitle>
             <DialogDescription>
-              {count} transaksi dipilih. Field yang tidak dicentang tidak akan diubah.
+              {count} transaksi dipilih. Kolom yang tidak dicentang tidak akan diubah.
             </DialogDescription>
           </DialogHeader>
           {error && (
@@ -144,7 +144,7 @@ export function BulkUpdateTransactionDialog({ transactions, onClose }: BulkUpdat
             <FieldGroup>
               <ToggleField
                 id="bulk-update-toggle-category"
-                label="Category"
+                label="Kategori"
                 checked={toggles.category}
                 onCheckedChange={(category) => setToggles((prev) => ({ ...prev, category }))}
               >
@@ -155,12 +155,12 @@ export function BulkUpdateTransactionDialog({ transactions, onClose }: BulkUpdat
               </ToggleField>
               <ToggleField
                 id="bulk-update-toggle-date"
-                label="Date"
+                label="Tanggal"
                 checked={toggles.date}
                 onCheckedChange={(date) => setToggles((prev) => ({ ...prev, date }))}
               >
                 <Field>
-                  <Label htmlFor="bulk-update-date">Date</Label>
+                  <Label htmlFor="bulk-update-date">Tanggal</Label>
                   <Input id="bulk-update-date" name="date" type="date" className={INPUT_CLASS} required />
                 </Field>
               </ToggleField>
@@ -169,7 +169,7 @@ export function BulkUpdateTransactionDialog({ transactions, onClose }: BulkUpdat
           <DialogFooter className="-mx-6 -mb-6 mt-2 grid grid-cols-2 gap-4 px-6 py-5">
             <DialogClose
               disabled={isSubmitting}
-              render={<Button type="button" variant="outline" className="h-11 w-full px-6">Cancel</Button>}
+              render={<Button type="button" variant="outline" className="h-11 w-full px-6">Batal</Button>}
             />
             <Button
               type="submit"
@@ -178,7 +178,7 @@ export function BulkUpdateTransactionDialog({ transactions, onClose }: BulkUpdat
               className="h-11 w-full gap-2 bg-[#6359E9] px-6 text-white hover:bg-[#6359E9]/90"
             >
               {isSubmitting && <Spinner className="animate-spin text-white" />}
-              {isSubmitting ? "Saving..." : `Update ${count} Transaksi`}
+              {isSubmitting ? "Menyimpan..." : `Update ${count} Transaksi`}
             </Button>
           </DialogFooter>
         </form>

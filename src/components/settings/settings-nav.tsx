@@ -16,9 +16,9 @@ interface SettingsNavItem {
 }
 
 const SETTINGS_NAV_ITEMS: readonly SettingsNavItem[] = [
-  { id: "account", label: "Account", icon: UserRound, isAvailable: true },
-  { id: "notification", label: "Notification", icon: Bell, isAvailable: false },
-  { id: "language", label: "Language", icon: Globe, isAvailable: false },
+  { id: "account", label: "Akun", icon: UserRound, isAvailable: true },
+  { id: "notification", label: "Notifikasi", icon: Bell, isAvailable: false },
+  { id: "language", label: "Bahasa", icon: Globe, isAvailable: false },
 ]
 
 interface SettingsNavProps {
@@ -30,11 +30,11 @@ export function SettingsNav({ active, onSelect }: SettingsNavProps) {
   return (
     <Card className="h-fit">
       <CardHeader>
-        <CardTitle className="text-base">General Settings</CardTitle>
+        <CardTitle className="text-base">Pengaturan Umum</CardTitle>
       </CardHeader>
 
       <CardContent>
-        <nav aria-label="General settings" className="flex flex-col gap-1">
+        <nav aria-label="Pengaturan umum" className="flex flex-col gap-1">
           {SETTINGS_NAV_ITEMS.map(({ id, label, icon: Icon, isAvailable }) => {
             const isActive = id === active
 

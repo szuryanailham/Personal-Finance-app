@@ -37,7 +37,7 @@ interface ChartDatum {
 const toChartKey = (index: number) => `category-${index}`
 
 function buildChart(categories: readonly CategoryStatisticItem[]) {
-  const config: ChartConfig = { amount: { label: "Amount" } }
+  const config: ChartConfig = { amount: { label: "Jumlah" } }
   const data: ChartDatum[] = categories.map((item, index) => {
     const key = toChartKey(index)
     config[key] = {
@@ -69,7 +69,7 @@ export function ExpenseCategoryChart({ statistic, isLoading, error }: UseCategor
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Expense by Category</CardTitle>
+        <CardTitle>Pengeluaran per Kategori</CardTitle>
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">

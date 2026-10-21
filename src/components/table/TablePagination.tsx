@@ -118,17 +118,17 @@ export function TablePagination({
       </div>
 
       {totalPage > 1 && (
-        <nav aria-label="Pagination" className="flex items-center gap-1">
+        <nav aria-label="Paginasi" className="flex items-center gap-1">
           <Button
             variant="outline"
             size="sm"
             disabled={disabled || isFirst}
             className={NAV_BUTTON_CLASS}
             onClick={() => onPageChange(currentPage - 1)}
-            aria-label="Previous page"
+            aria-label="Halaman sebelumnya"
           >
             <ChevronLeftIcon />
-            <span className={NAV_LABEL_CLASS}>Prev</span>
+            <span className={NAV_LABEL_CLASS}>Sebelumnya</span>
           </Button>
           {buildPageItems(currentPage, totalPage).map((item) =>
             typeof item === "number" ? (
@@ -155,9 +155,9 @@ export function TablePagination({
             disabled={disabled || isLast}
             className={NAV_BUTTON_CLASS}
             onClick={() => onPageChange(currentPage + 1)}
-            aria-label="Next page"
+            aria-label="Halaman berikutnya"
           >
-            <span className={NAV_LABEL_CLASS}>Next</span>
+            <span className={NAV_LABEL_CLASS}>Berikutnya</span>
             <ChevronRightIcon />
           </Button>
         </nav>

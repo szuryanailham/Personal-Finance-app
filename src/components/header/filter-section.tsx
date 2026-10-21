@@ -60,7 +60,7 @@ export function FilterSection({
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder={searchPlaceholder}
-            aria-label={`Search ${title.toLowerCase()}`}
+            aria-label={`Cari ${title.toLowerCase()}`}
             className="h-9 pl-8"
           />
         </div>
@@ -87,7 +87,7 @@ export function FilterSection({
         })}
         {visibleOptions.length === 0 && (
           <p className="py-3 text-center text-xs text-muted-foreground">
-            No results for &ldquo;{query.trim()}&rdquo;
+            Tidak ada hasil untuk &ldquo;{query.trim()}&rdquo;
           </p>
         )}
       </RadioGroup>

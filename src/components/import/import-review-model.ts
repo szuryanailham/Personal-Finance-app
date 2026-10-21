@@ -69,7 +69,7 @@ function validateClient(row: ReviewRow, categoryIds: ReadonlySet<string>): Field
   if (!row.categoryId) errors.category = "Pilih kategori"
   else if (categoryIds.size > 0 && !categoryIds.has(row.categoryId)) errors.category = "Kategori tidak ditemukan"
   if (!DATE_PATTERN.test(row.date) || Number.isNaN(Date.parse(row.date))) errors.date = "Tanggal tidak valid"
-  if (row.amount === null || !(row.amount > 0)) errors.amount = "Amount harus lebih dari 0"
+  if (row.amount === null || !(row.amount > 0)) errors.amount = "Jumlah harus lebih dari 0"
   return errors
 }
 

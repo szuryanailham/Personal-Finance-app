@@ -45,7 +45,7 @@ function CategoryOption({ category }: { category: Category }) {
 export function TransactionCategoryField({
   enabled,
   idPrefix,
-  label = "Category",
+  label = "Kategori",
   selected,
 }: TransactionCategoryFieldProps) {
   const { categories: fetched, isLoading, error, reload } = useCategories(enabled, DROPDOWN_CATEGORY_LIMIT)
@@ -66,7 +66,7 @@ export function TransactionCategoryField({
           <AlertDescription>{error}</AlertDescription>
           <AlertAction>
             <Button type="button" size="sm" variant="outline" onClick={reload}>
-              Retry
+              Coba Lagi
             </Button>
           </AlertAction>
         </Alert>

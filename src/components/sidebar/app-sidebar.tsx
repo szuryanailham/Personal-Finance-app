@@ -83,7 +83,7 @@ export function AppSidebar() {
                   }}
                 />
                 <span className="text-sm font-medium ">
-                  Anylisis
+                  Analisis
                 </span>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -105,7 +105,7 @@ export function AppSidebar() {
                   }}
                 />
                 <span className="text-sm font-medium ">
-                  Transaction
+                  Transaksi
                 </span>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -128,7 +128,7 @@ export function AppSidebar() {
                   }}
                 />
                 <span className="text-sm font-medium ">
-                  Settings
+                  Pengaturan
                 </span>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -154,7 +154,7 @@ export function AppSidebar() {
                   }}
                 />
                 <span className="text-sm font-medium ">
-                  Security
+                  Keamanan
                 </span>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -177,7 +177,7 @@ export function AppSidebar() {
                   }}
                 />
                 <span className="text-sm font-medium ">
-                  Help Center
+                  Pusat Bantuan
                 </span>
               </SidebarMenuButton>
             </SidebarMenuItem>

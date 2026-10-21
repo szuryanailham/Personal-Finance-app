@@ -14,14 +14,14 @@ export default function SignUpPage() {
       />
       <section className="flex w-full max-w-lg flex-col gap-8 rounded-2xl bg-white p-8 shadow-2xl shadow-black/20">
         <div className="flex flex-col gap-2">
-          <h1 className="text-3xl font-bold tracking-tight">Sign Up</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Daftar</h1>
           <p className="text-sm text-muted-foreground">
-            Already have an account?{" "}
+            Sudah punya akun?{" "}
             <Link
               href="/login"
               className="font-medium text-[#6359E9] underline-offset-4 hover:underline"
             >
-              Sign in
+              Login
             </Link>
           </p>
         </div>

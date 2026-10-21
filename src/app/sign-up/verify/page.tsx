@@ -22,7 +22,7 @@ export default function VerifyOtpPage() {
               href="/sign-up"
               className="font-medium text-[#6359E9] underline-offset-4 hover:underline"
             >
-              Kembali ke sign up
+              Kembali ke halaman daftar
             </Link>
           </p>
         </div>
