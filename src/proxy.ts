@@ -42,5 +42,6 @@ export const config = {
     "/analysis/:path*",
     "/settings/:path*",
     "/summary/:path*",
+    "/import/:path*",
   ],
 }
