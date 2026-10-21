@@ -63,7 +63,7 @@ export function AddTransactionDialog({ open, onOpenChange }: AddTransactionDialo
     e.preventDefault()
     const input = toTransactionInput(e.currentTarget)
     if (!input) {
-      setError("Lengkapi form: nama, kategori, tanggal, dan amount lebih dari 0")
+      setError("Lengkapi form: judul, kategori, tanggal, dan jumlah lebih dari 0")
       return
     }
 
@@ -96,9 +96,9 @@ export function AddTransactionDialog({ open, onOpenChange }: AddTransactionDialo
             <div className="mb-1 sm:mb-2">
               <Image src={createTransactionIcon} alt="" width={52} height={53} className="size-10 sm:size-[52px]" />
             </div>
-            <DialogTitle>Add Transaction</DialogTitle>
+            <DialogTitle>Tambah Transaksi</DialogTitle>
             <DialogDescription>
-             Fill Out the Transaction Form Below
+             Isi form transaksi di bawah ini
             </DialogDescription>
           </DialogHeader>
           <div className="-mx-1 min-h-0 flex-1 overflow-y-auto px-1 pb-1 flex flex-col gap-4">
@@ -118,14 +118,14 @@ export function AddTransactionDialog({ open, onOpenChange }: AddTransactionDialo
             <FieldGroup>
               <Field>
                 {/* title transaction */}
-                <Label htmlFor="transaction-name">Title Transaction</Label>
+                <Label htmlFor="transaction-name">Judul Transaksi</Label>
                 <Input id="transaction-name" name="transactionName" className={INPUT_CLASS} required />
               </Field>
               {/* select category */}
-              <TransactionCategoryField enabled={open} idPrefix="transaction-category" />
+              <TransactionCategoryField enabled={open} idPrefix="transaction-category" label="Kategori" />
   
               <Field>
-                <Label htmlFor="transaction-amount">Amount</Label>
+                <Label htmlFor="transaction-amount">Jumlah</Label>
                 <Input
                   id="transaction-amount"
                   name="amount"
@@ -137,11 +137,11 @@ export function AddTransactionDialog({ open, onOpenChange }: AddTransactionDialo
                 />
               </Field>
               <Field>
-                <Label htmlFor="transaction-date">Date</Label>
+                <Label htmlFor="transaction-date">Tanggal</Label>
                 <Input id="transaction-date" name="date" type="date" className={INPUT_CLASS} required />
               </Field>
               <Field>
-                <Label htmlFor="transaction-description">Description</Label>
+                <Label htmlFor="transaction-description">Deskripsi</Label>
                 <Textarea id="transaction-description" name="description" rows={3} className="min-h-20 px-3 py-2 sm:min-h-24" />
               </Field>
             </FieldGroup>
@@ -150,7 +150,7 @@ export function AddTransactionDialog({ open, onOpenChange }: AddTransactionDialo
           <DialogFooter className="-mx-4 -mb-4 grid grid-cols-2 gap-3 px-4 py-4 sm:-mx-6 sm:-mb-6 sm:mt-2 sm:gap-4 sm:px-6 sm:py-5">
             <DialogClose
               disabled={isLocked}
-              render={<Button type="button" variant="outline" className="h-11 w-full px-6">Cancel</Button>}
+              render={<Button type="button" variant="outline" className="h-11 w-full px-6">Batal</Button>}
             />
             <Button
               type="submit"
@@ -159,7 +159,7 @@ export function AddTransactionDialog({ open, onOpenChange }: AddTransactionDialo
               className="h-11 w-full gap-2 bg-[#6359E9] px-6 text-white hover:bg-[#6359E9]/90"
             >
               {isSubmitting && <Spinner className="animate-spin text-white" />}
-              {isSubmitting ? "Saving..." : "Save"}
+              {isSubmitting ? "Menyimpan..." : "Simpan"}
             </Button>
           </DialogFooter>
         </form>

@@ -8,11 +8,12 @@ interface MobileShellProps {
 
 // Kerangka halaman versi mobile: header di atas, konten di tengah, navbar di bawah.
 // Padding bawah main memberi ruang agar konten tidak tertutup navbar yang fixed.
+// Main sengaja tanpa padding samping agar konten bisa full lebar layar; gutter diatur per section.
 export function MobileShell({ children }: MobileShellProps) {
   return (
-    <div className="flex min-h-svh flex-col bg-[#F5F1FF]">
+    <div className="flex min-h-svh w-full flex-col overflow-x-hidden bg-[#F5F1FF]">
       <MobileHeader />
-      <main className="flex-1 px-4 pb-[calc(5rem+env(safe-area-inset-bottom))]">{children}</main>
+      <main className="flex-1 pb-[calc(5rem+env(safe-area-inset-bottom))]">{children}</main>
       <MobileBottomNav />
     </div>
   );

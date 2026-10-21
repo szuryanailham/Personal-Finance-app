@@ -62,12 +62,13 @@ export function SummaryCarousel() {
     <section aria-label="Ringkasan transaksi" className="flex flex-col gap-3">
       <Carousel
         setApi={setApi}
-        opts={{ align: "start", loop: true }}
+        opts={{ align: "center", loop: true }}
         plugins={[autoplay]}
       >
-        <CarouselContent className="-ml-3">
+        {/* Full lebar layar: card aktif di tengah, card sebelah mengintip di kedua sisi */}
+        <CarouselContent className="ml-0">
           {SUMMARY_CONFIG.map(({ title, key }) => (
-            <CarouselItem key={key} className="basis-[85%] pl-3">
+            <CarouselItem key={key} className="basis-[85%] px-1.5">
               <MobileSummaryCard
                 title={title}
                 icon={MOBILE_ICONS[key]}
@@ -98,7 +99,7 @@ export function SummaryCarousel() {
         ))}
       </div>
 
-      {error && <p className="text-sm text-destructive">{error}</p>}
+      {error && <p className="px-4 text-sm text-destructive">{error}</p>}
     </section>
   );
 }
