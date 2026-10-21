@@ -17,14 +17,13 @@ interface MenuItem {
 
 const MENU_ITEMS: MenuItem[] = [
   { label: "Transaksi", href: "/transaction", icon: ArrowLeftRightIcon },
-  { label: "Ringkasan", href: "/dashboard", icon: LayoutDashboardIcon },
+  { label: "Ringkasan", href: "/summary", icon: LayoutDashboardIcon },
   { label: "Analisis", href: "/analysis", icon: ChartColumnIcon },
   { label: "Tanggal", href: "#", icon: CalendarDaysIcon },
   { label: "Import", href: "#", icon: UploadIcon },
   { label: "Export", href: "#", icon: DownloadIcon },
 ];
 
-// Grid menu 3 kolom untuk halaman mobile
 export function MenuGrid() {
   return (
     <nav aria-label="Menu">
