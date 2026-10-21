@@ -41,5 +41,6 @@ export const config = {
     "/transaction/:path*",
     "/analysis/:path*",
     "/settings/:path*",
+    "/summary/:path*",
   ],
 }
