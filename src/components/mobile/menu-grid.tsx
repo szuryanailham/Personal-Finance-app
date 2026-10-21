@@ -21,7 +21,7 @@ const MENU_ITEMS: MenuItem[] = [
   { label: "Analisis", href: "/analysis", icon: ChartColumnIcon },
   { label: "Tanggal", href: "#", icon: CalendarDaysIcon },
   { label: "Import", href: "/import", icon: UploadIcon },
-  { label: "Export", href: "#", icon: DownloadIcon },
+  { label: "Export", href: "/export", icon: DownloadIcon },
 ];
 
 export function MenuGrid() {
