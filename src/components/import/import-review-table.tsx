@@ -34,7 +34,7 @@ interface ImportReviewTableProps {
   onRemove: (row: number) => void
 }
 
-function FieldError({ message }: { message?: string }) {
+export function FieldError({ message }: { message?: string }) {
   if (!message) return null
   return <p className="mt-1 text-xs whitespace-normal text-destructive">{message}</p>
 }
@@ -44,14 +44,15 @@ interface CategoryCellProps {
   categories: readonly Category[]
   error?: string
   disabled?: boolean
+  triggerClassName?: string
   onChange: (categoryId: string | null) => void
 }
 
-function CategoryCell({ row, categories, error, disabled, onChange }: CategoryCellProps) {
+export function CategoryCell({ row, categories, error, disabled, triggerClassName = "w-48", onChange }: CategoryCellProps) {
   return (
     <>
       <Select value={row.categoryId} onValueChange={(value) => onChange(value as string | null)} disabled={disabled}>
-        <SelectTrigger className="w-48" aria-invalid={Boolean(error)} aria-label={`Kategori baris ${row.row}`}>
+        <SelectTrigger className={triggerClassName} aria-invalid={Boolean(error)} aria-label={`Kategori baris ${row.row}`}>
           <SelectValue>
             {(value: string | null) => {
               const selected = categories.find((c) => c.id === value)
@@ -79,6 +80,27 @@ function CategoryCell({ row, categories, error, disabled, onChange }: CategoryCe
   )
 }
 
+export function countRowErrors(row: ReviewRow, errors: FieldErrors): number {
+  return Object.keys(errors).length + (row.submitError ? 1 : 0)
+}
+
+export function RowStatusBadge({ errorCount }: { errorCount: number }) {
+  if (errorCount === 0) {
+    return (
+      <Badge variant="secondary" className="text-emerald-600 dark:text-emerald-400">
+        <CheckCircle2Icon data-icon="inline-start" />
+        Valid
+      </Badge>
+    )
+  }
+  return (
+    <Badge variant="destructive">
+      <CircleAlertIcon data-icon="inline-start" />
+      {errorCount} error
+    </Badge>
+  )
+}
+
 interface ReviewRowItemProps {
   row: ReviewRow
   errors: FieldErrors
@@ -89,7 +111,7 @@ interface ReviewRowItemProps {
 }
 
 function ReviewRowItem({ row, errors, categories, disabled, onChange, onRemove }: ReviewRowItemProps) {
-  const errorCount = Object.keys(errors).length + (row.submitError ? 1 : 0)
+  const errorCount = countRowErrors(row, errors)
   const isValid = errorCount === 0
 
   return (
@@ -142,17 +164,7 @@ function ReviewRowItem({ row, errors, categories, disabled, onChange, onRemove }
         <FieldError message={errors.amount} />
       </TableCell>
       <TableCell className={cn(CELL_CLASS, "pt-3")}>
-        {isValid ? (
-          <Badge variant="secondary" className="text-emerald-600 dark:text-emerald-400">
-            <CheckCircle2Icon data-icon="inline-start" />
-            Valid
-          </Badge>
-        ) : (
-          <Badge variant="destructive">
-            <CircleAlertIcon data-icon="inline-start" />
-            {errorCount} error
-          </Badge>
-        )}
+        <RowStatusBadge errorCount={errorCount} />
         <FieldError message={row.submitError ?? undefined} />
       </TableCell>
       <TableCell className={cn(CELL_CLASS, "text-right")}>
