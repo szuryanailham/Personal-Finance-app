@@ -40,9 +40,10 @@ export function CategoryTypeField({
           const id = `${idPrefix}-${option.value}`
           return (
             <FieldLabel key={option.value} htmlFor={id} className="border-[#8C89B4]">
-              <Field orientation="horizontal" className="items-center">
-                <Image src={option.icon} alt="" width={32} height={32} />
-                <FieldTitle className="flex-1">{option.label}</FieldTitle>
+              {/* Mobile: icon & teks diperkecil agar 3 kolom tetap muat di layar sempit */}
+              <Field orientation="horizontal" className="items-center gap-1.5 sm:gap-3">
+                <Image src={option.icon} alt="" width={32} height={32} className="size-6 shrink-0 sm:size-8" />
+                <FieldTitle className="block min-w-0 flex-1 truncate text-xs sm:text-sm">{option.label}</FieldTitle>
                 <RadioGroupItem
                   value={option.value}
                   id={id}

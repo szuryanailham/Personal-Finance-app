@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/table"
 import type { Category } from "@/lib/api/category"
 import { withMinLoading } from "@/lib/async"
+import { cn } from "@/lib/utils"
 import { CATEGORY_OPTIONS } from "./category-type-field"
 
 const TYPE_LABEL = Object.fromEntries(CATEGORY_OPTIONS.map((o) => [o.value, o.label]))
@@ -24,6 +25,7 @@ interface CategoryTableProps {
   editingId: string | null
   onEdit: (category: Category) => void
   onDelete: (category: Category) => Promise<void>
+  className?: string
 }
 
 interface CategoryRowProps {
@@ -61,7 +63,7 @@ function CategoryRow({ category, isEditing, onEdit, onDelete }: CategoryRowProps
               onClick={() => setIsConfirming(false)}
               disabled={isDeleting}
             >
-              Cancel
+              Batal
             </Button>
             <Button
               size="sm"
@@ -72,7 +74,7 @@ function CategoryRow({ category, isEditing, onEdit, onDelete }: CategoryRowProps
               className="gap-2"
             >
               {isDeleting && <Spinner className="text-current" />}
-              {isDeleting ? "Deleting..." : "Delete"}
+              {isDeleting ? "Menghapus..." : "Hapus"}
             </Button>
           </div>
         ) : (
@@ -91,7 +93,7 @@ function CategoryRow({ category, isEditing, onEdit, onDelete }: CategoryRowProps
               variant="ghost"
               className="size-8 text-destructive hover:text-destructive"
               onClick={() => setIsConfirming(true)}
-              aria-label={`Delete ${category.name}`}
+              aria-label={`Hapus ${category.name}`}
             >
               <Trash2Icon />
             </Button>
@@ -102,15 +104,22 @@ function CategoryRow({ category, isEditing, onEdit, onDelete }: CategoryRowProps
   )
 }
 
-export function CategoryTable({ categories, isLoading, editingId, onEdit, onDelete }: CategoryTableProps) {
+export function CategoryTable({
+  categories,
+  isLoading,
+  editingId,
+  onEdit,
+  onDelete,
+  className,
+}: CategoryTableProps) {
   return (
-    <div className="max-h-72 overflow-y-auto rounded-lg border">
+    <div className={cn("max-h-72 overflow-y-auto rounded-lg border", className)}>
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Name</TableHead>
+            <TableHead>Nama</TableHead>
             <TableHead>Type</TableHead>
-            <TableHead className="text-right">Action</TableHead>
+            <TableHead className="text-right">Aksi</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -123,7 +132,7 @@ export function CategoryTable({ categories, isLoading, editingId, onEdit, onDele
           ) : categories.length === 0 ? (
             <TableRow>
               <TableCell colSpan={3} className="h-20 text-center text-muted-foreground">
-                No categories yet
+                Belum ada kategori
               </TableCell>
             </TableRow>
           ) : (

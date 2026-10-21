@@ -63,7 +63,7 @@ export function AddActionMenu({ triggerClassName, variant = "button" }: AddActio
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setActiveDialog("category")}>
             <FolderPlusIcon />
-            Add Category
+            Tambah Kategori
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

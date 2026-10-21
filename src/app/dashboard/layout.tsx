@@ -14,7 +14,9 @@ export default function DashboardLayout({ children }: LayoutProps<"/dashboard">)
       mobile={
         <div className="flex flex-col gap-6 pb-6">
           <SummaryCarousel />
-          <MenuGrid />
+          <div className="px-4">
+            <MenuGrid />
+          </div>
         </div>
       }
     >

@@ -27,8 +27,8 @@ function toCategoryInput(form: HTMLFormElement): CategoryInput | null {
 }
 
 function submitLabel(isEditing: boolean, isSubmitting: boolean): string {
-  if (isSubmitting) return isEditing ? "Updating..." : "Saving..."
-  return isEditing ? "Update Category" : "Add Category"
+  if (isSubmitting) return isEditing ? "Memperbarui..." : "Menyimpan..."
+  return isEditing ? "Perbarui Kategori" : "Tambah Kategori"
 }
 
 interface CategoryFormProps {
@@ -62,7 +62,7 @@ export function CategoryForm({ editing, onSubmit, onCancelEdit }: CategoryFormPr
       <fieldset disabled={isSubmitting} className="contents">
         <FieldGroup>
           <Field>
-            <Label htmlFor="category-name">Category Name</Label>
+            <Label htmlFor="category-name">Nama Kategori</Label>
             <Input
               id="category-name"
               name="name"
@@ -88,7 +88,7 @@ export function CategoryForm({ editing, onSubmit, onCancelEdit }: CategoryFormPr
             onClick={onCancelEdit}
             disabled={isSubmitting}
           >
-            Cancel Edit
+            Batal Edit
           </Button>
         )}
         <Button

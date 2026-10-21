@@ -2,7 +2,14 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ImageIcon, PlusIcon, type LucideIcon } from "lucide-react";
+import {
+  ArrowLeftRightIcon,
+  HouseIcon,
+  PlusIcon,
+  SettingsIcon,
+  TagsIcon,
+  type LucideIcon,
+} from "lucide-react";
 import { AddTransactionDialog } from "@/components/header/add-transaction-dialog";
 import { cn } from "@/lib/utils";
 
@@ -12,15 +19,14 @@ interface NavItem {
   icon: LucideIcon;
 }
 
-// Icon masih dummy (placeholder); ganti per item setelah aset icon tersedia
 const NAV_ITEMS_LEFT: NavItem[] = [
-  { label: "Beranda", href: "/dashboard", icon: ImageIcon },
-  { label: "Transaksi", href: "/transaction", icon: ImageIcon },
+  { label: "Beranda", href: "/dashboard", icon: HouseIcon },
+  { label: "Transaksi", href: "/transaction", icon: ArrowLeftRightIcon },
 ];
 
 const NAV_ITEMS_RIGHT: NavItem[] = [
-  { label: "Analisis", href: "/analysis", icon: ImageIcon },
-  { label: "Pengaturan", href: "/settings", icon: ImageIcon },
+  { label: "Kategori", href: "/category", icon: TagsIcon },
+  { label: "Pengaturan", href: "/settings", icon: SettingsIcon },
 ];
 
 function NavLink({ label, href, icon: Icon, isActive }: NavItem & { isActive: boolean }) {
@@ -41,8 +47,7 @@ function NavLink({ label, href, icon: Icon, isActive }: NavItem & { isActive: bo
   );
 }
 
-// Navbar bawah versi mobile; item aktif ditandai warna ungu,
-// tombol bulat di tengah membuka dialog tambah transaksi
+
 export function MobileBottomNav() {
   const pathname = usePathname();
   const [isAddOpen, setIsAddOpen] = useState(false);
