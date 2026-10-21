@@ -25,7 +25,7 @@ interface CategoryTypeFieldProps {
 
 export function CategoryTypeField({
   idPrefix,
-  label = "Category",
+  label = "Kategori",
   defaultValue = CATEGORY_OPTIONS[0].value,
 }: CategoryTypeFieldProps) {
   return (

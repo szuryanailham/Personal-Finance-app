@@ -25,11 +25,11 @@ import {
 } from "@/lib/api/category"
 
 const PERIOD_OPTIONS: FilterSectionOption[] = [
-  { value: "today", label: "Today", description: "Expenses from today" },
-  { value: "weekly", label: "This week", description: "Monday to Sunday" },
-  { value: "monthly", label: "This month", description: "From the 1st to the end of month" },
-  { value: "yearly", label: "This year", description: "January to December" },
-  { value: "custom", label: "Custom range", description: "Pick a start and end date" },
+  { value: "today", label: "Hari Ini", description: "Pengeluaran hari ini" },
+  { value: "weekly", label: "Minggu Ini", description: "Senin sampai Minggu" },
+  { value: "monthly", label: "Bulan Ini", description: "Dari tanggal 1 sampai akhir bulan" },
+  { value: "yearly", label: "Tahun Ini", description: "Januari sampai Desember" },
+  { value: "custom", label: "Atur Sendiri", description: "Pilih tanggal mulai dan akhir" },
 ]
 
 function isQueryComplete(query: CategoryStatisticQuery): boolean {
@@ -81,7 +81,7 @@ export function CategoryStatisticFilterDrawer({ value, onApply }: CategoryStatis
     >
       <DrawerTrigger
         render={
-          <Button variant="ghost" size="icon-lg" aria-label="Filter period" className="relative">
+          <Button variant="ghost" size="icon-lg" aria-label="Filter periode" className="relative">
             <Image src={filterIcon} alt="" width={24} height={24} />
             {isActive && (
               <span
@@ -94,14 +94,14 @@ export function CategoryStatisticFilterDrawer({ value, onApply }: CategoryStatis
       />
       <DrawerContent className="px-3 py-5 data-[swipe-axis=x]:sm:[--drawer-content-width:28rem]">
         <DrawerHeader>
-          <DrawerTitle>Filter period</DrawerTitle>
-          <DrawerDescription>Choose the period for expense by category.</DrawerDescription>
+          <DrawerTitle>Filter periode</DrawerTitle>
+          <DrawerDescription>Pilih periode untuk pengeluaran per kategori.</DrawerDescription>
         </DrawerHeader>
 
         <div className="min-h-0 flex-1 overflow-y-auto px-4">
           <FilterSection
             id="category-stat-period"
-            title="Period"
+            title="Periode"
             options={PERIOD_OPTIONS}
             value={draft.period}
             onChange={handlePeriodChange}
@@ -126,13 +126,13 @@ export function CategoryStatisticFilterDrawer({ value, onApply }: CategoryStatis
           >
             Reset
           </Button>
-          <DrawerClose render={<Button variant="outline">Cancel</Button>} />
+          <DrawerClose render={<Button variant="outline">Batal</Button>} />
           <Button
             onClick={handleApply}
             disabled={!isQueryComplete(draft)}
             className="bg-[#6359E9] text-white hover:bg-[#6359E9]/90"
           >
-            Apply
+            Terapkan
           </Button>
         </DrawerFooter>
       </DrawerContent>

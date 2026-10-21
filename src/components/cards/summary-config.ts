@@ -12,7 +12,7 @@ export interface SummaryItemConfig {
 
 // Daftar card ringkasan, dipakai di dashboard desktop & carousel mobile
 export const SUMMARY_CONFIG: readonly SummaryItemConfig[] = [
-  { title: "Total Balance", key: "totalBalance", icon: WalletIcon },
+  { title: "Total Saldo", key: "totalBalance", icon: WalletIcon },
   { title: "Total Income", key: "totalIncome", icon: IncomeIcon },
   { title: "Total Saving", key: "totalSaving", icon: SavingIcon },
   { title: "Total Expense", key: "totalExpense", icon: ExpenseIcon },

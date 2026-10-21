@@ -19,7 +19,7 @@ export function ImportSubmitButton({ state, className }: ImportSubmitButtonProps
       className={cn("bg-[#6359E9] text-white hover:bg-[#6359E9]/90", className)}
     >
       {state.isUploading && <Loader2 data-icon="inline-start" className="animate-spin" />}
-      {state.isUploading ? "Importing..." : "Import"}
+      {state.isUploading ? "Mengimpor..." : "Import"}
     </Button>
   )
 }

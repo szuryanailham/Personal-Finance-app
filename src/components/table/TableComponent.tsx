@@ -34,7 +34,7 @@ interface TransactionTableProps {
   className?: string
   // Batasi jumlah baris yang tampil (mis. 10 di dashboard home)
   limit?: number
-  // Jika diisi, tampilkan link "See detail transaction" di bawah tabel
+  // Jika diisi, tampilkan link "Lihat detail transaksi" di bawah tabel
   detailHref?: string
 }
 
@@ -101,14 +101,14 @@ export function TransactionTable({
       )}
     >
       <Table className="min-w-[900px] table-fixed">
-        {isEmpty && <TableCaption>No transactions found.</TableCaption>}
+        {isEmpty && <TableCaption>Tidak ada transaksi.</TableCaption>}
         <TableHeader>
           <TableRow className="bg-[#D1CFEB] hover:bg-[#D1CFEB]">
-            <SortableHead label="Transaction Code" sortKey="transactionCode" sort={sort} onSort={handleSort} className="w-[160px]" />
-            <SortableHead label="Name" sortKey="description" sort={sort} onSort={handleSort} className="w-[260px]" />
-            <SortableHead label="Category" sortKey="category" sort={sort} onSort={handleSort} className="w-[200px]" />
-            <SortableHead label="Date" sortKey="date" sort={sort} onSort={handleSort} className="w-[160px]" />
-            <SortableHead label="Amount" sortKey="amount" sort={sort} onSort={handleSort} className="w-[200px] text-right" align="right" />
+            <SortableHead label="Kode Transaksi" sortKey="transactionCode" sort={sort} onSort={handleSort} className="w-[160px]" />
+            <SortableHead label="Nama" sortKey="description" sort={sort} onSort={handleSort} className="w-[260px]" />
+            <SortableHead label="Kategori" sortKey="category" sort={sort} onSort={handleSort} className="w-[200px]" />
+            <SortableHead label="Tanggal" sortKey="date" sort={sort} onSort={handleSort} className="w-[160px]" />
+            <SortableHead label="Jumlah" sortKey="amount" sort={sort} onSort={handleSort} className="w-[200px] text-right" align="right" />
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -139,7 +139,7 @@ export function TransactionTable({
             href={detailHref}
             className="text-sm font-medium text-[#282458] hover:underline"
           >
-            See detail transaction
+            Lihat detail transaksi
           </Link>
         </div>
       )}

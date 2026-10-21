@@ -46,7 +46,7 @@ function TransactionActions({ transaction, onEdit, onDelete }: TransactionAction
         render={
           <Button variant="ghost" size="icon" className="size-8">
             <MoreHorizontalIcon />
-            <span className="sr-only">Open menu</span>
+            <span className="sr-only">Buka menu</span>
           </Button>
         }
       />
@@ -54,7 +54,7 @@ function TransactionActions({ transaction, onEdit, onDelete }: TransactionAction
         <DropdownMenuItem onClick={() => onEdit?.(transaction)}>Edit</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem variant="destructive" onClick={() => onDelete?.(transaction)}>
-          Delete
+          Hapus
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -81,11 +81,11 @@ function SelectionSummary({ selected, onClear, onBulkUpdate, onBulkDelete }: Sel
   return (
     <div className="mb-2 flex flex-wrap items-center justify-between gap-2 rounded-[10px] bg-[#F3F2FB] px-4 py-2 text-sm">
       <span className="font-medium text-[#282458]">
-        {selected.length} transaction{selected.length > 1 ? "s" : ""} selected
+        {selected.length} transaksi dipilih
       </span>
       <div className="flex flex-wrap items-center gap-4">
         <span className="text-slate-500">
-          Total amount:{" "}
+          Total jumlah:{" "}
           <span className="font-semibold text-[#282458]">
             {formatAmount(total < 0 ? "expense" : "income", total)}
           </span>
@@ -97,14 +97,14 @@ function SelectionSummary({ selected, onClear, onBulkUpdate, onBulkDelete }: Sel
             onClick={() => onBulkUpdate?.(selected)}
           >
             <PencilIcon />
-            Bulk Update
+            Update Massal
           </Button>
           <Button variant="destructive" size="sm" onClick={() => onBulkDelete?.(selected)}>
             <Trash2Icon />
-            Bulk Delete
+            Hapus Massal
           </Button>
           <Button variant="ghost" size="sm" onClick={onClear}>
-            Clear
+            Bersihkan
           </Button>
         </div>
       </div>
@@ -158,7 +158,7 @@ export default function TableTransactionDetail({
         />
       )}
       <Table className="min-w-[900px] table-fixed">
-        {isEmpty && <TableCaption>No transactions found.</TableCaption>}
+        {isEmpty && <TableCaption>Tidak ada transaksi.</TableCaption>}
         <TableHeader>
           <TableRow className="bg-[#D1CFEB] hover:bg-[#D1CFEB]">
             <TableHead className="w-[48px] px-4">
@@ -168,15 +168,15 @@ export default function TableTransactionDetail({
                 disabled={isEmpty}
                 className={CHECKBOX_CLASS}
                 onCheckedChange={(checked) => toggleAll(checked)}
-                aria-label="Select all"
+                aria-label="Pilih semua"
               />
             </TableHead>
-            <SortableHead label="Transaction Code" sortKey="transactionCode" sort={sort} onSort={handleSort} className="w-[160px]" />
-            <SortableHead label="Name" sortKey="description" sort={sort} onSort={handleSort} className="w-[260px]" />
-            <SortableHead label="Category" sortKey="category" sort={sort} onSort={handleSort} className="w-[200px]" />
-            <SortableHead label="Date" sortKey="date" sort={sort} onSort={handleSort} className="w-[160px]" />
-            <SortableHead label="Amount" sortKey="amount" sort={sort} onSort={handleSort} className="w-[200px] text-right" align="right" />
-            <TableHead className={cn(HEAD_CLASS, "w-[100px] text-right")}>Actions</TableHead>
+            <SortableHead label="Kode Transaksi" sortKey="transactionCode" sort={sort} onSort={handleSort} className="w-[160px]" />
+            <SortableHead label="Nama" sortKey="description" sort={sort} onSort={handleSort} className="w-[260px]" />
+            <SortableHead label="Kategori" sortKey="category" sort={sort} onSort={handleSort} className="w-[200px]" />
+            <SortableHead label="Tanggal" sortKey="date" sort={sort} onSort={handleSort} className="w-[160px]" />
+            <SortableHead label="Jumlah" sortKey="amount" sort={sort} onSort={handleSort} className="w-[200px] text-right" align="right" />
+            <TableHead className={cn(HEAD_CLASS, "w-[100px] text-right")}>Aksi</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -190,7 +190,7 @@ export default function TableTransactionDetail({
                   checked={selectedCodes.has(trx.transactionCode)}
                   className={CHECKBOX_CLASS}
                   onCheckedChange={(checked) => toggleRow(trx.transactionCode, checked)}
-                  aria-label={`Select ${trx.description}`}
+                  aria-label={`Pilih ${trx.description}`}
                 />
               </TableCell>
               <TableCell className="truncate px-4 text-center text-slate-500">

@@ -32,16 +32,16 @@ export function CategoryStatisticTable({ statistic, isLoading, error }: UseCateg
   return (
     <Card>
       <CardHeader>
-        <CardTitle>All Categories</CardTitle>
+        <CardTitle>Semua Kategori</CardTitle>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Category</TableHead>
-              <TableHead className="text-right">Transactions</TableHead>
-              <TableHead className="text-right">Amount</TableHead>
-              <TableHead className="text-right">Percentage</TableHead>
+              <TableHead>Kategori</TableHead>
+              <TableHead className="text-right">Transaksi</TableHead>
+              <TableHead className="text-right">Jumlah</TableHead>
+              <TableHead className="text-right">Persentase</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

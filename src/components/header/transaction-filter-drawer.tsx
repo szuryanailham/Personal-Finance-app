@@ -36,27 +36,27 @@ interface FilterOption<T extends string> {
 }
 
 const TYPE_OPTIONS: FilterOption<TransactionListFilter["type"]>[] = [
-  { value: "all", label: "All", description: "Show every transaction" },
-  { value: "income", label: "Income", description: "Only income transactions" },
-  { value: "expense", label: "Expense", description: "Only expense transactions" },
-  { value: "saving", label: "Saving", description: "Only saving transactions" },
+  { value: "all", label: "Semua", description: "Tampilkan semua transaksi" },
+  { value: "income", label: "Income", description: "Hanya transaksi income" },
+  { value: "expense", label: "Expense", description: "Hanya transaksi expense" },
+  { value: "saving", label: "Saving", description: "Hanya transaksi saving" },
 ]
 
 const SORT_OPTIONS: FilterOption<TransactionSortValue>[] = [
-  { value: "date", label: "Newest", description: "Latest date first" },
-  { value: "-date", label: "Oldest", description: "Earliest date first" },
-  { value: "amount", label: "Highest amount", description: "Largest amount first" },
-  { value: "-amount", label: "Lowest amount", description: "Smallest amount first" },
-  { value: "name", label: "Name A–Z", description: "Alphabetical by name" },
-  { value: "-name", label: "Name Z–A", description: "Reverse alphabetical by name" },
+  { value: "date", label: "Terbaru", description: "Tanggal terbaru dulu" },
+  { value: "-date", label: "Terlama", description: "Tanggal terlama dulu" },
+  { value: "amount", label: "Jumlah tertinggi", description: "Jumlah terbesar dulu" },
+  { value: "-amount", label: "Jumlah terendah", description: "Jumlah terkecil dulu" },
+  { value: "name", label: "Nama A–Z", description: "Urut abjad berdasarkan nama" },
+  { value: "-name", label: "Nama Z–A", description: "Urut abjad terbalik berdasarkan nama" },
 ]
 
 const DATE_OPTIONS: FilterOption<TransactionDateFilter["preset"]>[] = [
-  { value: "all", label: "Any time", description: "No date limit" },
-  { value: "today", label: "Today", description: "Transactions from today" },
-  { value: "last7", label: "Last 7 days", description: "Including today" },
-  { value: "last14", label: "Last 14 days", description: "Including today" },
-  { value: "custom", label: "Custom range", description: "Pick a start and end date" },
+  { value: "all", label: "Kapan saja", description: "Tanpa batas tanggal" },
+  { value: "today", label: "Hari Ini", description: "Transaksi dari hari ini" },
+  { value: "last7", label: "7 hari terakhir", description: "Termasuk hari ini" },
+  { value: "last14", label: "14 hari terakhir", description: "Termasuk hari ini" },
+  { value: "custom", label: "Rentang sendiri", description: "Pilih tanggal mulai dan akhir" },
 ]
 
 const ALL_CATEGORIES = "all"
@@ -98,7 +98,7 @@ export function CustomDateRange({
   return (
     <div className="grid grid-cols-2 gap-3">
       <Field>
-        <FieldLabel htmlFor={`${idPrefix}-start-date`}>Start date</FieldLabel>
+        <FieldLabel htmlFor={`${idPrefix}-start-date`}>Tanggal mulai</FieldLabel>
         <Input
           id={`${idPrefix}-start-date`}
           type="date"
@@ -109,7 +109,7 @@ export function CustomDateRange({
         />
       </Field>
       <Field>
-        <FieldLabel htmlFor={`${idPrefix}-end-date`}>End date</FieldLabel>
+        <FieldLabel htmlFor={`${idPrefix}-end-date`}>Tanggal akhir</FieldLabel>
         <Input
           id={`${idPrefix}-end-date`}
           type="date"
@@ -121,7 +121,7 @@ export function CustomDateRange({
         />
       </Field>
       {isRangeInvalid && (
-        <p className="col-span-2 text-xs text-destructive">End date must be on or after start date.</p>
+        <p className="col-span-2 text-xs text-destructive">Tanggal akhir harus sama atau setelah tanggal mulai.</p>
       )}
     </div>
   )
@@ -141,7 +141,7 @@ export function TransactionFilterDrawer({ value, onApply }: TransactionFilterDra
 
   // Kategori mengikuti tipe terpilih supaya kombinasi tipe + kategori tidak pernah kosong
   const categoryOptions: FilterSectionOption[] = [
-    { value: ALL_CATEGORIES, label: "All categories" },
+    { value: ALL_CATEGORIES, label: "Semua kategori" },
     ...categories
       .filter((category) => matchesType(category, draft.type))
       .map((category) => ({ value: category.id, label: category.name })),
@@ -203,7 +203,7 @@ export function TransactionFilterDrawer({ value, onApply }: TransactionFilterDra
     >
       <DrawerTrigger
         render={
-          <Button variant="ghost" size="icon-lg" aria-label="Filter transactions" className="relative">
+          <Button variant="ghost" size="icon-lg" aria-label="Filter transaksi" className="relative">
             <Image src={filterIcon} alt="" width={24} height={24} />
             {isActive && (
               <span
@@ -216,26 +216,26 @@ export function TransactionFilterDrawer({ value, onApply }: TransactionFilterDra
       />
       <DrawerContent className="px-3 py-5 data-[swipe-axis=x]:sm:[--drawer-content-width:70vw]">
         <DrawerHeader>
-          <DrawerTitle>Filter transactions</DrawerTitle>
-          <DrawerDescription>Narrow the list by category, type, and date.</DrawerDescription>
+          <DrawerTitle>Filter transaksi</DrawerTitle>
+          <DrawerDescription>Persempit daftar berdasarkan kategori, type, dan tanggal.</DrawerDescription>
         </DrawerHeader>
 
         {/* Body: 3 section sejajar di layar lebar, bertumpuk di mobile */}
         <div className="grid min-h-0 flex-1 grid-cols-1 gap-6 md:gap-8 overflow-y-auto px-4 md:grid-cols-3">
           <FilterSection
             id="trx-filter-category"
-            title="Category"
-            searchPlaceholder="Search category"
+            title="Kategori"
+            searchPlaceholder="Cari kategori"
             options={categoryOptions}
             value={draft.categoryId ?? ALL_CATEGORIES}
             onChange={handleCategoryChange}
           >
-            {isLoading && <p className="text-xs text-muted-foreground">Loading categories…</p>}
+            {isLoading && <p className="text-xs text-muted-foreground">Memuat kategori…</p>}
             {error && (
               <p className="text-xs text-destructive">
-                Failed to load categories.{" "}
+                Gagal memuat kategori.{" "}
                 <button type="button" onClick={reload} className="underline">
-                  Retry
+                  Coba Lagi
                 </button>
               </p>
             )}
@@ -243,8 +243,8 @@ export function TransactionFilterDrawer({ value, onApply }: TransactionFilterDra
 
           <FilterSection
             id="trx-filter-type"
-            title="Transaction type"
-            searchPlaceholder="Search type"
+            title="Type transaksi"
+            searchPlaceholder="Cari type"
             options={TYPE_OPTIONS}
             value={draft.type}
             onChange={handleTypeChange}
@@ -252,8 +252,8 @@ export function TransactionFilterDrawer({ value, onApply }: TransactionFilterDra
 
           <FilterSection
             id="trx-filter-date"
-            title="Date"
-            searchPlaceholder="Search date range"
+            title="Tanggal"
+            searchPlaceholder="Cari rentang tanggal"
             options={DATE_OPTIONS}
             value={draft.dateRange.preset}
             onChange={handleDatePresetChange}
@@ -277,13 +277,13 @@ export function TransactionFilterDrawer({ value, onApply }: TransactionFilterDra
           >
             Reset
           </Button>
-          <DrawerClose render={<Button variant="outline">Cancel</Button>} />
+          <DrawerClose render={<Button variant="outline">Batal</Button>} />
           <Button
             onClick={handleApply}
             disabled={!isDateFilterComplete(draft.dateRange)}
             className="bg-[#6359E9] text-white hover:bg-[#6359E9]/90"
           >
-            Apply
+            Terapkan
           </Button>
         </DrawerFooter>
       </DrawerContent>

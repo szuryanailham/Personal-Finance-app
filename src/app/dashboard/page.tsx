@@ -62,7 +62,7 @@ export default function DashboardPage() {
       {statError && (
         <Alert variant="destructive" className="mt-4">
           <AlertCircleIcon />
-          <AlertTitle>Failed to load summary</AlertTitle>
+          <AlertTitle>Gagal memuat ringkasan</AlertTitle>
           <AlertDescription>{statError}</AlertDescription>
         </Alert>
       )}

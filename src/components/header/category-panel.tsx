@@ -20,7 +20,7 @@ export function CategoryPanel({ enabled, className }: CategoryPanelProps) {
         <h2 className="text-base font-semibold text-slate-900">
           {manager.editing ? "Edit Kategori" : "Tambah Kategori"}
         </h2>
-        <p className="text-sm text-muted-foreground">Kelola kategori untuk transaksi Anda</p>
+        <p className="text-sm text-muted-foreground">Kelola kategori untuk transaksi kamu</p>
       </div>
 
       <CategoryManagerContent manager={manager} tableClassName="max-h-none" />

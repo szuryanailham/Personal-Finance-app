@@ -21,7 +21,7 @@ export default function ImportReviewPage() {
         <h2 className="text-lg font-semibold">Belum ada data import</h2>
         <p className="text-sm text-muted-foreground">Upload file lewat tombol Import untuk mereview transaksi.</p>
         <Button variant="outline" nativeButton={false} render={<Link href="/transaction" />}>
-          Kembali ke Transaction
+          Kembali ke Transaksi
         </Button>
       </div>
     )

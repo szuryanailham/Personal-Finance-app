@@ -3,12 +3,12 @@ import { AppShell } from "@/components/layout/app-shell";
 import { MobileTransactionRoutes } from "@/components/mobile/mobile-transaction-routes";
 
 export const metadata: Metadata = {
-  title: "Transaction",
+  title: "Transaksi",
 };
 
 export default function TransactionLayout({ children }: LayoutProps<"/transaction">) {
   return (
-    <AppShell title="Transaction" mobile={<MobileTransactionRoutes />}>
+    <AppShell title="Transaksi" mobile={<MobileTransactionRoutes />}>
       {children}
     </AppShell>
   );

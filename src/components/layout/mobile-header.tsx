@@ -22,12 +22,12 @@ export function MobileHeader({ onSearchClick }: MobileHeaderProps) {
   return (
     <header className="sticky top-0 z-40 bg-[#F5F1FF]/80 backdrop-blur">
       <div className="flex h-16 items-center justify-between px-4">
-        <Link href="/dashboard" aria-label="Artoku home">
+        <Link href="/dashboard" aria-label="Beranda Artoku">
           <Image src={artokuLogo} alt="Artoku" priority className="h-8 w-auto" />
         </Link>
 
         <div className="flex items-center gap-2">
-          <button type="button" aria-label="Search" onClick={onSearchClick} className={iconButtonClass}>
+          <button type="button" aria-label="Cari" onClick={onSearchClick} className={iconButtonClass}>
             <SearchIcon className="size-5" />
           </button>
           {/* Tombol filter membuka drawer Filter Summary & Transactions */}

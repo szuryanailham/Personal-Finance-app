@@ -85,11 +85,11 @@ export function SearchHeader({
         )}
         <Input
           type="search"
-          placeholder="Search transaction..."
+          placeholder="Cari transaksi..."
           value={query}
           onChange={(e) => onQueryChange?.(e.target.value)}
           className={ACCENT_INPUT_CLASS}
-          aria-label="Search transaction"
+          aria-label="Cari transaksi"
         />
       </div>
 
@@ -100,15 +100,15 @@ export function SearchHeader({
           value={toInputValue(date)}
           onChange={(e) => onDateChange?.(fromInputValue(e.target.value))}
           className={cn(ACCENT_INPUT_CLASS, date && "pr-14")}
-          aria-label="Filter by date"
+          aria-label="Filter berdasarkan tanggal"
         />
         {date && (
           <button
             type="button"
             onClick={() => onDateChange?.(undefined)}
             className={RESET_BUTTON_CLASS}
-            aria-label="Reset date filter"
-            title="Reset date"
+            aria-label="Reset filter tanggal"
+            title="Reset tanggal"
           >
             <XIcon className="size-3.5" />
           </button>

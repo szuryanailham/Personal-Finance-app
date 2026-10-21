@@ -79,7 +79,7 @@ export function EditTransactionDialog({ transaction, onClose }: EditTransactionD
     if (!transaction) return
     const input = toTransactionInput(e.currentTarget)
     if (!input) {
-      setError("Lengkapi form: nama, kategori, tanggal, dan amount lebih dari 0")
+      setError("Lengkapi form: nama, kategori, tanggal, dan jumlah lebih dari 0")
       return
     }
 
@@ -118,7 +118,7 @@ export function EditTransactionDialog({ transaction, onClose }: EditTransactionD
               <div className="mb-2 flex size-[52px] items-center justify-center rounded-full bg-[#6359E9]/10 text-[#6359E9]">
                 <PencilIcon />
               </div>
-              <DialogTitle>Edit Transaction</DialogTitle>
+              <DialogTitle>Edit Transaksi</DialogTitle>
               <DialogDescription>{transaction.transactionCode}</DialogDescription>
             </DialogHeader>
             {error && (
@@ -129,7 +129,7 @@ export function EditTransactionDialog({ transaction, onClose }: EditTransactionD
             <fieldset disabled={isSubmitting} className="contents">
               <FieldGroup>
                 <Field>
-                  <Label htmlFor="edit-transaction-name">Title Transaction</Label>
+                  <Label htmlFor="edit-transaction-name">Judul Transaksi</Label>
                   <Input
                     id="edit-transaction-name"
                     name="transactionName"
@@ -144,7 +144,7 @@ export function EditTransactionDialog({ transaction, onClose }: EditTransactionD
                   selected={toCategory(transaction)}
                 />
                 <Field>
-                  <Label htmlFor="edit-transaction-amount">Amount</Label>
+                  <Label htmlFor="edit-transaction-amount">Jumlah</Label>
                   <Input
                     id="edit-transaction-amount"
                     name="amount"
@@ -157,7 +157,7 @@ export function EditTransactionDialog({ transaction, onClose }: EditTransactionD
                   />
                 </Field>
                 <Field>
-                  <Label htmlFor="edit-transaction-date">Date</Label>
+                  <Label htmlFor="edit-transaction-date">Tanggal</Label>
                   <Input
                     id="edit-transaction-date"
                     name="date"
@@ -168,7 +168,7 @@ export function EditTransactionDialog({ transaction, onClose }: EditTransactionD
                   />
                 </Field>
                 <Field>
-                  <Label htmlFor="edit-transaction-description">Description</Label>
+                  <Label htmlFor="edit-transaction-description">Deskripsi</Label>
                   <Textarea
                     id="edit-transaction-description"
                     name="description"
@@ -182,7 +182,7 @@ export function EditTransactionDialog({ transaction, onClose }: EditTransactionD
             <DialogFooter className="-mx-6 -mb-6 mt-2 grid grid-cols-2 gap-4 px-6 py-5">
               <DialogClose
                 disabled={isSubmitting}
-                render={<Button type="button" variant="outline" className="h-11 w-full px-6">Cancel</Button>}
+                render={<Button type="button" variant="outline" className="h-11 w-full px-6">Batal</Button>}
               />
               <Button
                 type="submit"
@@ -191,7 +191,7 @@ export function EditTransactionDialog({ transaction, onClose }: EditTransactionD
                 className="h-11 w-full gap-2 bg-[#6359E9] px-6 text-white hover:bg-[#6359E9]/90"
               >
                 {isSubmitting && <Spinner className="animate-spin text-white" />}
-                {isSubmitting ? "Saving..." : "Save Changes"}
+                {isSubmitting ? "Menyimpan..." : "Simpan Perubahan"}
               </Button>
             </DialogFooter>
           </form>

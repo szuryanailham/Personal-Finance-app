@@ -25,10 +25,10 @@ interface UseImportFileOptions {
 function validateFile(file: File): string | null {
   const name = file.name.toLowerCase()
   if (!ACCEPTED_EXTENSIONS.some((ext) => name.endsWith(ext))) {
-    return `Only ${ACCEPTED_EXTENSIONS.join(" or ")} files are supported.`
+    return `Hanya file ${ACCEPTED_EXTENSIONS.join(" atau ")} yang didukung.`
   }
   if (file.size > MAX_FILE_SIZE_BYTES) {
-    return `File size must be ${MAX_FILE_SIZE_MB} MB or less.`
+    return `Ukuran file maksimal ${MAX_FILE_SIZE_MB} MB.`
   }
   return null
 }

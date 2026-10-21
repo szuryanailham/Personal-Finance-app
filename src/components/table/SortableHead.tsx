@@ -89,7 +89,7 @@ export function SortableHead({ label, sortKey, sort, onSort, className, align = 
             className={cn("size-4", direction === "desc" ? "text-[#282458]" : "text-[#716EC9]")}
           />
         </span>
-        <span className="sr-only">Sort by {label}</span>
+        <span className="sr-only">Urutkan berdasarkan {label}</span>
       </button>
     </TableHead>
   )

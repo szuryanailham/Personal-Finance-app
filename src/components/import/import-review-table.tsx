@@ -17,10 +17,10 @@ const CELL_CLASS = "align-top"
 
 const COLUMNS = [
   { key: "row", label: "#", className: "w-12" },
-  { key: "name", label: "Name", className: "min-w-44" },
-  { key: "category", label: "Category", className: "w-48" },
-  { key: "date", label: "Date", className: "w-40" },
-  { key: "amount", label: "Amount (Rp)", className: "w-36 text-right" },
+  { key: "name", label: "Nama", className: "min-w-44" },
+  { key: "category", label: "Kategori", className: "w-48" },
+  { key: "date", label: "Tanggal", className: "w-40" },
+  { key: "amount", label: "Jumlah (Rp)", className: "w-36 text-right" },
   { key: "status", label: "Status", className: "w-28" },
   { key: "actions", label: "", className: "w-12" },
 ] as const
@@ -157,7 +157,7 @@ function ReviewRowItem({ row, errors, categories, disabled, onChange, onRemove }
           value={row.amount ?? ""}
           onChange={(e) => onChange({ amount: e.target.value === "" ? null : Number(e.target.value) })}
           aria-invalid={Boolean(errors.amount)}
-          aria-label={`Amount baris ${row.row}`}
+          aria-label={`Jumlah baris ${row.row}`}
           className="ml-auto w-36 text-right"
           disabled={disabled}
         />

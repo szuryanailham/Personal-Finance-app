@@ -69,7 +69,7 @@ function ReviewCard({ row, errors, categories, disabled, onChange, onRemove }: R
       </div>
       <FieldError message={row.submitError ?? undefined} />
 
-      <Field label="Name" htmlFor={`${idPrefix}-name`}>
+      <Field label="Nama" htmlFor={`${idPrefix}-name`}>
         <Input
           id={`${idPrefix}-name`}
           value={row.name}
@@ -80,7 +80,7 @@ function ReviewCard({ row, errors, categories, disabled, onChange, onRemove }: R
         <FieldError message={errors.name} />
       </Field>
 
-      <Field label="Category">
+      <Field label="Kategori">
         <CategoryCell
           row={row}
           categories={categories}
@@ -92,7 +92,7 @@ function ReviewCard({ row, errors, categories, disabled, onChange, onRemove }: R
       </Field>
 
       <div className="grid grid-cols-2 gap-3">
-        <Field label="Date" htmlFor={`${idPrefix}-date`}>
+        <Field label="Tanggal" htmlFor={`${idPrefix}-date`}>
           <Input
             id={`${idPrefix}-date`}
             type="date"
@@ -103,7 +103,7 @@ function ReviewCard({ row, errors, categories, disabled, onChange, onRemove }: R
           />
           <FieldError message={errors.date} />
         </Field>
-        <Field label="Amount (Rp)" htmlFor={`${idPrefix}-amount`}>
+        <Field label="Jumlah (Rp)" htmlFor={`${idPrefix}-amount`}>
           <Input
             id={`${idPrefix}-amount`}
             type="number"

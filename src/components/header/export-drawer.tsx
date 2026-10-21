@@ -42,17 +42,17 @@ const DEFAULT_RANGE: ExportRange = "all"
 const FALLBACK_EXPORT_FILE_NAME = "transactions.xlsx"
 
 const FORMAT_OPTIONS: { value: ExportFormat; label: string; description: string; icon: typeof FileText }[] = [
-  { value: "xlsx", label: "Excel", description: ".xlsx spreadsheet", icon: FileSpreadsheet },
+  { value: "xlsx", label: "Excel", description: "Spreadsheet .xlsx", icon: FileSpreadsheet },
   // Sementara hanya xlsx yang tersedia; aktifkan kembali saat export CSV sudah didukung
   // { value: "csv", label: "CSV", description: ".csv plain text", icon: FileText },
 ]
 
 const RANGE_OPTIONS: { value: ExportRange; label: string; description: string }[] = [
-  { value: "all", label: "All transactions", description: "Every transaction you have recorded" },
-  { value: "yearly", label: "Yearly", description: "Transactions this year" },
-  { value: "monthly", label: "Monthly", description: "Transactions this month" },
-  { value: "weekly", label: "Weekly", description: "Transactions this week" },
-  { value: "custom", label: "Custom", description: "Pick your own date range" },
+  { value: "all", label: "Semua transaksi", description: "Semua transaksi yang pernah kamu catat" },
+  { value: "yearly", label: "Tahunan", description: "Transaksi tahun ini" },
+  { value: "monthly", label: "Bulanan", description: "Transaksi bulan ini" },
+  { value: "weekly", label: "Mingguan", description: "Transaksi minggu ini" },
+  { value: "custom", label: "Atur Sendiri", description: "Pilih rentang tanggal sendiri" },
 ]
 
 const SELECT_TRIGGER_CLASS = "mt-2 h-11 w-full border-[#8C89B4] px-3"
@@ -147,8 +147,8 @@ export function ExportDrawer({ triggerClassName, onExport }: ExportDrawerProps) 
       />
       <DrawerContent className="py-5 px-3">
         <DrawerHeader>
-          <DrawerTitle>Export Transactions</DrawerTitle>
-          <DrawerDescription>Download your transactions as a file.</DrawerDescription>
+          <DrawerTitle>Export Transaksi</DrawerTitle>
+          <DrawerDescription>Unduh transaksimu sebagai file.</DrawerDescription>
         </DrawerHeader>
 
         <div className="flex flex-1 flex-col gap-6 overflow-y-auto p-4 py-5 scroll-fade">
@@ -156,14 +156,14 @@ export function ExportDrawer({ triggerClassName, onExport }: ExportDrawerProps) 
           <InfoSection
             step={1}
             icon={FileSpreadsheet}
-            title="Select the file format"
-            subtitle="Choose the file type you want to use for the export."
+            title="Pilih format file"
+            subtitle="Pilih jenis file yang ingin kamu pakai untuk export."
           >
             <Select
               value={format}
               onValueChange={(value) => value !== null && setFormat(value as ExportFormat)}
             >
-              <SelectTrigger aria-label="File format" className={SELECT_TRIGGER_CLASS}>
+              <SelectTrigger aria-label="Format file" className={SELECT_TRIGGER_CLASS}>
                 <SelectValue>
                   {(value: ExportFormat) => {
                     const selected = FORMAT_OPTIONS.find((option) => option.value === value)
@@ -185,14 +185,14 @@ export function ExportDrawer({ triggerClassName, onExport }: ExportDrawerProps) 
           <InfoSection
             step={2}
             icon={CalendarRange}
-            title="Select the transaction range"
-            subtitle="Choose which transactions you want to export."
+            title="Pilih rentang transaksi"
+            subtitle="Pilih transaksi mana yang ingin kamu export."
           >
             <Select
               value={range}
               onValueChange={(value) => value !== null && setRange(value as ExportRange)}
             >
-              <SelectTrigger aria-label="Transaction range" className={SELECT_TRIGGER_CLASS}>
+              <SelectTrigger aria-label="Rentang transaksi" className={SELECT_TRIGGER_CLASS}>
                 <SelectValue>
                   {(value: ExportRange) =>
                     RANGE_OPTIONS.find((option) => option.value === value)?.label ?? null
@@ -214,7 +214,7 @@ export function ExportDrawer({ triggerClassName, onExport }: ExportDrawerProps) 
             {isCustom && (
               <div className="mt-3 grid grid-cols-2 gap-3">
                 <Field>
-                  <FieldLabel htmlFor="export-start-date">Start date</FieldLabel>
+                  <FieldLabel htmlFor="export-start-date">Tanggal mulai</FieldLabel>
                   <Input
                     id="export-start-date"
                     type="date"
@@ -224,7 +224,7 @@ export function ExportDrawer({ triggerClassName, onExport }: ExportDrawerProps) 
                   />
                 </Field>
                 <Field>
-                  <FieldLabel htmlFor="export-end-date">End date</FieldLabel>
+                  <FieldLabel htmlFor="export-end-date">Tanggal akhir</FieldLabel>
                   <Input
                     id="export-end-date"
                     type="date"
@@ -237,8 +237,8 @@ export function ExportDrawer({ triggerClassName, onExport }: ExportDrawerProps) 
                 {isRangeInvalid && (
                   <Alert variant="destructive" className="col-span-2">
                     <AlertCircleIcon />
-                    <AlertTitle>Invalid date range</AlertTitle>
-                    <AlertDescription>End date must be on or after start date.</AlertDescription>
+                    <AlertTitle>Rentang tanggal tidak valid</AlertTitle>
+                    <AlertDescription>Tanggal akhir harus sama atau setelah tanggal mulai.</AlertDescription>
                   </Alert>
                 )}
               </div>
@@ -248,21 +248,21 @@ export function ExportDrawer({ triggerClassName, onExport }: ExportDrawerProps) 
           {exportError && (
             <Alert variant="destructive">
               <AlertCircleIcon />
-              <AlertTitle>Export failed</AlertTitle>
+              <AlertTitle>Export gagal</AlertTitle>
               <AlertDescription>{exportError}</AlertDescription>
             </Alert>
           )}
         </div>
 
         <DrawerFooter className="flex-row gap-3">
-          <DrawerClose render={<Button variant="outline" className="h-[34px] flex-1 border-[#8C89B4]">Close</Button>} />
+          <DrawerClose render={<Button variant="outline" className="h-[34px] flex-1 border-[#8C89B4]">Tutup</Button>} />
           <Button
             onClick={handleExport}
             disabled={isExportDisabled}
             className="h-[34px] flex-1 bg-[#6359E9] text-white hover:bg-[#6359E9]/90"
           >
             {isExporting && <Loader2 data-icon="inline-start" className="animate-spin" />}
-            {isExporting ? "Exporting..." : "Export"}
+            {isExporting ? "Mengexport..." : "Export"}
           </Button>
         </DrawerFooter>
       </DrawerContent>

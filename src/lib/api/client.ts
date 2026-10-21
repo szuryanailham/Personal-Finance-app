@@ -4,7 +4,7 @@ import { getSessionToken, redirectToLogin } from "@/lib/auth"
 // Isi NEXT_PUBLIC_API_BASE_URL hanya bila ingin memanggil backend langsung (butuh CORS)
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? ""
 
-const SESSION_EXPIRED_MESSAGE = "Sesi login berakhir, silakan login kembali"
+const SESSION_EXPIRED_MESSAGE = "Sesi kamu telah berakhir, silakan login kembali"
 const HTTP_UNAUTHORIZED = 401
 // Fallback bila header Retry-After tidak terbaca (mis. belum di-expose via CORS)
 const RETRY_AFTER_MESSAGE_PATTERN = /try again in (\d+) second/i

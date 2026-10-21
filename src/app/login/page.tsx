@@ -12,14 +12,14 @@ export default function LoginPage() {
       <section className="flex items-center justify-center bg-slate-50 px-6 py-12">
         <div className="flex w-full max-w-md flex-col gap-8 rounded-2xl border bg-white p-8 shadow-xl shadow-slate-200/70">
           <div className="flex flex-col gap-2">
-             <h1 className="text-3xl font-bold tracking-tight">Sign In</h1>
+             <h1 className="text-3xl font-bold tracking-tight">Login</h1>
             <p className="text-sm text-muted-foreground">
-              Don’t have an account?{" "}
+              Belum punya akun?{" "}
               <Link
                 href="/sign-up"
                 className="font-medium text-primary underline-offset-4 hover:underline"
               >
-                Create now
+                Daftar sekarang
               </Link>
             </p>
           </div>
@@ -32,10 +32,10 @@ export default function LoginPage() {
         <Image src={artokuLogo} alt="Artoku" priority className="h-30 w-auto" />
         <Image src={loginIllustration} alt="" className="h-auto w-full max-w-md" />
         <div className="flex max-w-[480px] flex-col gap-3 text-center text-white">
-          <h2 className="text-3xl font-semibold">Smarter Personal Finance Management</h2>
+          <h2 className="text-3xl font-semibold">Kelola Keuangan Pribadi Lebih Cerdas</h2>
           <p className="text-base text-white/80">
-            Take control of your finances with intuitive transaction tracking, insightful
-            analytics, and a clearer view of your financial health—all in one place.
+            Kendalikan keuanganmu dengan pencatatan transaksi yang mudah, analisis yang
+            informatif, dan gambaran kesehatan finansial yang lebih jelas, semuanya di satu tempat.
           </p>
         </div>
       </section>
