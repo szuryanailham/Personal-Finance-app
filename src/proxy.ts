@@ -43,5 +43,6 @@ export const config = {
     "/settings/:path*",
     "/summary/:path*",
     "/import/:path*",
+    "/export/:path*",
   ],
 }
