@@ -96,7 +96,8 @@ export function CustomDateRange({
   const isRangeInvalid = Boolean(startDate && endDate && startDate > endDate)
 
   return (
-    <div className="grid grid-cols-2 gap-3">
+    // Mobile: tanggal ditumpuk vertikal; desktop: berdampingan
+    <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
       <Field>
         <FieldLabel htmlFor={`${idPrefix}-start-date`}>Tanggal mulai</FieldLabel>
         <Input
@@ -121,7 +122,7 @@ export function CustomDateRange({
         />
       </Field>
       {isRangeInvalid && (
-        <p className="col-span-2 text-xs text-destructive">Tanggal akhir harus sama atau setelah tanggal mulai.</p>
+        <p className="col-span-full text-xs text-destructive">Tanggal akhir harus sama atau setelah tanggal mulai.</p>
       )}
     </div>
   )
