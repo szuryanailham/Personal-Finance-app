@@ -35,7 +35,8 @@ const RANGE_OPTIONS: { value: ExportRange; label: string; description: string }[
   { value: "custom", label: "Atur Sendiri", description: "Pilih rentang tanggal sendiri" },
 ]
 
-const SELECT_TRIGGER_CLASS = "mt-2 h-11 w-full border-[#8C89B4] px-3"
+// Mobile: jarak dari subtitle ke input lebih lega; desktop (drawer) tetap rapat
+const SELECT_TRIGGER_CLASS = "mt-3 h-11 w-full border-[#8C89B4] px-3 md:mt-2"
 
 type FormatOptionItem = (typeof FORMAT_OPTIONS)[number]
 
@@ -76,7 +77,8 @@ export function ExportForm({ state, className }: ExportFormProps) {
   } = state
 
   return (
-    <div className={cn("flex flex-col gap-6", className)}>
+    // Mobile: jarak antar langkah (format & rentang) lebih lebar; desktop (drawer) tetap gap-6
+    <div className={cn("flex flex-col gap-10 md:gap-6", className)}>
       {/* 1. Format file */}
       <InfoSection
         step={1}
