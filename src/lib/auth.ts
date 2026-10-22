@@ -3,6 +3,7 @@ export const AUTH_TOKEN_COOKIE = "auth_token"
 export const AUTH_EXPIRED_AT_COOKIE = "auth_expired_at"
 
 export const LOGIN_PATH = "/login"
+export const SIGN_UP_PATH = "/sign-up"
 export const DEFAULT_AUTHED_PATH = "/dashboard"
 export const REDIRECT_PARAM = "from"
 

@@ -7,6 +7,7 @@ import { Menu, X } from "lucide-react";
 import { cn } from "cn";
 import { buttonVariants } from "@/components/ui/button";
 import artokuLogo from "@/components/images/artoku-logo-color.png";
+import { DEFAULT_AUTHED_PATH, LOGIN_PATH } from "@/lib/auth";
 
 const NAV_ITEMS = [
   { label: "Home", href: "/" },
@@ -20,8 +21,16 @@ const loginButtonClass = cn(
   "bg-[#6359E9] px-8 text-white hover:bg-[#6359E9]/90",
 );
 
-export function HomeNavbar() {
+interface HomeNavbarProps {
+  isLoggedIn: boolean;
+}
+
+export function HomeNavbar({ isLoggedIn }: HomeNavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  // /dashboard sendiri memilih tampilan mobile atau desktop sesuai lebar layar
+  const authAction = isLoggedIn
+    ? { label: "Dashboard", href: DEFAULT_AUTHED_PATH }
+    : { label: "Login", href: LOGIN_PATH };
 
   return (
     <header className="sticky top-0 z-50 bg-[#F3F3FC]/80 font-manrope backdrop-blur">
@@ -44,8 +53,8 @@ export function HomeNavbar() {
         </ul>
 
         <div className="flex items-center justify-self-end gap-2">
-          <Link href="/login" className={cn(loginButtonClass, "hidden md:inline-flex")}>
-            Login
+          <Link href={authAction.href} className={cn(loginButtonClass, "hidden md:inline-flex")}>
+            {authAction.label}
           </Link>
           <button
             type="button"
@@ -74,8 +83,8 @@ export function HomeNavbar() {
               </li>
             ))}
           </ul>
-          <Link href="/login" className={cn(loginButtonClass, "w-full")}>
-            Login
+          <Link href={authAction.href} className={cn(loginButtonClass, "w-full")}>
+            {authAction.label}
           </Link>
         </div>
       )}
