@@ -205,7 +205,8 @@ export function FilterDrawer({
           </RadioGroup>
 
           {isCustom && (
-            <div className="mt-4 grid grid-cols-2 gap-3">
+            // Mobile: tanggal ditumpuk vertikal; desktop: berdampingan
+            <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
               <Field>
                 <FieldLabel htmlFor="filter-start-date">{copy.startDate}</FieldLabel>
                 <Input
@@ -228,7 +229,7 @@ export function FilterDrawer({
                 />
               </Field>
               {isRangeInvalid && (
-                <Alert variant="destructive" className="col-span-2">
+                <Alert variant="destructive" className="col-span-full">
                   <AlertCircleIcon />
                   <AlertTitle>{copy.invalidRangeTitle}</AlertTitle>
                   <AlertDescription>{copy.invalidRangeDescription}</AlertDescription>

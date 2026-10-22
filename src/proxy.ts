@@ -6,8 +6,19 @@ import {
   DEFAULT_AUTHED_PATH,
   LOGIN_PATH,
   REDIRECT_PARAM,
+  SIGN_UP_PATH,
   isSessionValid,
 } from "@/lib/auth"
+
+// Halaman khusus tamu: landing page, login, daftar, dan verifikasi OTP
+function isGuestOnlyPath(pathname: string): boolean {
+  return (
+    pathname === "/" ||
+    pathname === LOGIN_PATH ||
+    pathname === SIGN_UP_PATH ||
+    pathname.startsWith(`${SIGN_UP_PATH}/`)
+  )
+}
 
 export function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl
@@ -16,8 +27,8 @@ export function proxy(request: NextRequest) {
     request.cookies.get(AUTH_EXPIRED_AT_COOKIE)?.value
   )
 
-  // Sudah login tapi membuka /login → langsung ke dashboard
-  if (pathname === LOGIN_PATH) {
+  // Sudah login tapi membuka landing page, /login, atau /sign-up → langsung ke dashboard
+  if (isGuestOnlyPath(pathname)) {
     return isLoggedIn
       ? NextResponse.redirect(new URL(DEFAULT_AUTHED_PATH, request.url))
       : NextResponse.next()
@@ -36,7 +47,9 @@ export function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
+    "/",
     "/login",
+    "/sign-up/:path*",
     "/dashboard/:path*",
     "/transaction/:path*",
     "/analysis/:path*",
