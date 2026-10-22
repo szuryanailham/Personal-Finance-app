@@ -21,6 +21,7 @@ import { Label } from "@/components/ui/label"
 import { Spinner } from "@/components/ui/spinner"
 import { Textarea } from "@/components/ui/textarea"
 import { createTransaction } from "@/lib/api/transaction"
+import { RupiahAmountInput } from "./rupiah-amount-input"
 import { TransactionCategoryField } from "./transaction-category-field"
 import { toTransactionInput } from "./transaction-form"
 import { wait, withMinLoading } from "@/lib/async"
@@ -126,15 +127,7 @@ export function AddTransactionDialog({ open, onOpenChange }: AddTransactionDialo
   
               <Field>
                 <Label htmlFor="transaction-amount">Jumlah</Label>
-                <Input
-                  id="transaction-amount"
-                  name="amount"
-                  className={INPUT_CLASS}
-                  type="number"
-                  min={0}
-                  step="any"
-                  required
-                />
+                <RupiahAmountInput id="transaction-amount" name="amount" className={INPUT_CLASS} required />
               </Field>
               <Field>
                 <Label htmlFor="transaction-date">Tanggal</Label>

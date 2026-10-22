@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Spinner } from "@/components/ui/spinner"
 import { Textarea } from "@/components/ui/textarea"
+import { RupiahAmountInput } from "@/components/header/rupiah-amount-input"
 import { TransactionCategoryField } from "@/components/header/transaction-category-field"
 import { toTransactionInput } from "@/components/header/transaction-form"
 import { useTransactionRevision } from "@/components/header/transaction-revision-context"
@@ -145,14 +146,11 @@ export function EditTransactionDialog({ transaction, onClose }: EditTransactionD
                 />
                 <Field>
                   <Label htmlFor="edit-transaction-amount">Jumlah</Label>
-                  <Input
+                  <RupiahAmountInput
                     id="edit-transaction-amount"
                     name="amount"
                     defaultValue={initial.amount}
                     className={INPUT_CLASS}
-                    type="number"
-                    min={0}
-                    step="any"
                     required
                   />
                 </Field>
