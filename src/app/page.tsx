@@ -26,7 +26,7 @@ export default async function Home() {
         <section className="relative -mt-16 flex min-h-screen flex-col items-center justify-center gap-4 overflow-hidden px-4 pt-32 pb-16 text-center md:pt-40">
           <OrbitBackground />
           <h1 className="relative max-w-4xl text-center font-display text-5xl leading-tight font-normal tracking-wide text-slate-900 md:text-7xl">
-            Build Your Financial Future with{" "}
+            Bangun Masa Depan Finansialmu bersama{" "}
             <span className="text-[#6359E9]">Artoku</span>
           </h1>
           <p className="relative max-w-2xl text-center font-manrope text-base leading-relaxed text-slate-600 md:text-lg">

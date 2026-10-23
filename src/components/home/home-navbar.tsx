@@ -10,10 +10,10 @@ import artokuLogo from "@/components/images/artoku-logo-color.png";
 import { DEFAULT_AUTHED_PATH, LOGIN_PATH } from "@/lib/auth";
 
 const NAV_ITEMS = [
-  { label: "Home", href: "/" },
-  { label: "Features", href: "#features" },
+  { label: "Beranda", href: "/" },
+  { label: "Fitur", href: "#features" },
   { label: "Simulator", href: "#simulator" },
-  { label: "About", href: "#about" },
+  { label: "Tentang", href: "#about" },
 ] as const;
 
 const loginButtonClass = cn(
@@ -35,7 +35,7 @@ export function HomeNavbar({ isLoggedIn }: HomeNavbarProps) {
   return (
     <header className="sticky top-0 z-50 bg-[#F3F3FC]/80 font-manrope backdrop-blur">
       <nav className="mx-auto grid h-16 max-w-7xl grid-cols-[1fr_auto] items-center px-4 md:grid-cols-[1fr_auto_1fr] md:px-8">
-        <Link href="/" aria-label="Artoku home" className="justify-self-start">
+        <Link href="/" aria-label="Beranda Artoku" className="justify-self-start">
           <Image src={artokuLogo} alt="Artoku" priority className="h-9 w-auto" />
         </Link>
 
@@ -58,7 +58,7 @@ export function HomeNavbar({ isLoggedIn }: HomeNavbarProps) {
           </Link>
           <button
             type="button"
-            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+            aria-label={isMenuOpen ? "Tutup menu" : "Buka menu"}
             aria-expanded={isMenuOpen}
             onClick={() => setIsMenuOpen((open) => !open)}
             className="rounded-lg p-2 text-slate-700 hover:bg-slate-100 md:hidden"
