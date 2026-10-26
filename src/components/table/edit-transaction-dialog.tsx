@@ -28,8 +28,10 @@ import type { Category, CategoryType } from "@/lib/api/category"
 import { updateTransaction, type TransactionInput, type TransactionPatch } from "@/lib/api/transaction"
 import { withMinLoading } from "@/lib/async"
 import { toLocalDateString } from "@/lib/date"
+import { cn } from "@/lib/utils"
 
-const INPUT_CLASS = "h-11 px-3"
+const INPUT_CLASS = "h-10 px-3 sm:h-11"
+const BUTTON_CLASS = "h-10 w-full px-3 sm:h-11 sm:px-6"
 
 interface EditTransactionDialogProps {
   /** Transaksi yang sedang diedit; null = dialog tertutup */
@@ -111,12 +113,13 @@ export function EditTransactionDialog({ transaction, onClose }: EditTransactionD
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-xl p-6">
+      {/* Mobile: padding lebih kecil dan bisa di-scroll agar form tidak terpotong di layar pendek */}
+      <DialogContent className="max-h-[calc(100svh-2rem)] overflow-y-auto p-4 sm:max-w-xl sm:p-6">
         {/* key memaksa form di-reset (defaultValue baru) saat transaksi yang diedit berganti */}
         {transaction && initial && (
-          <form key={transaction.transactionCode} onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <form key={transaction.transactionCode} onSubmit={handleSubmit} className="flex flex-col gap-3 sm:gap-4">
             <DialogHeader>
-              <div className="mb-2 flex size-[52px] items-center justify-center rounded-full bg-[#6359E9]/10 text-[#6359E9]">
+              <div className="mb-1 flex size-10 items-center justify-center rounded-full bg-[#6359E9]/10 text-[#6359E9] sm:mb-2 sm:size-[52px]">
                 <PencilIcon />
               </div>
               <DialogTitle>Edit Transaksi</DialogTitle>
@@ -171,22 +174,22 @@ export function EditTransactionDialog({ transaction, onClose }: EditTransactionD
                     id="edit-transaction-description"
                     name="description"
                     defaultValue={initial.description}
-                    rows={4}
-                    className="min-h-24 px-3 py-2"
+                    rows={3}
+                    className="min-h-20 px-3 py-2 sm:min-h-24"
                   />
                 </Field>
               </FieldGroup>
             </fieldset>
-            <DialogFooter className="-mx-6 -mb-6 mt-2 grid grid-cols-2 gap-4 px-6 py-5">
+            <DialogFooter className="-mx-4 -mb-4 mt-1 grid grid-cols-2 gap-3 px-4 py-4 sm:-mx-6 sm:-mb-6 sm:mt-2 sm:gap-4 sm:px-6 sm:py-5">
               <DialogClose
                 disabled={isSubmitting}
-                render={<Button type="button" variant="outline" className="h-11 w-full px-6">Batal</Button>}
+                render={<Button type="button" variant="outline" className={BUTTON_CLASS}>Batal</Button>}
               />
               <Button
                 type="submit"
                 disabled={isSubmitting}
                 aria-busy={isSubmitting}
-                className="h-11 w-full gap-2 bg-[#6359E9] px-6 text-white hover:bg-[#6359E9]/90"
+                className={cn(BUTTON_CLASS, "gap-2 bg-[#6359E9] text-white hover:bg-[#6359E9]/90")}
               >
                 {isSubmitting && <Spinner className="animate-spin text-white" />}
                 {isSubmitting ? "Menyimpan..." : "Simpan Perubahan"}

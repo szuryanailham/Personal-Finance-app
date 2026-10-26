@@ -57,5 +57,7 @@ export const config = {
     "/summary/:path*",
     "/import/:path*",
     "/export/:path*",
+    "/calender/:path*",
+    "/financial-setup",
   ],
 }

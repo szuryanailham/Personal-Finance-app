@@ -55,10 +55,14 @@ export function ImportDrawer({ triggerClassName, onImport }: ImportDrawerProps) 
       <DrawerContent className="py-5 px-3">
         <DrawerHeader>
           <DrawerTitle>Import Transaksi</DrawerTitle>
-          <DrawerDescription>Upload file untuk import transaksimu.</DrawerDescription>
+          <DrawerDescription>Ikuti 3 langkah berikut untuk mengimpor transaksimu.</DrawerDescription>
         </DrawerHeader>
 
-        <ImportForm state={importState} className="flex-1 overflow-y-auto p-4 py-5 scroll-fade" />
+        <ImportForm
+          state={importState}
+          onNavigate={() => handleOpenChange(false)}
+          className="flex-1 overflow-y-auto p-4 py-5 scroll-fade"
+        />
 
         <DrawerFooter className="flex-row gap-3">
           <DrawerClose render={<Button variant="outline" className="h-[34px] flex-1 border-[#8C89B4]">Tutup</Button>} />

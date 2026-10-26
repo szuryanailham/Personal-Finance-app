@@ -11,8 +11,9 @@ import { Spinner } from "@/components/ui/spinner"
 import { GoogleLoginButton } from "@/components/auth/google-login-button"
 import type { AuthSession } from "@/lib/auth"
 import { login, loginWithGoogle } from "@/lib/api/auth"
-import { REDIRECT_PARAM, safeRedirectPath, saveSession } from "@/lib/auth"
+import { FINANCIAL_SETUP_PATH, REDIRECT_PARAM, safeRedirectPath, saveSession } from "@/lib/auth"
 import { ApiError } from "@/lib/api/client"
+import { fetchFinancialSetup } from "@/lib/api/financial-setup"
 
 const INPUT_CLASS = "h-11 px-3"
 const PASSWORD_MIN_LENGTH = 8
@@ -20,6 +21,15 @@ const PASSWORD_MIN_LENGTH = 8
 interface LoginInput {
   email: string
   password: string
+}
+
+// User baru (belum setup / skip) diarahkan ke setup awal; bila cek gagal, login tetap lanjut
+async function needsFinancialSetup(): Promise<boolean> {
+  try {
+    return !(await fetchFinancialSetup()).setupCompleted
+  } catch {
+    return false
+  }
 }
 
 function toLoginInput(form: HTMLFormElement): LoginInput | null {
@@ -44,7 +54,7 @@ export function LoginForm() {
     setHasLoginFailed(false)
     setIsSubmitting(true)
     try {
-      completeLogin(await login(input))
+      await completeLogin(await login(input))
     } catch {
       setHasLoginFailed(true)
     } finally {
@@ -52,16 +62,17 @@ export function LoginForm() {
     }
   }
 
-  function completeLogin(session: AuthSession) {
+  async function completeLogin(session: AuthSession) {
     saveSession(session)
-    router.replace(safeRedirectPath(searchParams.get(REDIRECT_PARAM)))
+    const destination = safeRedirectPath(searchParams.get(REDIRECT_PARAM))
+    router.replace((await needsFinancialSetup()) ? FINANCIAL_SETUP_PATH : destination)
   }
 
   async function handleGoogleCredential(idToken: string) {
     setHasLoginFailed(false)
     setIsSubmitting(true)
     try {
-      completeLogin(await loginWithGoogle(idToken))
+      await completeLogin(await loginWithGoogle(idToken))
     } catch (error) {
       toast.error(error instanceof ApiError ? error.message : "Login dengan Google gagal")
     } finally {

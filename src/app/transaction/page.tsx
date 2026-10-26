@@ -87,6 +87,8 @@ export default function TransactionPage() {
           >
             <TableTransactionDetail
               transactions={transactions}
+              sort={filter.sort}
+              onSortChange={(sort) => handleFilterChange({ ...filter, sort })}
               onEdit={setEditing}
               onDelete={(trx) => setDeleting([trx])}
               onBulkUpdate={setBulkUpdating}

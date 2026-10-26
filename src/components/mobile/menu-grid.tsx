@@ -19,7 +19,7 @@ const MENU_ITEMS: MenuItem[] = [
   { label: "Transaksi", href: "/transaction", icon: ArrowLeftRightIcon },
   { label: "Ringkasan", href: "/summary", icon: LayoutDashboardIcon },
   { label: "Analisis", href: "/analysis", icon: ChartColumnIcon },
-  { label: "Tanggal", href: "#", icon: CalendarDaysIcon },
+  { label: "Tanggal", href: "/calender", icon: CalendarDaysIcon },
   { label: "Import", href: "/import", icon: UploadIcon },
   { label: "Export", href: "/export", icon: DownloadIcon },
 ];

@@ -24,6 +24,8 @@ interface DeleteTransactionDialogProps {
   /** Transaksi yang akan dihapus; array kosong = dialog tertutup */
   transactions: readonly Transaction[]
   onClose: () => void
+  /** Dipanggil setelah hapus berhasil (mis. kembali ke daftar dari halaman detail) */
+  onDeleted?: () => void
 }
 
 function toErrorMessage(err: unknown): string {
@@ -37,7 +39,7 @@ function removeTransactions(transactions: readonly Transaction[]): Promise<strin
 }
 
 // Konfirmasi sebelum menghapus satu/banyak transaksi; tabel, stat, dan chart di-refresh setelah berhasil
-export function DeleteTransactionDialog({ transactions, onClose }: DeleteTransactionDialogProps) {
+export function DeleteTransactionDialog({ transactions, onClose, onDeleted }: DeleteTransactionDialogProps) {
   const { notifyTransactionsChanged } = useTransactionRevision()
   const [isDeleting, setIsDeleting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -60,6 +62,7 @@ export function DeleteTransactionDialog({ transactions, onClose }: DeleteTransac
       const message = await withMinLoading(removeTransactions(transactions))
       // Fallback jika backend tidak mengirim `message`
       toast.success(message ?? `${count} transaksi berhasil dihapus`)
+      onDeleted?.()
       notifyTransactionsChanged()
       onClose()
     } catch (err) {

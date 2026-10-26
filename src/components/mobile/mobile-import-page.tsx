@@ -12,7 +12,7 @@ export function MobileImportPage() {
     <div className="flex flex-col gap-4 p-6">
       <div className="flex flex-col gap-1 p-4">
         <h1 className="text-lg font-semibold text-slate-900">Import</h1>
-        <p className="text-sm text-muted-foreground">Upload file untuk mengimpor transaksi kamu.</p>
+        <p className="text-sm text-muted-foreground">Ikuti 3 langkah berikut untuk mengimpor transaksimu.</p>
       </div>
       <section className="rounded-2xl bg-white p-6">
         <ImportForm state={importState} />

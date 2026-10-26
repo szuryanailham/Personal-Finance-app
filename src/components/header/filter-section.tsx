@@ -15,8 +15,9 @@ export interface FilterSectionOption {
 const RADIO_ITEM_CLASS =
   "data-checked:border-[#6359E9] data-checked:bg-[#6359E9] dark:data-checked:bg-[#6359E9]"
 
+// Mobile: baris opsi polos seperti FilterDrawer; tablet & desktop (md+): kotak ber-border dengan warna saat terpilih
 const OPTION_ROW_CLASS =
-  "flex cursor-pointer items-center justify-between gap-3 rounded-lg border px-3 py-2 text-sm transition-colors hover:bg-muted/50 has-data-checked:border-[#6359E9] has-data-checked:bg-[#6359E9]/10"
+  "flex cursor-pointer items-center justify-between gap-3 rounded-md px-2 py-2.5 transition-colors hover:bg-muted/50 md:rounded-lg md:border md:px-3 md:py-2 md:has-data-checked:border-[#6359E9] md:has-data-checked:bg-[#6359E9]/10"
 
 interface FilterSectionProps {
   id: string
@@ -69,14 +70,14 @@ export function FilterSection({
         aria-labelledby={titleId}
         value={value}
         onValueChange={(next) => onChange(String(next))}
-        className="max-h-96 gap-1.5 overflow-y-auto overscroll-contain pr-1"
+        className="max-h-96 gap-1 overflow-y-auto overscroll-contain pr-1 md:gap-1.5"
       >
         {visibleOptions.map((option) => {
           const itemId = `${id}-${option.value}`
           return (
             <label key={option.value} htmlFor={itemId} className={OPTION_ROW_CLASS}>
               <span className="flex min-w-0 flex-col">
-                <span className="truncate">{option.label}</span>
+                <span className="truncate text-sm font-medium">{option.label}</span>
                 {option.description && (
                   <span className="text-xs text-muted-foreground">{option.description}</span>
                 )}

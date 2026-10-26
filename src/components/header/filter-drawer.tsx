@@ -25,13 +25,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
-import {
-  Field,
-  FieldContent,
-  FieldDescription,
-  FieldLabel,
-  FieldTitle,
-} from "@/components/ui/field"
+import { Field, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Spinner } from "@/components/ui/spinner"
@@ -172,34 +166,31 @@ export function FilterDrawer({
           <RadioGroup
             value={period}
             onValueChange={(value) => setPeriod(value as FilterPeriod)}
-            className="gap-2"
+            className="gap-1"
           >
             {copy.options.map((option) => {
               const id = `filter-${option.value}`
               const OptionIcon = FILTER_ICONS[option.value]
+              // Baris opsi polos (tanpa kotak/border), cukup highlight saat hover
               return (
-                <FieldLabel
+                <label
                   key={option.value}
                   htmlFor={id}
-                  className="border-[#8C89B4]"
+                  className="flex cursor-pointer items-center gap-3 rounded-md px-2 py-2.5 hover:bg-muted/50"
                 >
-                  <Field orientation="horizontal" className="items-center">
-                    {showIcons && (
-                      <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#6359E9]/10 text-[#6359E9]">
-                        <OptionIcon className="size-5" aria-hidden />
-                      </span>
-                    )}
-                    <FieldContent>
-                      <FieldTitle>{option.label}</FieldTitle>
-                      <FieldDescription>{option.description}</FieldDescription>
-                    </FieldContent>
-                    <RadioGroupItem
-                      value={option.value}
-                      id={id}
-                      className="data-checked:border-[#6359E9] data-checked:bg-[#6359E9] dark:data-checked:bg-[#6359E9] group-has-[:focus-visible]/field-label:data-checked:border-[#6359E9]"
-                    />
-                  </Field>
-                </FieldLabel>
+                  {showIcons && (
+                    <OptionIcon className="size-5 shrink-0 text-[#6359E9]" aria-hidden />
+                  )}
+                  <span className="flex flex-1 flex-col">
+                    <span className="text-sm font-medium">{option.label}</span>
+                    <span className="text-xs text-muted-foreground">{option.description}</span>
+                  </span>
+                  <RadioGroupItem
+                    value={option.value}
+                    id={id}
+                    className="data-checked:border-[#6359E9] data-checked:bg-[#6359E9] dark:data-checked:bg-[#6359E9]"
+                  />
+                </label>
               )
             })}
           </RadioGroup>

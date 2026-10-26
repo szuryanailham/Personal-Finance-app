@@ -2,10 +2,12 @@
 
 import { useState } from "react"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 import { SearchIcon } from "lucide-react"
 import { CATEGORY_OPTIONS } from "@/components/header/category-type-field"
 import { TransactionFilterDrawer } from "@/components/header/transaction-filter-drawer"
 import { formatAmount, type Transaction, type TransactionType } from "@/components/table/TableComponent"
+import { SortableHead, fromServerSort, nextServerSort, type SortKey } from "@/components/table/SortableHead"
 import { DEFAULT_PAGE_SIZE, TablePagination } from "@/components/table/TablePagination"
 import { Input } from "@/components/ui/input"
 import { Spinner, LoadingState } from "@/components/ui/spinner"
@@ -14,14 +16,17 @@ import {
   TableBody,
   TableCaption,
   TableCell,
-  TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
 import { useDebouncedValue } from "@/hooks/use-debounced-value"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { useTransactions } from "@/hooks/use-transactions"
-import { DEFAULT_TRANSACTION_LIST_FILTER, type TransactionListFilter } from "@/lib/api/transaction"
+import {
+  DEFAULT_TRANSACTION_LIST_FILTER,
+  type TransactionListFilter,
+  type TransactionSortValue,
+} from "@/lib/api/transaction"
 import { ACCENT_ICON_CLASS, ACCENT_OUTLINE_CLASS } from "@/lib/styles"
 import { cn } from "@/lib/utils"
 
@@ -41,24 +46,58 @@ const INPUT_ICON_CLASS = cn(
   ACCENT_ICON_CLASS
 )
 
+const MOBILE_HEAD_CLASS = "px-4 font-semibold text-[#282458]"
+
 interface MobileTransactionTableProps {
   transactions: readonly Transaction[]
+  sort: TransactionSortValue
+  onSortChange: (sort: TransactionSortValue) => void
 }
 
-function MobileTransactionTable({ transactions }: MobileTransactionTableProps) {
+function MobileTransactionTable({ transactions, sort: serverSort, onSortChange }: MobileTransactionTableProps) {
+  const sort = fromServerSort(serverSort)
+  const handleSort = (key: SortKey) => onSortChange(nextServerSort(serverSort, key))
+  const router = useRouter()
+  const openDetail = (code: string) => router.push(`/transaction/${encodeURIComponent(code)}`)
+
   return (
     <div className="overflow-hidden rounded-2xl bg-white mt-5">
       <Table className="table-fixed">
         {transactions.length === 0 && <TableCaption className="pb-4">Tidak ada transaksi.</TableCaption>}
         <TableHeader>
           <TableRow className="bg-[#D1CFEB] hover:bg-[#D1CFEB]">
-            <TableHead className="px-4 font-semibold text-[#282458]">Transaksi</TableHead>
-            <TableHead className="w-[40%] px-4 text-right font-semibold text-[#282458]">Total</TableHead>
+            {/* Kolom Transaksi diurutkan berdasarkan tanggal (terbaru/terlama) */}
+            <SortableHead
+              label="Transaksi"
+              sortKey="date"
+              sort={sort}
+              onSort={handleSort}
+              className={cn(MOBILE_HEAD_CLASS, "text-left")}
+              align="left"
+            />
+            <SortableHead
+              label="Total"
+              sortKey="amount"
+              sort={sort}
+              onSort={handleSort}
+              className={cn(MOBILE_HEAD_CLASS, "w-[40%] text-right")}
+              align="right"
+            />
           </TableRow>
         </TableHeader>
         <TableBody >
           {transactions.map((trx) => (
-            <TableRow key={trx.transactionCode}>
+            <TableRow
+              key={trx.transactionCode}
+              role="link"
+              tabIndex={0}
+              aria-label={`Lihat detail ${trx.description}`}
+              className="cursor-pointer active:bg-[#F3F2FB]"
+              onClick={() => openDetail(trx.transactionCode)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") openDetail(trx.transactionCode)
+              }}
+            >
               <TableCell className="px-4 py-3">
                 <div className="flex min-w-0 items-center gap-3">
                   <Image
@@ -147,7 +186,11 @@ function MobileTransactionList() {
           className={cn("flex flex-col gap-3 transition-opacity", isSearching && "pointer-events-none opacity-50")}
           aria-busy={isSearching}
         >
-          <MobileTransactionTable transactions={transactions} />
+          <MobileTransactionTable
+            transactions={transactions}
+            sort={filter.sort}
+            onSortChange={(sort) => handleFilterChange({ ...filter, sort })}
+          />
           <TablePagination
             currentPage={paging?.currentPage ?? page}
             totalPage={paging?.totalPage ?? 1}
