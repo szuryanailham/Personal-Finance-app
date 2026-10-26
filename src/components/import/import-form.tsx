@@ -1,13 +1,16 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
 import {
   AlertCircleIcon,
+  ArrowRight,
   CloudUpload,
   Download,
   FileSpreadsheet,
   Loader2,
-  ShieldCheck,
+  PencilLine,
+  Tags,
   X,
 } from "lucide-react"
 
@@ -21,10 +24,16 @@ import {
   type ImportFileState,
 } from "@/components/import/use-import-file"
 
+const CATEGORY_PATH = "/category"
+
 interface ImportFormProps {
   state: ImportFileState
   className?: string
+  /** Dipanggil saat user pindah halaman dari form (mis. ke kategori), supaya drawer bisa ditutup */
+  onNavigate?: () => void
 }
+
+const acceptedFormats = ACCEPTED_EXTENSIONS.map((ext) => ext.slice(1).toUpperCase()).join(" atau ")
 
 function formatFileSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`
@@ -45,7 +54,7 @@ function ErrorAlert({ title, message }: { title: string; message: string | null 
 
 // Isi form import (langkah, dropzone, error, file terpilih) tanpa tombol aksi,
 // supaya bisa dibungkus drawer maupun halaman penuh.
-export function ImportForm({ state, className }: ImportFormProps) {
+export function ImportForm({ state, className, onNavigate }: ImportFormProps) {
   // id unik: drawer desktop dan halaman mobile bisa ter-mount bersamaan
   const inputId = React.useId()
   const {
@@ -66,38 +75,54 @@ export function ImportForm({ state, className }: ImportFormProps) {
 
   return (
     <div className={cn("flex flex-col gap-5", className)}>
-      <div className="mb-3 flex flex-col gap-4">
+      <div className="flex flex-col gap-4">
         <InfoSection
           step={1}
+          icon={Tags}
+          title="Siapkan kategori transaksi"
+          subtitle="Buat dulu kategori yang akan kamu pakai di Artoku. Nama kategori di file harus sama dengan kategori di akunmu."
+        >
+          <Link
+            href={CATEGORY_PATH}
+            onClick={onNavigate}
+            className="inline-flex items-center gap-1 self-start text-sm font-medium text-[#6359E9] hover:underline"
+          >
+            Kelola kategori
+            <ArrowRight className="size-3.5" />
+          </Link>
+        </InfoSection>
+
+        <InfoSection
+          step={2}
           icon={FileSpreadsheet}
-          title="Unduh template dan isi sesuai data transaksi kamu"
-          subtitle="Pakai template kami supaya setiap kolom sesuai format yang diharapkan."
+          title="Download template"
+          subtitle="Gunakan template dari Artoku sebagai format untuk mengisi data transaksi."
         >
           <Button
             type="button"
-            variant="link"
+            variant="outline"
             onClick={downloadTemplate}
             disabled={isDownloading}
-            className="h-auto self-start p-0 text-[#6359E9]"
+            className="mt-1 self-start border-[#6359E9]/40 text-[#6359E9] hover:bg-[#6359E9]/5 hover:text-[#6359E9]"
           >
             {isDownloading ? (
               <Loader2 data-icon="inline-start" className="animate-spin" />
             ) : (
               <Download data-icon="inline-start" />
             )}
-            {isDownloading ? "Mengunduh..." : "Unduh template"}
+            {isDownloading ? "Mengunduh..." : "Download Template"}
           </Button>
         </InfoSection>
 
+        <ErrorAlert title="Gagal mengunduh template" message={downloadError} />
+
         <InfoSection
-          step={2}
-          icon={ShieldCheck}
-          title="Review datamu sebelum import"
-          subtitle="Pastikan tanggal, jumlah, dan kategori sudah terisi dengan benar."
+          step={3}
+          icon={PencilLine}
+          title="Isi data transaksi lalu upload file"
+          subtitle={`Isi template, periksa kembali nama transaksi, jumlah, tanggal, tipe transaksi, dan kategori, lalu upload di bawah ini. Format yang didukung: ${acceptedFormats} (maks. ${MAX_FILE_SIZE_MB} MB).`}
         />
       </div>
-
-      <ErrorAlert title="Gagal mengunduh" message={downloadError} />
 
       <label
         htmlFor={inputId}
@@ -119,8 +144,7 @@ export function ImportForm({ state, className }: ImportFormProps) {
           <span className="font-semibold text-[#6359E9]">Klik untuk upload</span> atau seret dan lepas
         </p>
         <p className="text-xs text-muted-foreground">
-          {ACCEPTED_EXTENSIONS.map((ext) => ext.slice(1).toUpperCase()).join(" atau ")} (maks.{" "}
-          {MAX_FILE_SIZE_MB} MB)
+          {acceptedFormats} (maks. {MAX_FILE_SIZE_MB} MB)
         </p>
         <input
           ref={inputRef}
@@ -133,7 +157,12 @@ export function ImportForm({ state, className }: ImportFormProps) {
       </label>
 
       <ErrorAlert title="File tidak valid" message={error} />
-      <ErrorAlert title="Import gagal" message={uploadError} />
+      <ErrorAlert title="Upload gagal" message={uploadError} />
+
+      <p className="text-xs text-muted-foreground">
+        Setelah upload, kamu akan melihat halaman review. Baris dengan kategori yang tidak ditemukan
+        atau data yang tidak valid akan ditandai beserta penjelasannya, supaya bisa kamu perbaiki.
+      </p>
 
       {file && (
         <div className="flex items-center gap-3 rounded-lg border border-[#8C89B4]/40 p-3">

@@ -22,7 +22,17 @@ export interface TransactionPage {
 }
 
 // Nilai `sort` yang diterima backend (lihat enum TransactionSort di API)
-export type TransactionSortValue = "date" | "-date" | "amount" | "-amount" | "name" | "-name"
+export type TransactionSortValue =
+  | "date"
+  | "-date"
+  | "amount"
+  | "-amount"
+  | "name"
+  | "-name"
+  | "category"
+  | "-category"
+  | "transactionCode"
+  | "-transactionCode"
 
 export const DEFAULT_TRANSACTION_SORT: TransactionSortValue = "date"
 
@@ -131,6 +141,18 @@ export async function fetchTransactions({
     transactions: (body.data ?? []).map(toTransaction),
     paging: body.paging,
   }
+}
+
+// GET /api/transaction/{transactionCode} mengembalikan satu transaksi dengan bentuk yang sama seperti list
+export async function fetchTransaction(transactionCode: string, signal?: AbortSignal): Promise<Transaction> {
+  const body = await apiGet<TransactionResponse>(
+    `/api/transaction/${encodeURIComponent(transactionCode)}`,
+    new URLSearchParams(),
+    "detail transaksi",
+    signal
+  )
+  if (!body.data) throw new Error("Transaksi tidak ditemukan")
+  return toTransaction(body.data)
 }
 
 export interface TransactionInput {

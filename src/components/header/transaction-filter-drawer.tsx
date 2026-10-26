@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import Image from "next/image"
+import { ChevronDownIcon } from "lucide-react"
 
 import filterIcon from "@/components/images/icons/filter-horizontal.svg"
 import { useIsMobile } from "@/hooks/use-mobile"
@@ -10,9 +11,7 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
-  DrawerDescription,
   DrawerFooter,
-  DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
@@ -60,6 +59,32 @@ const DATE_OPTIONS: FilterOption<TransactionDateFilter["preset"]>[] = [
 ]
 
 const ALL_CATEGORIES = "all"
+
+// Sisa jarak scroll (px) yang masih dianggap "sudah di bawah"
+const SCROLL_END_THRESHOLD = 8
+
+// True selama konten `element` masih bisa di-scroll ke bawah; ikut update saat ukuran konten berubah
+function useHasMoreBelow(element: HTMLElement | null): boolean {
+  const [hasMoreBelow, setHasMoreBelow] = React.useState(false)
+
+  React.useEffect(() => {
+    if (!element) return
+    const update = () =>
+      setHasMoreBelow(element.scrollHeight - element.scrollTop - element.clientHeight > SCROLL_END_THRESHOLD)
+
+    update()
+    element.addEventListener("scroll", update, { passive: true })
+    const observer = new ResizeObserver(update)
+    observer.observe(element)
+    Array.from(element.children).forEach((child) => observer.observe(child))
+    return () => {
+      element.removeEventListener("scroll", update)
+      observer.disconnect()
+    }
+  }, [element])
+
+  return hasMoreBelow
+}
 
 function matchesType(category: Category, type: TransactionListFilter["type"]): boolean {
   return type === "all" || category.type.toLowerCase() === type
@@ -139,6 +164,9 @@ export function TransactionFilterDrawer({ value, onApply }: TransactionFilterDra
   const isMobile = useIsMobile()
   const isActive = !isDefaultFilter(value)
   const { categories, isLoading, error, reload } = useCategories(open)
+  // Callback ref via state supaya hook ikut jalan saat konten drawer baru di-mount
+  const [bodyElement, setBodyElement] = React.useState<HTMLDivElement | null>(null)
+  const hasMoreBelow = useHasMoreBelow(bodyElement)
 
   // Kategori mengikuti tipe terpilih supaya kombinasi tipe + kategori tidak pernah kosong
   const categoryOptions: FilterSectionOption[] = [
@@ -216,57 +244,72 @@ export function TransactionFilterDrawer({ value, onApply }: TransactionFilterDra
         }
       />
       <DrawerContent className="px-3 py-5 data-[swipe-axis=x]:sm:[--drawer-content-width:70vw]">
-        <DrawerHeader>
-          <DrawerTitle>Filter transaksi</DrawerTitle>
-          <DrawerDescription>Persempit daftar berdasarkan kategori, type, dan tanggal.</DrawerDescription>
-        </DrawerHeader>
+        {/* Judul tetap ada untuk screen reader, tapi tidak ditampilkan */}
+        <DrawerTitle className="sr-only">Filter transaksi</DrawerTitle>
 
-        {/* Body: 3 section sejajar di layar lebar, bertumpuk di mobile */}
-        <div className="grid min-h-0 flex-1 grid-cols-1 gap-6 md:gap-8 overflow-y-auto px-4 md:grid-cols-3">
-          <FilterSection
-            id="trx-filter-category"
-            title="Kategori"
-            searchPlaceholder="Cari kategori"
-            options={categoryOptions}
-            value={draft.categoryId ?? ALL_CATEGORIES}
-            onChange={handleCategoryChange}
+        <div className="relative flex min-h-0 flex-1 flex-col">
+          {/* Body: 3 section sejajar di layar lebar, bertumpuk di mobile */}
+          <div
+            ref={setBodyElement}
+            className="scroll-fade grid min-h-0 flex-1 grid-cols-1 gap-6 overflow-y-auto px-4 pb-10 md:grid-cols-3 md:gap-8 md:pb-0"
           >
-            {isLoading && <p className="text-xs text-muted-foreground">Memuat kategori…</p>}
-            {error && (
-              <p className="text-xs text-destructive">
-                Gagal memuat kategori.{" "}
-                <button type="button" onClick={reload} className="underline">
-                  Coba Lagi
-                </button>
-              </p>
-            )}
-          </FilterSection>
+            <FilterSection
+              id="trx-filter-category"
+              title="Kategori"
+              searchPlaceholder="Cari kategori"
+              options={categoryOptions}
+              value={draft.categoryId ?? ALL_CATEGORIES}
+              onChange={handleCategoryChange}
+            >
+              {isLoading && <p className="text-xs text-muted-foreground">Memuat kategori…</p>}
+              {error && (
+                <p className="text-xs text-destructive">
+                  Gagal memuat kategori.{" "}
+                  <button type="button" onClick={reload} className="underline">
+                    Coba Lagi
+                  </button>
+                </p>
+              )}
+            </FilterSection>
 
-          <FilterSection
-            id="trx-filter-type"
-            title="Type transaksi"
-            searchPlaceholder="Cari type"
-            options={TYPE_OPTIONS}
-            value={draft.type}
-            onChange={handleTypeChange}
-          />
+            <FilterSection
+              id="trx-filter-type"
+              title="Type transaksi"
+              searchPlaceholder="Cari type"
+              options={TYPE_OPTIONS}
+              value={draft.type}
+              onChange={handleTypeChange}
+            />
 
-          <FilterSection
-            id="trx-filter-date"
-            title="Tanggal"
-            searchPlaceholder="Cari rentang tanggal"
-            options={DATE_OPTIONS}
-            value={draft.dateRange.preset}
-            onChange={handleDatePresetChange}
-          >
-            {draft.dateRange.preset === "custom" && (
-              <CustomDateRange
-                startDate={draft.dateRange.startDate}
-                endDate={draft.dateRange.endDate}
-                onChange={handleCustomDateChange}
-              />
-            )}
-          </FilterSection>
+            <FilterSection
+              id="trx-filter-date"
+              title="Tanggal"
+              searchPlaceholder="Cari rentang tanggal"
+              options={DATE_OPTIONS}
+              value={draft.dateRange.preset}
+              onChange={handleDatePresetChange}
+            >
+              {draft.dateRange.preset === "custom" && (
+                <CustomDateRange
+                  startDate={draft.dateRange.startDate}
+                  endDate={draft.dateRange.endDate}
+                  onChange={handleCustomDateChange}
+                />
+              )}
+            </FilterSection>
+          </div>
+
+          {/* Tanda scroll khusus mobile; hilang saat sudah sampai bawah */}
+          {hasMoreBelow && (
+            <button
+              type="button"
+              onClick={() => bodyElement?.scrollBy({ top: bodyElement.clientHeight * 0.8, behavior: "smooth" })}
+              className="absolute bottom-2 left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-full bg-[#6359E9] px-3 py-1 text-xs font-medium text-white shadow-md md:hidden mb-4"
+            >
+              Geser ke bawah
+              <ChevronDownIcon className="size-4 animate-bounce" aria-hidden />
+            </button>
+          )}
         </div>
 
         <DrawerFooter className="flex-row justify-end gap-2">

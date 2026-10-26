@@ -21,11 +21,21 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { dateFormatter, formatAmount, type Transaction } from "@/components/table/TableComponent"
-import { HEAD_CLASS, SortableHead, useTransactionSort } from "@/components/table/SortableHead"
+import {
+  HEAD_CLASS,
+  SortableHead,
+  fromServerSort,
+  nextServerSort,
+  type SortKey,
+} from "@/components/table/SortableHead"
+import type { TransactionSortValue } from "@/lib/api/transaction"
 import { cn } from "@/lib/utils"
 
 interface TableTransactionDetailProps {
   transactions: readonly Transaction[]
+  // Sort dilakukan di backend agar berlaku ke semua halaman, bukan hanya baris yang sedang tampil
+  sort: TransactionSortValue
+  onSortChange: (sort: TransactionSortValue) => void
   onEdit?: (transaction: Transaction) => void
   onDelete?: (transaction: Transaction) => void
   onBulkUpdate?: (transactions: readonly Transaction[]) => void
@@ -114,13 +124,16 @@ function SelectionSummary({ selected, onClear, onBulkUpdate, onBulkDelete }: Sel
 
 export default function TableTransactionDetail({
   transactions,
+  sort: serverSort,
+  onSortChange,
   onEdit,
   onDelete,
   onBulkUpdate,
   onBulkDelete,
   className,
 }: TableTransactionDetailProps) {
-  const { sort, sorted: sortedTransactions, handleSort } = useTransactionSort(transactions)
+  const sort = fromServerSort(serverSort)
+  const handleSort = (key: SortKey) => onSortChange(nextServerSort(serverSort, key))
   const [selectedCodes, setSelectedCodes] = useState<ReadonlySet<string>>(() => new Set())
   const isEmpty = transactions.length === 0
 
@@ -180,7 +193,7 @@ export default function TableTransactionDetail({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {sortedTransactions.map((trx) => (
+          {transactions.map((trx) => (
             <TableRow
               key={trx.transactionCode}
               data-state={selectedCodes.has(trx.transactionCode) ? "selected" : undefined}
