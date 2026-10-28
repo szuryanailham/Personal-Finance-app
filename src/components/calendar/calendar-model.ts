@@ -23,7 +23,7 @@ export const TRANSACTION_TYPES: readonly TransactionType[] = ["income", "expense
 export const TYPE_CONFIG: Record<TransactionType, { label: string; dotClass: string; textClass: string }> = {
   income: { label: "Income", dotClass: "bg-emerald-500", textClass: "text-emerald-600" },
   expense: { label: "Expense", dotClass: "bg-rose-500", textClass: "text-rose-600" },
-  saving: { label: "Saving", dotClass: "bg-[#6359E9]", textClass: "text-[#6359E9]" },
+  saving: { label: "Saving", dotClass: "bg-[#14864A]", textClass: "text-[#14864A]" },
 }
 
 // Minggu dimulai hari Senin, konsisten dengan getWeekRange

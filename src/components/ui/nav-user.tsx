@@ -1,6 +1,5 @@
 "use client"
 
-import { useRouter } from "next/navigation"
 import { Avatar } from "@base-ui/react/avatar"
 import { Menu } from "@base-ui/react/menu"
 import { ChevronUpIcon, LogOutIcon } from "lucide-react"
@@ -11,8 +10,8 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { useCurrentUser } from "@/hooks/use-current-user"
+import { useLogout } from "@/hooks/use-logout"
 import { getFullName } from "@/lib/api/user"
-import { LOGIN_PATH, clearSession } from "@/lib/auth"
 
 const LOADING_NAME = "Memuat..."
 
@@ -36,16 +35,11 @@ function getInitials(name: string): string {
 }
 
 export function NavUser({ user }: NavUserProps) {
-  const router = useRouter()
+  const handleLogout = useLogout()
   const { user: currentUser, isLoading } = useCurrentUser()
   // Nama dari /api/users/me; bila gagal dimuat, tetap pakai nama default dari props
   const fetchedName = currentUser ? getFullName(currentUser) : ""
   const displayName = fetchedName || (isLoading ? LOADING_NAME : user.name)
-
-  const handleLogout = () => {
-    clearSession()
-    router.replace(LOGIN_PATH)
-  }
 
   return (
     <SidebarMenu>

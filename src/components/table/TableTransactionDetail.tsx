@@ -103,7 +103,7 @@ function SelectionSummary({ selected, onClear, onBulkUpdate, onBulkDelete }: Sel
         <div className="flex items-center gap-2">
           <Button
             size="sm"
-            className="bg-[#6359E9] text-white hover:bg-[#6359E9]/80"
+            className="bg-[#14864A] text-white hover:bg-[#10733e]"
             onClick={() => onBulkUpdate?.(selected)}
           >
             <PencilIcon />
@@ -173,8 +173,8 @@ export default function TableTransactionDetail({
       <Table className="min-w-[900px] table-fixed">
         {isEmpty && <TableCaption>Tidak ada transaksi.</TableCaption>}
         <TableHeader>
-          <TableRow className="bg-[#D1CFEB] hover:bg-[#D1CFEB]">
-            <TableHead className="w-[48px] px-4">
+          <TableRow className="bg-[#DCF8E6] hover:bg-[#DCF8E6]">
+            <TableHead className="w-[48px] bg-[#DCF8E6] px-4">
               <Checkbox
                 checked={isAllSelected}
                 indeterminate={isSomeSelected}

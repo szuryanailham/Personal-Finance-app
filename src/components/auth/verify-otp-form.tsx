@@ -19,7 +19,7 @@ export const OTP_RESEND_PARAM = "resendIn"
 
 const OTP_LENGTH = 6
 const DEFAULT_RESEND_SECONDS = 60
-const BRAND_BUTTON_CLASS = "h-11 w-full bg-[#6359E9] text-white hover:bg-[#6359E9]/90"
+const BRAND_BUTTON_CLASS = "h-11 w-full bg-[#14864A] text-white hover:bg-[#10733e]"
 
 function toResendSeconds(value: string | null): number {
   const seconds = Number(value)
@@ -52,7 +52,7 @@ export function VerifyOtpForm() {
     return (
       <p className="text-sm text-muted-foreground">
         Email tidak ditemukan. Silakan{" "}
-        <Link href="/sign-up" className="font-medium text-[#6359E9] hover:underline">
+        <Link href="/sign-up" className="font-medium text-[#14864A] hover:underline">
           sign up
         </Link>{" "}
         ulang.
@@ -156,7 +156,7 @@ export function VerifyOtpForm() {
             variant="link"
             onClick={handleResend}
             disabled={isBusy}
-            className="h-auto p-0 text-[#6359E9]"
+            className="h-auto p-0 text-[#14864A]"
           >
             {isResending && <Spinner />}
             Kirim ulang

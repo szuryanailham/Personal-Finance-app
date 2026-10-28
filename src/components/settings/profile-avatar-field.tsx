@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { Avatar } from "@base-ui/react/avatar"
-import { CameraIcon, Trash2Icon } from "lucide-react"
+import { CameraIcon, Trash2Icon, UserRoundIcon } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
@@ -10,15 +10,6 @@ import { Button } from "@/components/ui/button"
 const ACCEPTED_TYPES = ["image/png", "image/jpeg", "image/webp"]
 const MAX_SIZE_MB = 2
 const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024
-
-function getInitials(name: string): string {
-  return name
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase())
-    .join("")
-}
 
 function validateImage(file: File): string | null {
   if (!ACCEPTED_TYPES.includes(file.type)) return "Format foto harus PNG, JPG, atau WEBP"
@@ -62,12 +53,13 @@ export function ProfileAvatarField({ name, onChange }: ProfileAvatarFieldProps) 
 
   return (
     <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center">
-      <Avatar.Root className="flex size-24 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#6359E9]/10">
+      <Avatar.Root className="flex size-24 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#14864A]/10">
         {previewUrl && (
           <Avatar.Image src={previewUrl} alt={name} className="size-full object-cover" />
         )}
-        <Avatar.Fallback className="text-2xl font-semibold text-[#6359E9]">
-          {getInitials(name) || "?"}
+        {/* Avatar kosong sementara sampai foto profil tersimpan di backend */}
+        <Avatar.Fallback className="flex size-full items-center justify-center bg-slate-100 text-slate-400">
+          <UserRoundIcon aria-hidden="true" className="size-12" />
         </Avatar.Fallback>
       </Avatar.Root>
 

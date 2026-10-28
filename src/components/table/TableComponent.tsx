@@ -103,7 +103,7 @@ export function TransactionTable({
       <Table className="min-w-[900px] table-fixed">
         {isEmpty && <TableCaption>Tidak ada transaksi.</TableCaption>}
         <TableHeader>
-          <TableRow className="bg-[#D1CFEB] hover:bg-[#D1CFEB]">
+          <TableRow className="bg-[#DCF8E6] hover:bg-[#DCF8E6]">
             <SortableHead label="Kode Transaksi" sortKey="transactionCode" sort={sort} onSort={handleSort} className="w-[160px]" />
             <SortableHead label="Nama" sortKey="description" sort={sort} onSort={handleSort} className="w-[260px]" />
             <SortableHead label="Kategori" sortKey="category" sort={sort} onSort={handleSort} className="w-[200px]" />
@@ -117,7 +117,7 @@ export function TransactionTable({
               <TableCell className={cn(CELL_CLASS, "truncate")}>
                 {trx.transactionCode}
               </TableCell>
-              <TableCell className={cn(CELL_CLASS, "truncate font-medium text-[#282458]")}>
+              <TableCell className={cn(CELL_CLASS, "truncate font-medium text-slate-900")}>
                 {trx.description}
               </TableCell>
               <TableCell className={cn(CELL_CLASS, "truncate")}>
@@ -137,7 +137,7 @@ export function TransactionTable({
         <div className="mt-4 flex justify-center">
           <Link
             href={detailHref}
-            className="text-sm font-medium text-[#282458] hover:underline"
+            className="text-sm font-medium text-[#14864A] hover:underline"
           >
             Lihat detail transaksi
           </Link>

@@ -13,11 +13,11 @@ export interface FilterSectionOption {
 }
 
 const RADIO_ITEM_CLASS =
-  "data-checked:border-[#6359E9] data-checked:bg-[#6359E9] dark:data-checked:bg-[#6359E9]"
+  "data-checked:border-[#14864A] data-checked:bg-[#14864A] dark:data-checked:bg-[#14864A]"
 
 // Mobile: baris opsi polos seperti FilterDrawer; tablet & desktop (md+): kotak ber-border dengan warna saat terpilih
 const OPTION_ROW_CLASS =
-  "flex cursor-pointer items-center justify-between gap-3 rounded-md px-2 py-2.5 transition-colors hover:bg-muted/50 md:rounded-lg md:border md:px-3 md:py-2 md:has-data-checked:border-[#6359E9] md:has-data-checked:bg-[#6359E9]/10"
+  "flex cursor-pointer items-center justify-between gap-3 rounded-md px-2 py-2.5 transition-colors hover:bg-muted/50 md:rounded-lg md:border md:px-3 md:py-2 md:has-data-checked:border-[#14864A] md:has-data-checked:bg-[#14864A]/10"
 
 interface FilterSectionProps {
   id: string

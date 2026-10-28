@@ -48,7 +48,7 @@ export function SettingsNav({ active, onSelect }: SettingsNavProps) {
                 className={cn(
                   "flex items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-medium transition-colors",
                   "hover:bg-muted disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-transparent",
-                  isActive && "bg-[#6359E9]/10 text-[#6359E9] hover:bg-[#6359E9]/10",
+                  isActive && "bg-[#14864A]/10 text-[#14864A] hover:bg-[#14864A]/10",
                 )}
               >
                 <Icon className="size-5 shrink-0" aria-hidden="true" />

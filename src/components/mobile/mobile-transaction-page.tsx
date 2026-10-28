@@ -38,7 +38,7 @@ const TYPE_ICON = Object.fromEntries(
 const AMOUNT_CLASS: Record<TransactionType, string> = {
   income: "text-emerald-600",
   expense: "text-[#282458]",
-  saving: "text-[#6359E9]",
+  saving: "text-[#14864A]",
 }
 
 const INPUT_ICON_CLASS = cn(
@@ -167,7 +167,7 @@ function MobileTransactionList() {
             placeholder="Cari transaksi..."
             value={query}
             onChange={(e) => handleQueryChange(e.target.value)}
-            className={cn("h-11 rounded-xl bg-white pl-9 placeholder:text-[#716EC9]/70", ACCENT_OUTLINE_CLASS)}
+        className={cn("h-11 rounded-xl bg-white pl-9 placeholder:text-[#14864A]/60", ACCENT_OUTLINE_CLASS)}
             aria-label="Cari transaksi"
           />
         </div>

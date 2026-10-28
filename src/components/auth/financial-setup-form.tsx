@@ -23,7 +23,7 @@ const DEFAULT_SAVINGS = 2_000_000
 // Batas backend: @Digits(integer = 13)
 const MAX_AMOUNT_DIGITS = 13
 const HTTP_CONFLICT = 409
-const BRAND_BUTTON_CLASS = "h-10 w-full text-sm sm:h-11 bg-[#6359E9] text-white hover:bg-[#6359E9]/90"
+const BRAND_BUTTON_CLASS = "h-10 w-full text-sm sm:h-11 bg-[#14864A] text-white hover:bg-[#10733e]"
 
 type SetupResult = { input: FinancialSetupRequest } | { error: string }
 

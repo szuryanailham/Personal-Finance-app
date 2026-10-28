@@ -7,7 +7,7 @@ function Spinner({ className, ...props }: React.ComponentProps<"svg">) {
     <LoaderIcon
       role="status"
       aria-label="Loading"
-      className={cn("size-4 animate-spin text-[#6359E9]", className)}
+      className={cn("size-4 animate-spin text-[#14864A]", className)}
       {...props}
     />
   )
@@ -22,12 +22,12 @@ function LoadingState({ label = "Memuat...", className }: LoadingStateProps) {
   return (
     <div
       className={cn(
-        "flex items-center justify-center gap-3 rounded-[14px] border border-violet-200 bg-violet-50 py-10",
+        "flex items-center justify-center gap-3 rounded-[14px] border border-[#14864A]/15 bg-[#EAF7EE] py-10",
         className
       )}
     >
       <Spinner className="size-6" />
-      <span className="text-sm font-medium text-[#6359E9]">{label}</span>
+      <span className="text-sm font-medium text-[#14864A]">{label}</span>
     </div>
   )
 }

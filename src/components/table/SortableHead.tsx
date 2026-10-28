@@ -24,7 +24,7 @@ interface SortableHeadProps {
   align?: "left" | "center" | "right"
 }
 
-export const HEAD_CLASS = "px-4 text-slate-400 text-center"
+export const HEAD_CLASS = "bg-[#DCF8E6] px-4 text-slate-700 text-center"
 
 const JUSTIFY_CLASS: Record<NonNullable<SortableHeadProps["align"]>, string> = {
   left: "justify-start",
@@ -118,18 +118,18 @@ export function SortableHead({ label, sortKey, sort, onSort, className, align = 
         type="button"
         onClick={() => onSort(sortKey)}
         className={cn(
-          "inline-flex w-full items-center gap-1.5 hover:text-[#282458]",
+          "inline-flex w-full items-center gap-1.5 hover:text-[#14864A]",
           JUSTIFY_CLASS[align],
-          isActive && "text-[#282458]"
+          isActive && "text-[#14864A]"
         )}
       >
         <span>{label}</span>
         <span className="flex flex-col leading-none" aria-hidden="true">
           <MdArrowDropUp
-            className={cn("-mb-2 size-4", direction === "asc" ? "text-[#282458]" : "text-[#716EC9]")}
+            className={cn("-mb-2 size-4", direction === "asc" ? "text-[#14864A]" : "text-slate-400")}
           />
           <MdArrowDropDown
-            className={cn("size-4", direction === "desc" ? "text-[#282458]" : "text-[#716EC9]")}
+            className={cn("size-4", direction === "desc" ? "text-[#14864A]" : "text-slate-400")}
           />
         </span>
         <span className="sr-only">Urutkan berdasarkan {label}</span>

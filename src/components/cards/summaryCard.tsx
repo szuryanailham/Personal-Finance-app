@@ -44,7 +44,7 @@ export function SummaryCard({
   return (
     <div
       className={cn(
-        "flex w-full flex-col gap-6 rounded-[14px] border border-violet-200 bg-white px-5 py-6",
+        "flex w-full flex-col gap-6 rounded-[14px] border border-[#14864A]/15 bg-white px-5 py-6",
         className
       )}
     >
@@ -59,7 +59,7 @@ export function SummaryCard({
               onClick={onToggleHidden}
               aria-label={isHidden ? "Tampilkan nominal" : "Sembunyikan nominal"}
               aria-pressed={isHidden}
-              className="rounded-md p-1 text-slate-400 transition-colors hover:bg-violet-50 hover:text-[#282458] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300"
+              className="rounded-md p-1 text-slate-400 transition-colors hover:bg-[#EAF7EE] hover:text-[#14864A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#14864A]/40"
             >
               <ToggleIcon className="size-4" />
             </button>

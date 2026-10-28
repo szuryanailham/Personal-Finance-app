@@ -37,7 +37,7 @@ function NavLink({ label, href, icon: Icon, isActive }: NavItem & { isActive: bo
         aria-current={isActive ? "page" : undefined}
         className={cn(
           "flex h-full flex-col items-center justify-center gap-1 text-xs font-medium transition-colors active:opacity-60",
-          isActive ? "text-[#6359E9]" : "text-slate-500"
+          isActive ? "text-[#14864A]" : "text-slate-500"
         )}
       >
         <Icon className="size-6" aria-hidden />
@@ -58,7 +58,7 @@ export function MobileBottomNav() {
     <>
       <nav
         aria-label="Navigasi utama"
-        className="fixed inset-x-0 bottom-0 z-40 border-t border-violet-100 bg-white pb-[env(safe-area-inset-bottom)]"
+        className="fixed inset-x-0 bottom-0 z-40 border-t border-[#14864A]/10 bg-white pb-[env(safe-area-inset-bottom)]"
       >
         <ul className="grid h-16 grid-cols-5">
           {NAV_ITEMS_LEFT.map((item) => (
@@ -69,7 +69,7 @@ export function MobileBottomNav() {
               type="button"
               aria-label="Tambah transaksi"
               onClick={() => setIsAddOpen(true)}
-              className="-mt-6 flex size-14 items-center justify-center rounded-full bg-[#6B64CD] text-white shadow-lg shadow-[#6B64CD]/40 ring-4 ring-white transition-transform active:scale-95"
+              className="-mt-6 flex size-14 items-center justify-center rounded-full bg-[#14864A] text-white shadow-lg shadow-[#14864A]/30 ring-4 ring-white transition-transform active:scale-95"
             >
               <PlusIcon className="size-7" aria-hidden />
             </button>

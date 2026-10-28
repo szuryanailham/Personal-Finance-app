@@ -22,7 +22,7 @@ interface AddActionMenuProps {
 }
 
 const FLOATING_TRIGGER_CLASS =
-  "fixed right-5 bottom-5 z-40 size-14 rounded-full bg-[#6359E9] text-white shadow-lg hover:bg-[#6359E9]/90 [&_svg:not([class*='size-'])]:size-6"
+  "fixed right-5 bottom-5 z-40 size-14 rounded-full bg-[#14864A] text-white shadow-lg hover:bg-[#10733e] [&_svg:not([class*='size-'])]:size-6"
 
 // Tombol "Add" dengan dropdown; tiap item membuka dialog masing-masing.
 // Dialog dirender di luar menu agar tetap terbuka setelah menu tertutup.

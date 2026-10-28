@@ -149,7 +149,7 @@ export function AddTransactionDialog({ open, onOpenChange }: AddTransactionDialo
               type="submit"
               disabled={isLocked}
               aria-busy={isSubmitting}
-              className="h-11 w-full gap-2 bg-[#6359E9] px-6 text-white hover:bg-[#6359E9]/90"
+              className="h-11 w-full gap-2 bg-[#14864A] px-6 text-white hover:bg-[#10733e]"
             >
               {isSubmitting && <Spinner className="animate-spin text-white" />}
               {isSubmitting ? "Menyimpan..." : "Simpan"}

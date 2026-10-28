@@ -19,7 +19,7 @@ import IncomeMobileIcon from "@/components/images/icons/Income-mobile.svg";
 import SavingMobileIcon from "@/components/images/icons/saving-icon-mobile.svg";
 import ExpenseMobileIcon from "@/components/images/icons/outcome-icon -mobile.svg";
 
-// Icon khusus mobile (latar ungu menyatu dengan card), menggantikan icon desktop di SUMMARY_CONFIG
+// Ikon ringkasan khusus mobile dengan warna dasar yang selaras dengan identitas Artoku.
 const MOBILE_ICONS: Record<keyof TransactionStat, typeof BalanceMobileIcon> = {
   totalBalance: BalanceMobileIcon,
   totalIncome: IncomeMobileIcon,
@@ -93,7 +93,7 @@ export function SummaryCarousel() {
             onClick={() => api?.scrollTo(index)}
             className={cn(
               "h-2 rounded-full transition-all",
-              index === activeIndex ? "w-5 bg-[#6359E9]" : "w-2 bg-violet-200"
+              index === activeIndex ? "w-5 bg-[#14864A]" : "w-2 bg-emerald-100"
             )}
           />
         ))}

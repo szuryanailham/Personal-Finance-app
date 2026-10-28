@@ -100,9 +100,9 @@ export function OtpInput({ id, length, value, onChange, disabled, autoFocus }: O
           autoFocus={autoFocus && index === 0}
           className={cn(
             "size-12 min-w-0 rounded-xl border border-input bg-transparent text-center text-xl font-semibold tabular-nums transition-colors outline-none sm:size-14",
-            "focus-visible:border-[#6359E9] focus-visible:ring-3 focus-visible:ring-[#6359E9]/30",
+            "focus-visible:border-[#14864A] focus-visible:ring-3 focus-visible:ring-[#14864A]/30",
             "disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30",
-            value[index] && "border-[#6359E9]/60"
+            value[index] && "border-[#14864A]/60"
           )}
         />
       ))}

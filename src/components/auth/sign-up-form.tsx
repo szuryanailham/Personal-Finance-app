@@ -16,7 +16,7 @@ import { signUp, type SignUpRequest } from "@/lib/api/auth"
 const INPUT_CLASS = "h-11 px-3"
 const PASSWORD_MIN_LENGTH = 8
 const NAME_MAX_LENGTH = 100
-const LINK_CLASS = "font-medium text-[#6359E9] underline-offset-4 hover:underline"
+const LINK_CLASS = "font-medium text-[#14864A] underline-offset-4 hover:underline"
 
 type SignUpResult = { input: SignUpRequest } | { error: string }
 
@@ -138,7 +138,7 @@ export function SignUpForm() {
               id="sign-up-agree"
               checked={hasAgreed}
               onCheckedChange={setHasAgreed}
-              className="mt-0.5 data-checked:border-[#6359E9] data-checked:bg-[#6359E9]"
+              className="mt-0.5 data-checked:border-[#14864A] data-checked:bg-[#14864A]"
             />
             <Label htmlFor="sign-up-agree" className="text-sm font-normal leading-snug">
               <span>
@@ -162,7 +162,7 @@ export function SignUpForm() {
         <Button
           type="submit"
           disabled={!hasAgreed}
-          className="h-11 w-full bg-[#6359E9] text-white hover:bg-[#6359E9]/90"
+          className="h-11 w-full bg-[#14864A] text-white hover:bg-[#10733e]"
         >
           {isSubmitting && <Spinner />}
           {isSubmitting ? "Membuat akun..." : "Daftar"}
