@@ -113,11 +113,11 @@ export function EditTransactionDialog({ transaction, onClose }: EditTransactionD
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      {/* Mobile: padding lebih kecil dan bisa di-scroll agar form tidak terpotong di layar pendek */}
-      <DialogContent className="max-h-[calc(100svh-2rem)] overflow-y-auto p-4 sm:max-w-xl sm:p-6">
+      {/* Panel tetap stabil; hanya area field yang dapat di-scroll di layar pendek */}
+      <DialogContent className="flex max-h-[calc(100svh-2rem)] flex-col overflow-hidden overscroll-none p-4 sm:max-w-xl sm:p-6">
         {/* key memaksa form di-reset (defaultValue baru) saat transaksi yang diedit berganti */}
         {transaction && initial && (
-          <form key={transaction.transactionCode} onSubmit={handleSubmit} className="flex flex-col gap-3 sm:gap-4">
+          <form key={transaction.transactionCode} onSubmit={handleSubmit} className="flex min-h-0 flex-1 flex-col gap-3 sm:gap-4">
             <DialogHeader>
               <div className="mb-1 flex size-10 items-center justify-center rounded-full bg-[#6359E9]/10 text-[#6359E9] sm:mb-2 sm:size-[52px]">
                 <PencilIcon />
@@ -130,56 +130,58 @@ export function EditTransactionDialog({ transaction, onClose }: EditTransactionD
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
-            <fieldset disabled={isSubmitting} className="contents">
-              <FieldGroup>
-                <Field>
-                  <Label htmlFor="edit-transaction-name">Judul Transaksi</Label>
-                  <Input
-                    id="edit-transaction-name"
-                    name="transactionName"
-                    defaultValue={initial.transactionName}
-                    className={INPUT_CLASS}
-                    required
+            <div className="-mx-1 min-h-0 flex-1 touch-pan-y overflow-y-auto overscroll-contain px-1 pb-1">
+              <fieldset disabled={isSubmitting}>
+                <FieldGroup>
+                  <Field>
+                    <Label htmlFor="edit-transaction-name">Judul Transaksi</Label>
+                    <Input
+                      id="edit-transaction-name"
+                      name="transactionName"
+                      defaultValue={initial.transactionName}
+                      className={INPUT_CLASS}
+                      required
+                    />
+                  </Field>
+                  <TransactionCategoryField
+                    enabled={isOpen}
+                    idPrefix="edit-transaction-category"
+                    selected={toCategory(transaction)}
                   />
-                </Field>
-                <TransactionCategoryField
-                  enabled={isOpen}
-                  idPrefix="edit-transaction-category"
-                  selected={toCategory(transaction)}
-                />
-                <Field>
-                  <Label htmlFor="edit-transaction-amount">Jumlah</Label>
-                  <RupiahAmountInput
-                    id="edit-transaction-amount"
-                    name="amount"
-                    defaultValue={initial.amount}
-                    className={INPUT_CLASS}
-                    required
-                  />
-                </Field>
-                <Field>
-                  <Label htmlFor="edit-transaction-date">Tanggal</Label>
-                  <Input
-                    id="edit-transaction-date"
-                    name="date"
-                    type="date"
-                    defaultValue={initial.date}
-                    className={INPUT_CLASS}
-                    required
-                  />
-                </Field>
-                <Field>
-                  <Label htmlFor="edit-transaction-description">Deskripsi</Label>
-                  <Textarea
-                    id="edit-transaction-description"
-                    name="description"
-                    defaultValue={initial.description}
-                    rows={3}
-                    className="min-h-20 px-3 py-2 sm:min-h-24"
-                  />
-                </Field>
-              </FieldGroup>
-            </fieldset>
+                  <Field>
+                    <Label htmlFor="edit-transaction-amount">Jumlah</Label>
+                    <RupiahAmountInput
+                      id="edit-transaction-amount"
+                      name="amount"
+                      defaultValue={initial.amount}
+                      className={INPUT_CLASS}
+                      required
+                    />
+                  </Field>
+                  <Field>
+                    <Label htmlFor="edit-transaction-date">Tanggal</Label>
+                    <Input
+                      id="edit-transaction-date"
+                      name="date"
+                      type="date"
+                      defaultValue={initial.date}
+                      className={INPUT_CLASS}
+                      required
+                    />
+                  </Field>
+                  <Field>
+                    <Label htmlFor="edit-transaction-description">Deskripsi</Label>
+                    <Textarea
+                      id="edit-transaction-description"
+                      name="description"
+                      defaultValue={initial.description}
+                      rows={3}
+                      className="min-h-20 px-3 py-2 sm:min-h-24"
+                    />
+                  </Field>
+                </FieldGroup>
+              </fieldset>
+            </div>
             <DialogFooter className="-mx-4 -mb-4 mt-1 grid grid-cols-2 gap-3 px-4 py-4 sm:-mx-6 sm:-mb-6 sm:mt-2 sm:gap-4 sm:px-6 sm:py-5">
               <DialogClose
                 disabled={isSubmitting}

@@ -54,7 +54,7 @@ export function HowItWorksSection() {
               className={`flex flex-col gap-7 md:items-center md:gap-10 lg:gap-16 ${index % 2 === 1 ? "md:flex-row-reverse" : "md:flex-row"}`}
             >
               <div className="flex w-full flex-col justify-center md:w-1/2">
-                <span className="font-inter text-sm font-semibold tracking-[0.16em] text-[#14864A]">
+                <span className="font-inter text-xl font-semibold tracking-[0.16em] text-[#14864A] sm:text-2xl">
                   {step.number}
                 </span>
                 <h3 className="mt-3 max-w-xl font-inter text-2xl leading-tight font-semibold tracking-[-0.03em] text-slate-950 sm:text-3xl lg:text-4xl">

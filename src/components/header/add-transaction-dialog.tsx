@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Image from "next/image"
 import { CircleCheckIcon } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
@@ -26,6 +26,7 @@ import { TransactionCategoryField } from "./transaction-category-field"
 import { toTransactionInput } from "./transaction-form"
 import { wait, withMinLoading } from "@/lib/async"
 import { useTransactionRevision } from "./transaction-revision-context"
+import { toLocalDateString } from "@/lib/date"
 
 const INPUT_CLASS = "h-11 px-3"
 const SUCCESS_ALERT_MS = 1500
@@ -44,9 +45,14 @@ export function AddTransactionDialog({ open, onOpenChange }: AddTransactionDialo
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isSuccess, setIsSuccess] = useState(false)
+  const [transactionDate, setTransactionDate] = useState("")
   const { notifyTransactionsChanged } = useTransactionRevision()
   // Form tetap terkunci selama request berjalan dan selama alert sukses tampil
   const isLocked = isSubmitting || isSuccess
+
+  useEffect(() => {
+    if (open) setTransactionDate(toLocalDateString(new Date()))
+  }, [open])
 
   function closeDialog() {
     setError(null)
@@ -90,7 +96,7 @@ export function AddTransactionDialog({ open, onOpenChange }: AddTransactionDialo
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       {/* Tinggi dibatasi layar; di mobile hanya area field yang di-scroll, header & tombol tetap terlihat */}
-      <DialogContent className="flex max-h-[calc(100svh-2rem)] flex-col p-4 sm:max-w-xl sm:p-6">
+      <DialogContent className="flex max-h-[calc(100svh-2rem)] flex-col overflow-hidden overscroll-none p-4 sm:max-w-xl sm:p-6">
         {/* Form diletakkan di dalam DialogContent karena konten dirender lewat portal */}
         <form onSubmit={handleSubmit} className="flex min-h-0 flex-col gap-4">
           <DialogHeader>
@@ -102,7 +108,7 @@ export function AddTransactionDialog({ open, onOpenChange }: AddTransactionDialo
              Isi form transaksi di bawah ini
             </DialogDescription>
           </DialogHeader>
-          <div className="-mx-1 min-h-0 flex-1 overflow-y-auto px-1 pb-1 flex flex-col gap-4">
+          <div className="-mx-1 min-h-0 flex-1 touch-pan-y overflow-y-auto overscroll-contain px-1 pb-1 flex flex-col gap-4">
           {error && (
             <Alert variant="destructive">
               <AlertDescription>{error}</AlertDescription>
@@ -131,7 +137,15 @@ export function AddTransactionDialog({ open, onOpenChange }: AddTransactionDialo
               </Field>
               <Field>
                 <Label htmlFor="transaction-date">Tanggal</Label>
-                <Input id="transaction-date" name="date" type="date" className={INPUT_CLASS} required />
+                <Input
+                  id="transaction-date"
+                  name="date"
+                  type="date"
+                  className={INPUT_CLASS}
+                  value={transactionDate}
+                  onChange={(event) => setTransactionDate(event.target.value)}
+                  required
+                />
               </Field>
               <Field>
                 <Label htmlFor="transaction-description">Deskripsi</Label>
