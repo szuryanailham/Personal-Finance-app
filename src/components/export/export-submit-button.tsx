@@ -16,7 +16,7 @@ export function ExportSubmitButton({ state, className }: ExportSubmitButtonProps
     <Button
       onClick={state.exportFile}
       disabled={state.isExportDisabled}
-      className={cn("bg-[#6359E9] text-white hover:bg-[#6359E9]/90", className)}
+      className={cn("bg-[#14864A] text-white hover:bg-[#10733e]", className)}
     >
       {state.isExporting && <Loader2 data-icon="inline-start" className="animate-spin" />}
       {state.isExporting ? "Mengexport..." : "Export"}

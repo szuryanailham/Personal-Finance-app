@@ -36,14 +36,14 @@ const RANGE_OPTIONS: { value: ExportRange; label: string; description: string }[
 ]
 
 // Mobile: jarak dari subtitle ke input lebih lega; desktop (drawer) tetap rapat
-const SELECT_TRIGGER_CLASS = "mt-3 h-11 w-full border-[#8C89B4] px-3 md:mt-2"
+const SELECT_TRIGGER_CLASS = "mt-3 h-11 w-full border-[#14864A]/40 focus-visible:border-[#14864A] focus-visible:ring-[#14864A]/30 px-3 md:mt-2"
 
 type FormatOptionItem = (typeof FORMAT_OPTIONS)[number]
 
 function FormatOption({ option: { label, description, icon: Icon } }: { option: FormatOptionItem }) {
   return (
     <>
-      <Icon className="size-4 text-[#6359E9]" />
+      <Icon className="size-4 text-[#14864A]" />
       <span>{label}</span>
       <span className="truncate text-xs text-muted-foreground">{description}</span>
     </>
