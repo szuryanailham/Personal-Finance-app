@@ -21,8 +21,8 @@ export function HeadDashboard({ title }: HeadDashboardProps) {
   return (
     <header className="flex w-full items-center justify-between gap-4 py-10">
       <div className="flex items-center gap-2">
-        {/* Sidebar menjadi Sheet di bawah breakpoint md, jadi butuh tombol pemicu */}
-        <SidebarTrigger className="md:hidden" aria-label="Buka sidebar" />
+        {/* Sidebar menjadi panel layar penuh di tablet, jadi tombol tersedia hingga breakpoint lg */}
+        <SidebarTrigger className="lg:hidden" aria-label="Buka sidebar" />
         <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
       </div>
 

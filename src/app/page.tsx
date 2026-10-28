@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { AUTH_EXPIRED_AT_COOKIE, AUTH_TOKEN_COOKIE, isSessionValid } from "@/lib/auth";
 import heroIllustration from "@/components/images/illustrations/ilustration-hero.svg";
 import { HomeNavbar } from "@/components/home/home-navbar";
+import { FeatureListSection } from "@/components/home/feature-list-section";
 import { HowItWorksSection } from "@/components/home/how-it-works-section";
 import { LandingCtaSection } from "@/components/home/landing-cta-section";
 import { ValuePropositionSection } from "@/components/home/value-proposition-section";
@@ -52,6 +53,7 @@ export default async function Home() {
           </div>
         </section>
         <ValuePropositionSection />
+        <FeatureListSection />
         <HowItWorksSection />
         <LandingCtaSection />
       </main>

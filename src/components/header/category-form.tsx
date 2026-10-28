@@ -95,7 +95,7 @@ export function CategoryForm({ editing, onSubmit, onCancelEdit }: CategoryFormPr
           type="submit"
           disabled={isSubmitting}
           aria-busy={isSubmitting}
-          className="h-11 min-w-40 gap-2 bg-[#6359E9] px-6 text-white hover:bg-[#6359E9]/90"
+          className="h-11 min-w-40 gap-2 bg-[#14864A] px-6 text-white hover:bg-[#10733e]"
         >
           {isSubmitting && <Spinner className="text-white" />}
           {submitLabel(Boolean(editing), isSubmitting)}
