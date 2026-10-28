@@ -4,7 +4,8 @@ import Image from "next/image"
 import Link from "next/link"
 import { ArrowDownLeftIcon, ArrowUpRightIcon, ArrowRightIcon } from "lucide-react"
 import { CATEGORY_OPTIONS } from "@/components/header/category-type-field"
-import { formatAmount, type TransactionType } from "@/components/table/TableComponent"
+import { dateFormatter, formatAmount, type TransactionType } from "@/components/table/TableComponent"
+import { compareNewestFirst } from "@/components/table/SortableHead"
 import { useTransactions } from "@/hooks/use-transactions"
 import { toLocalDateString } from "@/lib/date"
 
@@ -19,15 +20,15 @@ const TYPE_STYLE: Record<TransactionType, { icon: typeof ArrowDownLeftIcon; amou
 }
 
 export function MobileTodayTransactions() {
-  const today = toLocalDateString(new Date())
-  const { transactions, isLoading, error } = useTransactions(5, 0, "", today)
+  const { transactions, isLoading, error } = useTransactions(5)
+  const latestTransactions = [...transactions].sort(compareNewestFirst)
 
   return (
-    <section aria-labelledby="today-transactions-title" className="mt-8">
+    <section aria-labelledby="latest-transactions-title" className="mt-8">
       <div className="mb-3 flex items-center justify-between">
         <div>
-          <h2 id="today-transactions-title" className="text-base font-bold text-slate-900">
-            Transaksi hari ini
+          <h2 id="latest-transactions-title" className="text-base font-bold text-slate-900">
+            Transaksi terbaru
           </h2>
           <p className="mt-0.5 text-xs text-slate-500">Aktivitas keuangan terbaru</p>
         </div>
@@ -41,22 +42,22 @@ export function MobileTodayTransactions() {
 
       {error ? (
         <div className="rounded-2xl border border-rose-100 bg-white px-4 py-5 text-center text-sm text-rose-600">
-          Gagal memuat transaksi hari ini.
+          Gagal memuat transaksi terbaru.
         </div>
       ) : isLoading ? (
-        <div className="flex flex-col gap-2.5" aria-label="Memuat transaksi hari ini" aria-busy="true">
+        <div className="flex flex-col gap-2.5" aria-label="Memuat transaksi terbaru" aria-busy="true">
           {[0, 1, 2].map((item) => (
             <div key={item} className="h-[74px] animate-pulse rounded-2xl bg-emerald-50" />
           ))}
         </div>
       ) : transactions.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-emerald-200 bg-white px-4 py-6 text-center">
-          <p className="text-sm font-medium text-slate-700">Belum ada transaksi hari ini</p>
+          <p className="text-sm font-medium text-slate-700">Belum ada transaksi</p>
           <p className="mt-1 text-xs text-slate-500">Transaksi yang kamu catat akan muncul di sini.</p>
         </div>
       ) : (
         <ul className="flex flex-col gap-2.5">
-          {transactions.map((transaction) => {
+          {latestTransactions.map((transaction) => {
             const style = TYPE_STYLE[transaction.type]
             const TypeIcon = style.icon
 
@@ -88,7 +89,9 @@ export function MobileTodayTransactions() {
                     <span className={`block text-sm font-bold ${style.amount}`}>
                       {formatAmount(transaction.type, transaction.amount)}
                     </span>
-                    <span className="mt-1 block text-[11px] text-slate-400">{style.label}</span>
+                    <time dateTime={toLocalDateString(transaction.date)} className="mt-1 block text-[11px] text-slate-400">
+                      {dateFormatter.format(transaction.date)}
+                    </time>
                   </span>
                 </Link>
               </li>

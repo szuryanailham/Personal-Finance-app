@@ -40,7 +40,7 @@ function compareTransactions(a: Transaction, b: Transaction, key: SortKey): numb
 
 // Urutan default: tanggal terbaru dulu; di tanggal yang sama, kode transaksi
 // (TRX-yyyyMMdd-NNN, berurutan saat dibuat) terbesar = yang paling baru dibuat
-function compareNewestFirst(a: Transaction, b: Transaction): number {
+export function compareNewestFirst(a: Transaction, b: Transaction): number {
   return (
     compareTransactions(b, a, "date") || compareTransactions(b, a, "transactionCode")
   )
