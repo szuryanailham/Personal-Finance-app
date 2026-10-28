@@ -33,9 +33,9 @@ const ACTION_BUTTON_CLASS = cn("min-w-28 px-5 max-sm:hidden sm:mr-auto", ACCENT_
 // Di mobile input berbagi lebar sama rata; sm ke atas lebarnya tetap
 const INPUT_WRAPPER_CLASS = "group/accent relative min-w-0 flex-1 sm:flex-none"
 
-// Input search & date disamakan dengan tombol Export (outline ungu, tinggi h-9)
+// Input search & date disamakan dengan tombol Export (outline hijau, tinggi h-9)
 const ACCENT_INPUT_CLASS = cn(
-  "h-9 pl-8 transition-colors placeholder:text-[#716EC9]/70 hover:placeholder:text-[#9A97F0]/70",
+  "h-9 pl-8 transition-colors placeholder:text-[#14864A]/60 hover:placeholder:text-[#10733e]/70",
   ACCENT_OUTLINE_CLASS
 )
 
@@ -45,7 +45,7 @@ const INPUT_ICON_CLASS = cn(
 )
 
 const RESET_BUTTON_CLASS = cn(
-  "absolute top-1/2 right-8 flex size-5 -translate-y-1/2 items-center justify-center rounded-sm transition-colors hover:bg-[#716EC9]/15 focus-visible:ring-2 focus-visible:ring-[#716EC9] focus-visible:outline-none",
+  "absolute top-1/2 right-8 flex size-5 -translate-y-1/2 items-center justify-center rounded-sm transition-colors hover:bg-[#14864A]/15 focus-visible:ring-2 focus-visible:ring-[#14864A] focus-visible:outline-none",
   ACCENT_ICON_CLASS
 )
 

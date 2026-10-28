@@ -28,7 +28,7 @@ function MobileTransactionActions({ transaction }: MobileTransactionActionsProps
     <>
       <div className="flex gap-3">
         <Button
-          className="h-11 flex-1 gap-2 bg-[#6359E9] text-white hover:bg-[#6359E9]/90"
+          className="h-11 flex-1 gap-2 bg-[#14864A] text-white hover:bg-[#10733e]"
           onClick={() => setIsEditing(true)}
         >
           <PencilIcon />
@@ -62,7 +62,7 @@ export function MobileTransactionDetailPage({ transactionCode }: MobileTransacti
     <div className="flex flex-col gap-4 px-4 pt-5 pb-6">
       <Link
         href={TRANSACTION_PATH}
-        className="flex w-fit items-center gap-1 text-sm font-medium text-[#6359E9]"
+        className="flex w-fit items-center gap-1 text-sm font-medium text-[#14864A]"
       >
         <ChevronLeftIcon className="size-4" />
         Kembali ke Transaksi

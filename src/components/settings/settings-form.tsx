@@ -103,7 +103,7 @@ export function SettingsForm({ user }: SettingsFormProps) {
           </FieldGroup>
 
           <div className="flex justify-end">
-            <Button type="submit" size="lg" className="h-11 w-full bg-[#6359E9] px-6 text-white hover:bg-[#6359E9]/90 sm:w-auto">
+            <Button type="submit" size="lg" className="h-11 w-full bg-[#14864A] px-6 text-white hover:bg-[#10733e] sm:w-auto">
               Simpan Perubahan
             </Button>
           </div>

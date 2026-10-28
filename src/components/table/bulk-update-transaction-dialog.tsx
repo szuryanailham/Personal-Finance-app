@@ -127,7 +127,7 @@ export function BulkUpdateTransactionDialog({ transactions, onClose }: BulkUpdat
       <DialogContent className="sm:max-w-xl p-6">
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <DialogHeader>
-            <div className="mb-2 flex size-[52px] items-center justify-center rounded-full bg-[#6359E9]/10 text-[#6359E9]">
+            <div className="mb-2 flex size-[52px] items-center justify-center rounded-full bg-[#14864A]/10 text-[#14864A]">
               <PencilIcon />
             </div>
             <DialogTitle>Update Massal Transaksi</DialogTitle>
@@ -175,7 +175,7 @@ export function BulkUpdateTransactionDialog({ transactions, onClose }: BulkUpdat
               type="submit"
               disabled={isSubmitting || !hasSelectedField}
               aria-busy={isSubmitting}
-              className="h-11 w-full gap-2 bg-[#6359E9] px-6 text-white hover:bg-[#6359E9]/90"
+              className="h-11 w-full gap-2 bg-[#14864A] px-6 text-white hover:bg-[#10733e]"
             >
               {isSubmitting && <Spinner className="animate-spin text-white" />}
               {isSubmitting ? "Menyimpan..." : `Update ${count} Transaksi`}

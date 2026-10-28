@@ -21,7 +21,7 @@ import type { UseCategoryStatisticResult } from "@/hooks/use-category-statistic"
 import type { CategoryStatisticItem } from "@/lib/api/category"
 
 // Warna ditentukan FE; dipakai berurutan dan berulang jika kategori lebih banyak dari palet
-export const CATEGORY_COLORS = ["#6359E9", "#64CFF6", "#282458", "#9A97F0", "#8C89B4"] as const
+export const CATEGORY_COLORS = ["#0F5F37", "#14864A", "#2D9A5F", "#54B879", "#91D6A9"] as const
 
 const currencyFormatter = new Intl.NumberFormat("id-ID")
 const periodFormatter = new Intl.DateTimeFormat("id-ID", { day: "numeric", month: "long", year: "numeric" })

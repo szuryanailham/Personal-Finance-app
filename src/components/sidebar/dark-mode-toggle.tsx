@@ -31,7 +31,7 @@ export function DarkModeToggle() {
         <span
           aria-hidden="true"
           className={`ml-auto flex h-5 w-9 shrink-0 items-center rounded-full p-0.5 transition-colors ${
-            isOn ? "bg-indigo-600" : "bg-white/30"
+            isOn ? "bg-[#10733e]" : "bg-white/30"
           }`}
         >
           <span

@@ -1,6 +1,6 @@
 import Image from "next/image"
 import Link from "next/link"
-import sidebarLogo from "@/components/images/sidebar/artoku-logo.png"
+import sidebarLogo from "@/components/images/icons/logo-dashboard.svg"
 import anylisisMenuLogo from "@/components/images/icons/bar-line-chart.svg"
 import TransactionMenuLogo from "@/components/images/icons/wallet-02.svg"
 import SettingMenuLogo from "@/components/images/icons/settings-01.svg"
@@ -28,18 +28,20 @@ const CURRENT_USER: SidebarUser = {
 }
 
 const ICON_SQUARE_COLOR =
-  "bg-white transition-colors group-hover/menu-button:bg-indigo-600 group-data-active/menu-button:bg-indigo-600"
+  "bg-white transition-colors group-hover/menu-button:bg-[#10733e] group-data-active/menu-button:bg-[#10733e]"
 
 export function AppSidebar() {
   return (
     <Sidebar className="overflow-hidden rounded-r-2xl">
       <SidebarHeader>
-        <div className="flex items-center">
+        <div className="flex items-center p-2">
           <Image
             src={sidebarLogo}
             alt="Artoku"
             priority
-            className="h-28 w-auto"
+            width={205}
+            height={79}
+            className="h-16 w-auto"
           />
         </div>
       </SidebarHeader>

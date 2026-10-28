@@ -11,7 +11,7 @@ interface MobileShellProps {
 // Main sengaja tanpa padding samping agar konten bisa full lebar layar; gutter diatur per section.
 export function MobileShell({ children }: MobileShellProps) {
   return (
-    <div className="flex min-h-svh w-full flex-col overflow-x-hidden bg-[#F5F1FF]">
+    <div className="flex min-h-svh w-full flex-col overflow-x-hidden bg-[#F7FBF8]">
       <MobileHeader />
       <main className="flex-1 pb-[calc(5rem+env(safe-area-inset-bottom))]">{children}</main>
       <MobileBottomNav />

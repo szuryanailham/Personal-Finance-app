@@ -53,7 +53,7 @@ export function ProfileAvatarField({ name, onChange }: ProfileAvatarFieldProps) 
 
   return (
     <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center">
-      <Avatar.Root className="flex size-24 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#6359E9]/10">
+      <Avatar.Root className="flex size-24 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#14864A]/10">
         {previewUrl && (
           <Avatar.Image src={previewUrl} alt={name} className="size-full object-cover" />
         )}

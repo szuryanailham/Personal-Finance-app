@@ -237,7 +237,7 @@ export function TransactionFilterDrawer({ value, onApply }: TransactionFilterDra
             {isActive && (
               <span
                 aria-hidden
-                className="absolute top-1.5 right-1.5 size-2 rounded-full bg-[#6359E9]"
+                className="absolute top-1.5 right-1.5 size-2 rounded-full bg-[#14864A]"
               />
             )}
           </Button>
@@ -304,7 +304,7 @@ export function TransactionFilterDrawer({ value, onApply }: TransactionFilterDra
             <button
               type="button"
               onClick={() => bodyElement?.scrollBy({ top: bodyElement.clientHeight * 0.8, behavior: "smooth" })}
-              className="absolute bottom-2 left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-full bg-[#6359E9] px-3 py-1 text-xs font-medium text-white shadow-md md:hidden mb-4"
+              className="absolute bottom-2 left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-full bg-[#14864A] px-3 py-1 text-xs font-medium text-white shadow-md md:hidden mb-4"
             >
               Geser ke bawah
               <ChevronDownIcon className="size-4 animate-bounce" aria-hidden />
@@ -325,7 +325,7 @@ export function TransactionFilterDrawer({ value, onApply }: TransactionFilterDra
           <Button
             onClick={handleApply}
             disabled={!isDateFilterComplete(draft.dateRange)}
-            className="bg-[#6359E9] text-white hover:bg-[#6359E9]/90"
+            className="bg-[#14864A] text-white hover:bg-[#10733e]"
           >
             Terapkan
           </Button>

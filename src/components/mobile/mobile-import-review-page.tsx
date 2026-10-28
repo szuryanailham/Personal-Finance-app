@@ -53,7 +53,7 @@ function MobileImportReview({ importId, initialRows }: MobileImportReviewProps) 
 function EmptyImport() {
   return (
     <div className="flex flex-col items-center gap-3 rounded-2xl bg-white px-4 py-12 text-center">
-      <div className="flex size-12 items-center justify-center rounded-full bg-[#6359E9]/10 text-[#6359E9]">
+      <div className="flex size-12 items-center justify-center rounded-full bg-[#14864A]/10 text-[#14864A]">
         <FileSpreadsheet className="size-6" />
       </div>
       <h2 className="text-base font-semibold">Belum ada data import</h2>

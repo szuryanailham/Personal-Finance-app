@@ -179,7 +179,7 @@ export function FilterDrawer({
                   className="flex cursor-pointer items-center gap-3 rounded-md px-2 py-2.5 hover:bg-muted/50"
                 >
                   {showIcons && (
-                    <OptionIcon className="size-5 shrink-0 text-[#6359E9]" aria-hidden />
+                    <OptionIcon className="size-5 shrink-0 text-[#14864A]" aria-hidden />
                   )}
                   <span className="flex flex-1 flex-col">
                     <span className="text-sm font-medium">{option.label}</span>
@@ -188,7 +188,7 @@ export function FilterDrawer({
                   <RadioGroupItem
                     value={option.value}
                     id={id}
-                    className="data-checked:border-[#6359E9] data-checked:bg-[#6359E9] dark:data-checked:bg-[#6359E9]"
+                    className="data-checked:border-[#14864A] data-checked:bg-[#14864A] dark:data-checked:bg-[#14864A]"
                   />
                 </label>
               )
@@ -232,7 +232,7 @@ export function FilterDrawer({
         <DrawerFooter className="flex-row gap-3">
           <DrawerClose render={<Button variant="outline" className="h-[34px] flex-1 border-[#8C89B4]">{copy.cancel}</Button>} />
           <Button onClick={handleApply} disabled={isApplyDisabled}
-            className="h-[34px] flex-1 bg-[#6359E9] text-white hover:bg-[#6359E9]/90">
+            className="h-[34px] flex-1 bg-[#14864A] text-white hover:bg-[#10733e]">
             {copy.apply}
           </Button>
         </DrawerFooter>

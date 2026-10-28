@@ -11,6 +11,7 @@
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-plus-jakarta-sans);
   --font-manrope: var(--font-manrope-sans);
+  --font-inter: var(--font-inter-sans);
   --font-display: var(--font-anton-sc);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -51,6 +52,12 @@
 }
 
 :root {
+  /* Keep local development independent from Google Fonts network access. */
+  --font-plus-jakarta-sans: Arial, Helvetica, sans-serif;
+  --font-manrope-sans: Arial, Helvetica, sans-serif;
+  --font-anton-sc: Impact, "Arial Narrow", sans-serif;
+  --font-geist-mono: "SFMono-Regular", Consolas, monospace;
+  --font-inter-sans: Arial, Helvetica, sans-serif;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);

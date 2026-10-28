@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { AppShell } from "@/components/layout/app-shell";
 import { SummaryCarousel } from "@/components/mobile/summary-carousel";
 import { MenuGrid } from "@/components/mobile/menu-grid";
+import { MobileTodayTransactions } from "@/components/mobile/mobile-today-transactions";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -16,6 +17,7 @@ export default function DashboardLayout({ children }: LayoutProps<"/dashboard">)
           <SummaryCarousel />
           <div className="px-4">
             <MenuGrid />
+            <MobileTodayTransactions />
           </div>
         </div>
       }

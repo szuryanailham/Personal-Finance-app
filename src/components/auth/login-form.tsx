@@ -116,7 +116,7 @@ export function LoginForm() {
         )}
         <Button
           type="submit"
-          className="h-11 w-full bg-[#6359E9] text-white hover:bg-[#6359E9]/90"
+          className="h-11 w-full bg-[#14864A] text-white hover:bg-[#10733e]"
         >
           {isSubmitting && <Spinner />}
           {isSubmitting ? "Memproses..." : "Login"}

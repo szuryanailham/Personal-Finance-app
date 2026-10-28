@@ -43,11 +43,19 @@ export function MobileSummaryCard({
   return (
     <div
       className={cn(
-        "flex min-h-44 w-full flex-col justify-between gap-6 rounded-2xl bg-[#6B64CD] p-5 mt-10 text-white",
+        "relative isolate flex min-h-44 w-full flex-col justify-between gap-6 overflow-hidden rounded-2xl bg-gradient-to-br from-[#168D50] via-[#14864A] to-[#0D6738] p-5 mt-10 text-white shadow-[0_12px_28px_-14px_rgba(20,134,74,0.75)]",
         className
       )}
     >
-      <div className="flex items-center justify-between">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -right-8 -top-12 size-40 rounded-full border border-white/10" />
+        <div className="absolute -right-1 -top-5 size-26 rounded-full border border-white/10" />
+        <div className="absolute right-8 top-7 size-3 rounded-full bg-white/15" />
+        <div className="absolute -bottom-14 -left-10 size-36 rounded-full bg-emerald-200/10 blur-xl" />
+        <div className="absolute bottom-5 right-5 size-1 rounded-full bg-white/35 shadow-[8px_-8px_0_rgba(255,255,255,0.2),16px_0_0_rgba(255,255,255,0.15),24px_-8px_0_rgba(255,255,255,0.2)]" />
+      </div>
+
+      <div className="relative z-10 flex items-center justify-between">
         <Image src={icon} alt="" width={ICON_SIZE} height={ICON_SIZE} unoptimized />
         {hasPercentage && (
           <span
@@ -61,7 +69,7 @@ export function MobileSummaryCard({
         )}
       </div>
 
-      <div className="flex flex-col gap-1">
+      <div className="relative z-10 flex flex-col gap-1">
         <div className="flex items-center gap-1.5">
           <span className="text-sm text-white/70">{title}</span>
           {onToggleHidden && (

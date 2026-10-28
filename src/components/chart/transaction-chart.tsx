@@ -83,11 +83,11 @@ const toFinanceDatum = (item: StatisticItem): FinanceDatum => ({
 const chartConfig = {
   income: {
     label: "Income",
-    color: "#64CFF6",
+    color: "#86CFA3",
   },
   expense: {
     label: "Expense",
-    color: "#6359E9",
+    color: "#EA463F",
   },
 } satisfies ChartConfig
 

@@ -29,9 +29,9 @@ interface TablePaginationProps {
 }
 
 const NAV_BUTTON_CLASS =
-  "border-[#6359E9] text-[#6359E9] hover:bg-[#6359E9]/10 hover:text-[#6359E9]"
-const ACTIVE_PAGE_CLASS = "bg-[#6359E9] text-white hover:bg-[#6359E9]/90"
-const INACTIVE_PAGE_CLASS = "text-[#6359E9] hover:bg-[#6359E9]/10 hover:text-[#6359E9]"
+  "border-[#14864A] text-[#14864A] hover:bg-[#14864A]/10 hover:text-[#14864A]"
+const ACTIVE_PAGE_CLASS = "bg-[#14864A] text-white hover:bg-[#10733e]"
+const INACTIVE_PAGE_CLASS = "text-[#14864A] hover:bg-[#14864A]/10 hover:text-[#14864A]"
 // Teks Prev/Next disembunyikan di mobile agar nomor halaman muat dalam satu baris
 const NAV_LABEL_CLASS = "max-md:hidden"
 
