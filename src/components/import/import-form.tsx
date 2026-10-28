@@ -85,7 +85,7 @@ export function ImportForm({ state, className, onNavigate }: ImportFormProps) {
           <Link
             href={CATEGORY_PATH}
             onClick={onNavigate}
-            className="inline-flex items-center gap-1 self-start text-sm font-medium text-[#6359E9] hover:underline"
+            className="inline-flex items-center gap-1 self-start text-sm font-medium text-[#14864A] hover:underline"
           >
             Kelola kategori
             <ArrowRight className="size-3.5" />
@@ -103,7 +103,7 @@ export function ImportForm({ state, className, onNavigate }: ImportFormProps) {
             variant="outline"
             onClick={downloadTemplate}
             disabled={isDownloading}
-            className="mt-1 self-start border-[#6359E9]/40 text-[#6359E9] hover:bg-[#6359E9]/5 hover:text-[#6359E9]"
+            className="mt-1 self-start border-[#14864A]/40 text-[#14864A] hover:bg-[#14864A]/5 hover:text-[#14864A]"
           >
             {isDownloading ? (
               <Loader2 data-icon="inline-start" className="animate-spin" />
@@ -130,18 +130,18 @@ export function ImportForm({ state, className, onNavigate }: ImportFormProps) {
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         className={cn(
-          "flex h-56 w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[#8C89B4]/60 bg-muted/30 px-4 text-center transition-colors",
-          "hover:border-[#6359E9] hover:bg-[#6359E9]/5",
-          "has-[:focus-visible]:border-[#6359E9] has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-[#6359E9]/30",
-          isDragging && "border-[#6359E9] bg-[#6359E9]/10",
+          "flex h-56 w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[#14864A]/40 bg-[#14864A]/5 px-4 text-center transition-colors",
+          "hover:border-[#14864A] hover:bg-[#14864A]/5",
+          "has-[:focus-visible]:border-[#14864A] has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-[#14864A]/30",
+          isDragging && "border-[#14864A] bg-[#14864A]/10",
           error && "border-destructive/60"
         )}
       >
-        <div className="flex size-12 items-center justify-center rounded-full bg-[#6359E9]/10 text-[#6359E9]">
+        <div className="flex size-12 items-center justify-center rounded-full bg-[#14864A]/10 text-[#14864A]">
           <CloudUpload className="size-6" />
         </div>
         <p className="text-sm">
-          <span className="font-semibold text-[#6359E9]">Klik untuk upload</span> atau seret dan lepas
+          <span className="font-semibold text-[#14864A]">Klik untuk upload</span> atau seret dan lepas
         </p>
         <p className="text-xs text-muted-foreground">
           {acceptedFormats} (maks. {MAX_FILE_SIZE_MB} MB)
@@ -165,8 +165,8 @@ export function ImportForm({ state, className, onNavigate }: ImportFormProps) {
       </p>
 
       {file && (
-        <div className="flex items-center gap-3 rounded-lg border border-[#8C89B4]/40 p-3">
-          <div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-[#6359E9]/10 text-[#6359E9]">
+        <div className="flex items-center gap-3 rounded-lg border border-[#14864A]/40 p-3">
+          <div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-[#14864A]/10 text-[#14864A]">
             <FileSpreadsheet className="size-4" />
           </div>
           <div className="flex min-w-0 flex-1 flex-col">

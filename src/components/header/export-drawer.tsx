@@ -61,7 +61,7 @@ export function ExportDrawer({ triggerClassName, onExport }: ExportDrawerProps) 
         <ExportForm state={exportState} className="flex-1 overflow-y-auto p-4 py-5 scroll-fade" />
 
         <DrawerFooter className="flex-row gap-3">
-          <DrawerClose render={<Button variant="outline" className="h-[34px] flex-1 border-[#8C89B4]">Tutup</Button>} />
+          <DrawerClose render={<Button variant="outline" className="h-[34px] flex-1 border-[#14864A]/40 text-[#14864A] hover:bg-[#14864A]/5 hover:text-[#10733e]">Tutup</Button>} />
           <ExportSubmitButton state={exportState} className="h-[34px] flex-1" />
         </DrawerFooter>
       </DrawerContent>

@@ -16,7 +16,7 @@ export function ImportSubmitButton({ state, className }: ImportSubmitButtonProps
     <Button
       onClick={state.importFile}
       disabled={!state.file || state.isUploading}
-      className={cn("bg-[#6359E9] text-white hover:bg-[#6359E9]/90", className)}
+      className={cn("bg-[#14864A] text-white hover:bg-[#10733e]", className)}
     >
       {state.isUploading && <Loader2 data-icon="inline-start" className="animate-spin" />}
       {state.isUploading ? "Mengupload..." : "Upload File"}
