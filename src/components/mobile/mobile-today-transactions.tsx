@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowDownLeftIcon, ArrowUpRightIcon, ArrowRightIcon } from "lucide-react"
@@ -19,8 +20,40 @@ const TYPE_STYLE: Record<TransactionType, { icon: typeof ArrowDownLeftIcon; amou
 }
 
 export function MobileTodayTransactions() {
-  const today = toLocalDateString(new Date())
+  const [today, setToday] = useState(() => toLocalDateString(new Date()))
+
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>
+
+    function syncDate() {
+      const now = new Date()
+      setToday(toLocalDateString(now))
+
+      // Use the next local midnight so timezone offsets and DST are respected.
+      const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)
+      clearTimeout(timer)
+      timer = setTimeout(syncDate, midnight.getTime() - now.getTime())
+    }
+
+    function onVisibilityChange() {
+      if (document.visibilityState === "visible") syncDate()
+    }
+
+    syncDate()
+    window.addEventListener("focus", syncDate)
+    document.addEventListener("visibilitychange", onVisibilityChange)
+
+    return () => {
+      clearTimeout(timer)
+      window.removeEventListener("focus", syncDate)
+      document.removeEventListener("visibilitychange", onVisibilityChange)
+    }
+  }, [])
+
   const { transactions, isLoading, error } = useTransactions(5, 0, "", today)
+  // The shared hook retains previous results while fetching the new day.
+  const latestTransactions = transactions
+    .filter((transaction) => toLocalDateString(transaction.date) === today)
 
   return (
     <section aria-labelledby="today-transactions-title" className="mt-8">
@@ -49,14 +82,14 @@ export function MobileTodayTransactions() {
             <div key={item} className="h-[74px] animate-pulse rounded-2xl bg-emerald-50" />
           ))}
         </div>
-      ) : transactions.length === 0 ? (
+      ) : latestTransactions.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-emerald-200 bg-white px-4 py-6 text-center">
           <p className="text-sm font-medium text-slate-700">Belum ada transaksi hari ini</p>
           <p className="mt-1 text-xs text-slate-500">Transaksi yang kamu catat akan muncul di sini.</p>
         </div>
       ) : (
         <ul className="flex flex-col gap-2.5">
-          {transactions.map((transaction) => {
+          {latestTransactions.map((transaction) => {
             const style = TYPE_STYLE[transaction.type]
             const TypeIcon = style.icon
 
