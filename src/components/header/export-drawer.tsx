@@ -46,7 +46,7 @@ export function ExportDrawer({ triggerClassName, onExport }: ExportDrawerProps) 
     >
       <DrawerTrigger
         render={
-          <Button className={triggerClassName} variant="outline" size="lg">
+          <Button data-guidance="export" className={triggerClassName} variant="outline" size="lg">
             <Download data-icon="inline-start" />
             Export
           </Button>

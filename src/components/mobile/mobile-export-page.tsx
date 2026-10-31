@@ -20,7 +20,7 @@ export function MobileExportPage() {
         <h1 className="text-lg font-semibold text-slate-900">Export</h1>
         <p className="text-sm text-muted-foreground">Unduh transaksimu sebagai file.</p>
       </div>
-      <section className="flex-1 rounded-2xl bg-white px-5 py-6 shadow-sm sm:p-8">
+SSSSSSSSSS      <section data-guidance="export-form" className="flex-1 rounded-2xl bg-white px-5 py-6 shadow-sm sm:p-8">
         <ExportForm state={exportState} className="gap-8" />
       </section>
       <ExportSubmitButton state={exportState} className="mt-2 h-12 w-full rounded-xl" />

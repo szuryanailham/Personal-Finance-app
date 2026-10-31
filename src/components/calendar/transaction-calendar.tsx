@@ -46,7 +46,7 @@ export function TransactionCalendar({ className }: TransactionCalendarProps) {
 
   return (
     <div className={cn("flex w-full flex-col gap-4 lg:flex-row lg:items-start", className)}>
-      <section className="flex min-w-0 flex-1 flex-col gap-3 rounded-2xl bg-white p-3 sm:p-4">
+      <section data-guidance="calendar" aria-busy={isLoading} className="flex min-w-0 flex-1 flex-col gap-3 rounded-2xl bg-white p-3 sm:p-4">
         <header className="flex items-center justify-between gap-2">
           <h2 className="flex items-center gap-2 text-base font-semibold capitalize text-slate-900">
             {monthFormatter.format(month)}

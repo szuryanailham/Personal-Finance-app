@@ -67,6 +67,7 @@ export function MobileBottomNav() {
           <li className="flex items-start justify-center">
             <button
               type="button"
+              data-guidance="add-transaction"
               aria-label="Tambah transaksi"
               onClick={() => setIsAddOpen(true)}
               className="-mt-6 flex size-14 items-center justify-center rounded-full bg-[#14864A] text-white shadow-lg shadow-[#14864A]/30 ring-4 ring-white transition-transform active:scale-95"

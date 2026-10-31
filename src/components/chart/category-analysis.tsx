@@ -18,7 +18,7 @@ export function CategoryAnalysis({ className }: { className?: string }) {
       <div className="flex justify-end">
         <CategoryStatisticFilterDrawer value={query} onApply={setQuery} />
       </div>
-      <ExpenseCategoryChart {...categoryStatistic} />
+      <div data-guidance="spending" aria-busy={categoryStatistic.isLoading}><ExpenseCategoryChart {...categoryStatistic} /></div>
       <CategoryStatisticTable {...categoryStatistic} />
     </div>
   )

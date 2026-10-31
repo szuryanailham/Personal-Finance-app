@@ -18,6 +18,7 @@ interface AppShellProps {
 // layout terpisah untuk mobile. Provider dipasang di luar agar dipakai kedua layout.
 export function AppShell({ title, mobile, children }: AppShellProps) {
   return (
+    <div data-guidance-shell>
     <TransactionRevisionProvider>
       <TransactionFilterProvider>
         <ResponsiveShell mobile={<MobileShell>{mobile}</MobileShell>}>
@@ -31,5 +32,6 @@ export function AppShell({ title, mobile, children }: AppShellProps) {
         </ResponsiveShell>
       </TransactionFilterProvider>
     </TransactionRevisionProvider>
+    </div>
   );
 }

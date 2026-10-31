@@ -53,24 +53,24 @@ export function HowItWorksSection() {
               key={step.number}
               className={`flex flex-col gap-7 md:items-center md:gap-10 lg:gap-16 ${index % 2 === 1 ? "md:flex-row-reverse" : "md:flex-row"}`}
             >
-              <div className="flex w-full flex-col justify-center md:w-1/2">
+              <div className="flex w-full flex-col justify-center md:min-w-0 md:flex-1">
                 <span className="font-inter text-xl font-semibold tracking-[0.16em] text-[#14864A] sm:text-2xl">
                   {step.number}
                 </span>
-                <h3 className="mt-3 max-w-xl font-inter text-2xl leading-tight font-semibold tracking-[-0.03em] text-slate-950 sm:text-3xl lg:text-4xl">
+                <h3 className="mt-3 max-w-xl font-inter text-3xl leading-[1.15] font-bold tracking-[-0.03em] text-slate-950 sm:text-4xl lg:text-5xl">
                   {step.title}
                 </h3>
                 <p className="mt-4 max-w-xl font-inter text-base leading-7 text-slate-600 sm:text-lg sm:leading-8">
                   {step.description}
                 </p>
               </div>
-              <div className="flex aspect-[4/3] w-full items-center justify-center overflow-hidden rounded-3xl bg-[#F7FBF8] p-4 md:w-1/2 sm:p-6">
+              <div className="mx-auto flex aspect-square w-full max-w-96 shrink-0 items-center justify-center overflow-hidden rounded-3xl bg-[#F7FBF8] p-4 sm:max-w-md sm:p-6 md:mx-0 md:w-[45%] md:max-w-lg">
                 {step.image ? (
                   <Image
                     src={step.image}
                     alt={step.imageAlt}
-                    sizes="(max-width: 767px) 100vw, 50vw"
-                    className={`h-full w-full object-contain ${index > 0 ? "scale-150" : ""}`}
+                    sizes="(max-width: 639px) min(352px, calc(100vw - 72px)), (max-width: 767px) 400px, (max-width: 1279px) 40vw, 464px"
+                    className="h-full w-full object-contain"
                   />
                 ) : (
                   <div aria-hidden="true" className="h-full w-full rounded-2xl bg-[#D9D9D9]" />

@@ -165,7 +165,7 @@ export function AppSidebar() {
 
               <SidebarMenuItem>
               <SidebarMenuButton
-                render={<Link href="/dashboard" />}
+                render={<Link href="/guidance" />}
                 className="gap-3 px-3 py-2.5 h-auto"
               >
                 <span
@@ -179,7 +179,7 @@ export function AppSidebar() {
                   }}
                 />
                 <span className="text-sm font-medium ">
-                  Pusat Bantuan
+                  Pusat Panduan
                 </span>
               </SidebarMenuButton>
             </SidebarMenuItem>

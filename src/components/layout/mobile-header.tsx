@@ -1,7 +1,7 @@
 "use client"
 import Image from "next/image";
 import Link from "next/link";
-import { SearchIcon } from "lucide-react";
+import { BookOpenIcon, SearchIcon } from "lucide-react";
 import artokuLogo from "@/components/images/icons/new-logo.svg";
 import filterIcon from "@/components/images/icons/filter-horizontal.svg";
 import { FilterDrawer } from "@/components/header/filter-drawer";
@@ -27,6 +27,7 @@ export function MobileHeader({ onSearchClick }: MobileHeaderProps) {
         </Link>
 
         <div className="flex items-center gap-2">
+          <Link href="/guidance" aria-label="Pusat Panduan" className={iconButtonClass}><BookOpenIcon className="size-5" /></Link>
           <button type="button" aria-label="Cari" onClick={onSearchClick} className={iconButtonClass}>
             <SearchIcon className="size-5" />
           </button>
