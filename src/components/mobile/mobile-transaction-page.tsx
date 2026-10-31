@@ -61,7 +61,7 @@ function MobileTransactionTable({ transactions, sort: serverSort, onSortChange }
   const openDetail = (code: string) => router.push(`/transaction/${encodeURIComponent(code)}`)
 
   return (
-    <div className="overflow-hidden rounded-2xl bg-white mt-5">
+    <div data-guidance="transaction-history" className="overflow-hidden rounded-2xl bg-white mt-5">
       <Table className="table-fixed">
         {transactions.length === 0 && <TableCaption className="pb-4">Tidak ada transaksi.</TableCaption>}
         <TableHeader>

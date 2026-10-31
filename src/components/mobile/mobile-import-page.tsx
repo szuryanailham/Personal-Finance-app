@@ -14,7 +14,7 @@ export function MobileImportPage() {
         <h1 className="text-lg font-semibold text-slate-900">Import</h1>
         <p className="text-sm text-muted-foreground">Ikuti 3 langkah berikut untuk mengimpor transaksimu.</p>
       </div>
-      <section className="rounded-2xl bg-white p-6">
+      <section data-guidance="import-form" className="rounded-2xl bg-white p-6">
         <ImportForm state={importState} />
       </section>
       <ImportSubmitButton state={importState} className="h-11 w-full" />

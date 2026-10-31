@@ -63,7 +63,7 @@ export default function TransactionPage() {
   const isSearching = trimmedQuery !== debouncedQuery || isFetching;
 
   return (
-    <div className="mx-auto w-full pb-8">
+    <div data-guidance="transaction-history" className="mx-auto w-full pb-8">
       {/* Search & filter */}
       <section>
         <SearchHeader

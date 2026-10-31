@@ -46,7 +46,7 @@ export function ImportDrawer({ triggerClassName, onImport }: ImportDrawerProps) 
     >
       <DrawerTrigger
         render={
-          <Button className={triggerClassName} variant="outline" size="lg">
+          <Button data-guidance="import" className={triggerClassName} variant="outline" size="lg">
             <Upload data-icon="inline-start" />
             Import
           </Button>

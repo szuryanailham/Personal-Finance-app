@@ -137,3 +137,42 @@
     @apply font-sans;
   }
 }
+
+/* Driver.js uses a body portal; theme variables keep guidance consistent in both themes. */
+.driver-popover.artoku-guidance {
+  max-width: min(360px, calc(100vw - 24px));
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  background: var(--popover);
+  color: var(--popover-foreground);
+  font-family: var(--font-inter-sans);
+}
+.artoku-guidance .driver-popover-title { font-size: 18px; line-height: 1.4; }
+.artoku-guidance .driver-popover-description { font-size: 14px; line-height: 1.7; }
+.artoku-guidance .driver-popover-footer { flex-wrap: wrap; gap: 12px; }
+.artoku-guidance .driver-popover-progress-text { color: var(--muted-foreground); }
+.artoku-guidance .driver-popover-navigation-btns { display: flex; flex-wrap: wrap; gap: 6px; }
+.artoku-guidance .driver-popover-navigation-btns button {
+  margin: 0;
+  min-height: 36px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 10px;
+  background: var(--popover);
+  color: var(--popover-foreground);
+  font-size: 12px;
+  text-shadow: none;
+}
+.artoku-guidance .driver-popover-navigation-btns .driver-popover-next-btn {
+  border-color: #14864a;
+  background: #14864a;
+  color: white;
+}
+.artoku-guidance .driver-popover-navigation-btns .driver-popover-next-btn:hover { background: #10733e; }
+.artoku-guidance .driver-popover-close-btn { color: var(--muted-foreground); }
+.artoku-guidance button:focus-visible { outline: 2px solid #14864a; outline-offset: 3px; }
+.artoku-guidance .driver-popover-arrow-side-top { border-top-color: var(--popover); }
+.artoku-guidance .driver-popover-arrow-side-bottom { border-bottom-color: var(--popover); }
+.artoku-guidance .driver-popover-arrow-side-left { border-left-color: var(--popover); }
+.artoku-guidance .driver-popover-arrow-side-right { border-right-color: var(--popover); }

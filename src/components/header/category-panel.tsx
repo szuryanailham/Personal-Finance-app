@@ -15,7 +15,7 @@ export function CategoryPanel({ enabled, className }: CategoryPanelProps) {
   const manager = useCategoryManager(enabled)
 
   return (
-    <section className={cn("flex flex-col gap-4 rounded-2xl bg-white p-4", className)}>
+    <section data-guidance="category" className={cn("flex flex-col gap-4 rounded-2xl bg-white p-4", className)}>
       <div>
         <h2 className="text-base font-semibold text-slate-900">
           {manager.editing ? "Edit Kategori" : "Tambah Kategori"}

@@ -59,7 +59,7 @@ export function SummaryCarousel() {
   }, [api]);
 
   return (
-    <section aria-label="Ringkasan transaksi" className="flex flex-col gap-3">
+    <section data-guidance="summary" aria-busy={isLoading} aria-label="Ringkasan transaksi" className="flex flex-col gap-3">
       <Carousel
         setApi={setApi}
         opts={{ align: "center", loop: true }}
