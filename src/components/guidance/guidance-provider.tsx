@@ -7,6 +7,7 @@ import { getSessionToken } from "@/lib/auth"
 import { completeGuidance, fetchGuidanceStatus } from "@/lib/api/guidance"
 import { TUTORIALS, type TutorialId } from "@/lib/guidance/tutorials"
 import { createTutorialRunner } from "@/lib/guidance/runner"
+import { WelcomeScreen } from "./welcome-screen"
 import { Spinner } from "@/components/ui/spinner"
 
 const APP_PATHS = ["/dashboard", "/category", "/transaction", "/analysis", "/calender", "/summary", "/import", "/export", "/settings", "/guidance"]
@@ -30,6 +31,8 @@ export function GuidanceProvider({ children }: { children: ReactNode }) {
   const attempted = useRef(false)
   const saving = useRef(false)
   const runner = useRef<ReturnType<typeof createTutorialRunner> | null>(null)
+  const [showWelcome, setShowWelcome] = useState(false)
+  const [statusReady, setStatusReady] = useState(false)
   const [busy, setBusy] = useState(false)
   const [loadingStatus, setLoadingStatus] = useState(false)
   const [loadingStep, setLoadingStep] = useState(false)
@@ -57,6 +60,7 @@ export function GuidanceProvider({ children }: { children: ReactNode }) {
   const startTutorial = useCallback((id: TutorialId) => {
     if (!getSessionToken() || !document.querySelector("[data-guidance-shell]")) return
     attempted.current = true
+    setShowWelcome(false)
     runner.current?.destroy()
     setBusy(true)
     runner.current = createTutorialRunner({
@@ -88,6 +92,8 @@ export function GuidanceProvider({ children }: { children: ReactNode }) {
       void Promise.resolve().then(() => {
         if (session.current !== null) return
         setBusy(false)
+        setShowWelcome(false)
+        setStatusReady(false)
         setLoadingStatus(false)
         setLoadingStep(false)
       })
@@ -112,13 +118,16 @@ export function GuidanceProvider({ children }: { children: ReactNode }) {
         if (session.current !== token || getSessionToken() !== token) return
         // A slow GET must not overwrite a completion saved while it was pending.
         if (status.current !== true) status.current = result.isGuidanceCompleted
-        if (!status.current && !attempted.current) startTutorial("initial")
+        if (!status.current && !attempted.current) setShowWelcome(true)
       } catch {
         if (session.current === token && getSessionToken() === token) {
           toast.error("Status panduan belum dapat dimuat. Kamu tetap bisa membuka tutorial dari Pusat Panduan.")
         }
       } finally {
-        if (session.current === token) setLoadingStatus(false)
+        if (session.current === token) {
+          setLoadingStatus(false)
+          setStatusReady(true)
+        }
       }
     })
   }, [pathname, startTutorial])
@@ -138,9 +147,25 @@ export function GuidanceProvider({ children }: { children: ReactNode }) {
   useEffect(() => () => runner.current?.destroy(), [])
 
   const inApp = isGuidanceAppPath(pathname)
+  const blocked = inApp && (!statusReady || showWelcome)
   return (
     <GuidanceContext.Provider value={{ startTutorial, busy: busy || loadingStatus }}>
-      {children}
+      <div inert={blocked} hidden={blocked}>{children}</div>
+      {inApp && statusReady && showWelcome && (
+        <WelcomeScreen
+          onStart={() => startTutorial("initial")}
+          onSkip={() => {
+            attempted.current = true
+            setShowWelcome(false)
+            void persistCompletion()
+          }}
+        />
+      )}
+      {inApp && !statusReady && (
+        <div role="status" className="fixed inset-0 z-[10000] flex items-center justify-center gap-3 bg-[#F7FBF8] text-sm text-slate-600">
+          <Spinner /> Memuat Artoku…
+        </div>
+      )}
       {inApp && (loadingStatus || loadingStep) && (
         <div role="status" className="fixed inset-x-4 top-4 z-[10001] mx-auto flex w-fit max-w-[calc(100vw-2rem)] items-center gap-3 rounded-xl border bg-popover px-4 py-3 text-sm text-popover-foreground shadow-lg">
           <Spinner />
