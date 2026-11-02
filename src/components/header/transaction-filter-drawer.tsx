@@ -24,7 +24,6 @@ import {
   type TransactionDateFilter,
   type TransactionDatePreset,
   type TransactionListFilter,
-  type TransactionSortValue,
 } from "@/lib/api/transaction"
 import { FilterSection, type FilterSectionOption } from "./filter-section"
 
@@ -39,15 +38,6 @@ const TYPE_OPTIONS: FilterOption<TransactionListFilter["type"]>[] = [
   { value: "income", label: "Income", description: "Hanya transaksi income" },
   { value: "expense", label: "Expense", description: "Hanya transaksi expense" },
   { value: "saving", label: "Saving", description: "Hanya transaksi saving" },
-]
-
-const SORT_OPTIONS: FilterOption<TransactionSortValue>[] = [
-  { value: "date", label: "Terbaru", description: "Tanggal terbaru dulu" },
-  { value: "-date", label: "Terlama", description: "Tanggal terlama dulu" },
-  { value: "amount", label: "Jumlah tertinggi", description: "Jumlah terbesar dulu" },
-  { value: "-amount", label: "Jumlah terendah", description: "Jumlah terkecil dulu" },
-  { value: "name", label: "Nama A–Z", description: "Urut abjad berdasarkan nama" },
-  { value: "-name", label: "Nama Z–A", description: "Urut abjad terbalik berdasarkan nama" },
 ]
 
 const DATE_OPTIONS: FilterOption<TransactionDateFilter["preset"]>[] = [

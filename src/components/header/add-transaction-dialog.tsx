@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import Image from "next/image"
 import { CircleCheckIcon } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
@@ -45,14 +45,21 @@ export function AddTransactionDialog({ open, onOpenChange }: AddTransactionDialo
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isSuccess, setIsSuccess] = useState(false)
-  const [transactionDate, setTransactionDate] = useState("")
+  const [dateState, setDateState] = useState(() => ({
+    open,
+    date: open ? toLocalDateString(new Date()) : "",
+  }))
   const { notifyTransactionsChanged } = useTransactionRevision()
   // Form tetap terkunci selama request berjalan dan selama alert sukses tampil
   const isLocked = isSubmitting || isSuccess
 
-  useEffect(() => {
-    if (open) setTransactionDate(toLocalDateString(new Date()))
-  }, [open])
+  // Adjust only the date when the controlled dialog opens, before rendering its children.
+  if (dateState.open !== open) {
+    setDateState({
+      open,
+      date: open ? toLocalDateString(new Date()) : dateState.date,
+    })
+  }
 
   function closeDialog() {
     setError(null)
@@ -142,8 +149,8 @@ export function AddTransactionDialog({ open, onOpenChange }: AddTransactionDialo
                   name="date"
                   type="date"
                   className={INPUT_CLASS}
-                  value={transactionDate}
-                  onChange={(event) => setTransactionDate(event.target.value)}
+                  value={dateState.date}
+                  onChange={(event) => setDateState({ open, date: event.target.value })}
                   required
                 />
               </Field>

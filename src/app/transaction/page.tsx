@@ -1,7 +1,7 @@
 "use client"
 
 import { SearchHeader } from '@/components/header/SearchHeader'
-import { TransactionTable, type Transaction } from '@/components/table/TableComponent';
+import { type Transaction } from '@/components/table/TableComponent';
 import { BulkUpdateTransactionDialog } from '@/components/table/bulk-update-transaction-dialog';
 import { DeleteTransactionDialog } from '@/components/table/delete-transaction-dialog';
 import { EditTransactionDialog } from '@/components/table/edit-transaction-dialog';
