@@ -64,6 +64,45 @@ export const TUTORIALS = {
     title: "Analisis pengeluaran", description: "Kenali distribusi pengeluaran per kategori.",
     steps: [analysis],
   },
+  summaryFilter: {
+    title: "Filter Summary (Ringkasan)",
+    description: "Sesuaikan periode saldo, pemasukan, pengeluaran, dan tabungan pada ringkasan.",
+    steps: [{
+      path: "/dashboard", target: "summary-filter",
+      title: "Pilih periode ringkasan",
+      description: "Klik ikon Filter di header Dashboard. Pilih Tahunan, Bulanan, atau Mingguan untuk menampilkan ringkasan periode tersebut. Di ponsel, gunakan ikon Filter di bagian atas halaman.",
+    }, {
+      path: "/dashboard", target: "summary-filter",
+      title: "Gunakan rentang tanggal sendiri",
+      description: "Pilih Atur Sendiri, lalu isi Tanggal mulai dan Tanggal akhir. Tanggal akhir harus sama atau setelah tanggal mulai. Klik Terapkan Filter (Terapkan di ponsel), lalu periksa perubahan kartu ringkasan. Gunakan Batal untuk menutup tanpa menerapkan pilihan. Untuk kembali ke periode bulanan, buka filter dan terapkan Bulanan.",
+    }],
+  },
+  transactionFilter: {
+    title: "Filter Transaksi",
+    description: "Temukan transaksi berdasarkan kategori, jenis, tanggal, dan urutan data.",
+    steps: [{
+      path: "/transaction", target: "transaction-filter",
+      title: "Saring daftar transaksi",
+      description: "Buka halaman Transaksi dan klik ikon Filter di dekat pencarian. Pilih kategori dan jenis transaksi: Semua, Income (pemasukan), Expense (pengeluaran), atau Saving (tabungan). Gabungkan pilihan ini untuk mempersempit daftar transaksi.",
+    }, {
+      path: "/transaction", target: "transaction-filter",
+      title: "Atur tanggal dan urutan",
+      description: "Pilih Kapan saja, Hari Ini, 7 hari terakhir, 14 hari terakhir, atau Rentang sendiri. Untuk rentang sendiri, isi tanggal mulai dan akhir yang valid. Pilih urutan Terbaru, Terlama, Jumlah tertinggi/terendah, atau Nama A–Z/Z–A, lalu terapkan filter. Jika hasil kosong, perluas tanggal atau pilih semua kategori dan jenis transaksi.",
+    }],
+  },
+  analysisFilter: {
+    title: "Filter Analisis",
+    description: "Tinjau grafik dan rincian pengeluaran kategori pada periode yang dipilih.",
+    steps: [{
+      path: "/analysis", target: "analysis-filter",
+      title: "Pilih periode analisis",
+      description: "Buka halaman Analisis, lalu klik ikon Filter periode pada bagian analisis kategori. Pilih Hari Ini, Minggu Ini (Senin–Minggu), Bulan Ini, atau Tahun Ini sesuai periode pengeluaran yang ingin ditinjau.",
+    }, {
+      path: "/analysis", target: "analysis-filter",
+      title: "Terapkan rentang analisis",
+      description: "Untuk periode khusus, pilih Atur Sendiri dan isi tanggal mulai serta tanggal akhir. Pastikan tanggal akhir sama atau setelah tanggal mulai, lalu terapkan pilihan. Grafik dan tabel kategori akan mengikuti periode tersebut. Jika tidak ada pengeluaran, coba perluas rentang tanggal. Buka kembali filter untuk mengganti periode.",
+    }],
+  },
   calendar: {
     title: "Kalender dan riwayat transaksi", description: "Tinjau transaksi pada tanggal dan periode tertentu.",
     steps: [calendar],

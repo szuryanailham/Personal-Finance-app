@@ -1,5 +1,8 @@
+"use client"
+
 import Image from "next/image"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import sidebarLogo from "@/components/images/icons/logo-dashboard.svg"
 import anylisisMenuLogo from "@/components/images/icons/bar-line-chart.svg"
 import TransactionMenuLogo from "@/components/images/icons/wallet-02.svg"
@@ -28,9 +31,13 @@ const CURRENT_USER: SidebarUser = {
 }
 
 const ICON_SQUARE_COLOR =
-  "bg-white transition-colors group-hover/menu-button:bg-[#10733e] group-data-active/menu-button:bg-[#10733e]"
+  "bg-current transition-colors"
 
 export function AppSidebar() {
+  const pathname = usePathname()
+  const isMenuActive = (href: string) =>
+    pathname === href || pathname.startsWith(`${href}/`)
+
   return (
     <Sidebar className="overflow-hidden rounded-r-2xl">
       <SidebarHeader>
@@ -52,7 +59,8 @@ export function AppSidebar() {
             {/* Home */}
             <SidebarMenuItem>
               <SidebarMenuButton
-                render={<Link href="/dashboard" />}
+                isActive={isMenuActive("/dashboard")}
+                render={<Link href="/dashboard" aria-current={isMenuActive("/dashboard") ? "page" : undefined} />}
                 className="gap-3 px-3 h-auto"
               >
                 <div className="size-6 relative">
@@ -71,7 +79,8 @@ export function AppSidebar() {
             {/* #Anylisis */}
             <SidebarMenuItem>
               <SidebarMenuButton
-                render={<Link href="/analysis" />}
+                isActive={isMenuActive("/analysis")}
+                render={<Link href="/analysis" aria-current={isMenuActive("/analysis") ? "page" : undefined} />}
                 className="gap-3 px-3 py-2.5 h-auto"
               >
                 <span
@@ -93,7 +102,8 @@ export function AppSidebar() {
               {/* # Transction */}
             <SidebarMenuItem>
               <SidebarMenuButton
-                render={<Link href="/transaction" />}
+                isActive={isMenuActive("/transaction")}
+                render={<Link href="/transaction" aria-current={isMenuActive("/transaction") ? "page" : undefined} />}
                 className="gap-3 px-3 py-2.5 h-auto"
               >
                 <span
@@ -116,7 +126,8 @@ export function AppSidebar() {
 
             <SidebarMenuItem>
               <SidebarMenuButton
-                render={<Link href="/settings" />}
+                isActive={isMenuActive("/settings")}
+                render={<Link href="/settings" aria-current={isMenuActive("/settings") ? "page" : undefined} />}
                 className="gap-3 px-3 py-2.5 h-auto"
               >
                 <span
@@ -165,7 +176,8 @@ export function AppSidebar() {
 
               <SidebarMenuItem>
               <SidebarMenuButton
-                render={<Link href="/guidance" />}
+                isActive={isMenuActive("/guidance")}
+                render={<Link href="/guidance" aria-current={isMenuActive("/guidance") ? "page" : undefined} />}
                 className="gap-3 px-3 py-2.5 h-auto"
               >
                 <span

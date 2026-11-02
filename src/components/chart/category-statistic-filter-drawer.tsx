@@ -81,7 +81,7 @@ export function CategoryStatisticFilterDrawer({ value, onApply }: CategoryStatis
     >
       <DrawerTrigger
         render={
-          <Button variant="ghost" size="icon-lg" aria-label="Filter periode" className="relative">
+          <Button variant="ghost" size="icon-lg" aria-label="Filter periode" data-guidance="analysis-filter" className="relative">
             <Image src={filterIcon} alt="" width={24} height={24} />
             {isActive && (
               <span

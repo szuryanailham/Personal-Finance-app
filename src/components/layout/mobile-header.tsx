@@ -38,7 +38,7 @@ export function MobileHeader({ onSearchClick }: MobileHeaderProps) {
             isLoading={isFilterLoading}
             variant="mobile"
             trigger={
-              <button type="button" aria-label="Filter" aria-busy={isFilterLoading} className={iconButtonClass}>
+              <button type="button" aria-label="Filter" data-guidance="summary-filter" aria-busy={isFilterLoading} className={iconButtonClass}>
                 {isFilterLoading ? (
                   <Spinner className="size-5" />
                 ) : (

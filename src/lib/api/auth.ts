@@ -79,3 +79,15 @@ export async function resendSignUpOtp(email: string): Promise<OtpSentResponse> {
   if (!res.data?.email) throw new Error("Response kirim ulang OTP tidak valid")
   return res.data
 }
+
+export async function forgotPassword(email: string): Promise<void> {
+  await apiRequest<null>("/api/auth/forgot-password", "mengirim tautan reset password", {
+    method: "POST", body: { email }, isPublic: true,
+  })
+}
+
+export async function resetPassword(token: string, newPassword: string): Promise<void> {
+  await apiRequest<null>("/api/auth/reset-password", "mereset password", {
+    method: "POST", body: { token, newPassword }, isPublic: true,
+  })
+}
