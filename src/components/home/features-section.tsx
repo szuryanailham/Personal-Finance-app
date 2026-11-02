@@ -3,7 +3,6 @@ import Link from "next/link";
 import { cn } from "cn";
 
 import mobileAppIllustration from "@/components/images/illustrations/calling-mage.png";
-import heroImage from "../../../public/hero.png";
 
 interface FeatureShowcase {
   image: StaticImageData;
