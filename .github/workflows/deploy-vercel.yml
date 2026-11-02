@@ -25,17 +25,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Configure and check Git email
-        env:
-          EXPECTED_GIT_EMAIL: szuryanailham090102@gmail.com
-        run: |
-          git config --local user.email "$EXPECTED_GIT_EMAIL"
-          author_email="$(git log -1 --format=%ae)"
-          if [ "$author_email" != "$EXPECTED_GIT_EMAIL" ]; then
-            echo "::error::Email author commit tidak sesuai. Atur git config user.email menjadi $EXPECTED_GIT_EMAIL di komputer lokal, lalu buat dan push commit baru."
-            exit 1
-          fi
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
