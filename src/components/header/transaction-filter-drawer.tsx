@@ -232,7 +232,7 @@ export function TransactionFilterDrawer({ value, onApply }: TransactionFilterDra
     >
       <DrawerTrigger
         render={
-          <Button variant="ghost" size="icon-lg" aria-label="Filter transaksi" className="relative">
+          <Button variant="ghost" size="icon-lg" aria-label="Filter transaksi" data-guidance="transaction-filter" className="relative">
             <Image src={filterIcon} alt="" width={24} height={24} />
             {isActive && (
               <span

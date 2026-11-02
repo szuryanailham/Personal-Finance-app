@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
@@ -97,7 +98,10 @@ export function LoginForm() {
             />
           </Field>
           <Field>
-            <Label htmlFor="login-password">Password</Label>
+            <div className="flex items-center justify-between gap-3">
+              <Label htmlFor="login-password">Password</Label>
+              <Link href="/forgot-password" className="text-sm font-semibold text-[#14864A] underline-offset-4 hover:underline">Lupa password?</Link>
+            </div>
             <Input
               id="login-password"
               name="password"

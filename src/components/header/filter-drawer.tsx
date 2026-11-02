@@ -147,7 +147,7 @@ export function FilterDrawer({
       <DrawerTrigger
         render={
           trigger ?? (
-            <Button variant="ghost" size="icon-lg" aria-label="Filter" aria-busy={isLoading}>
+            <Button variant="ghost" size="icon-lg" aria-label="Filter" data-guidance="summary-filter" aria-busy={isLoading}>
               {isLoading ? (
                 <Spinner className="size-6" />
               ) : (
