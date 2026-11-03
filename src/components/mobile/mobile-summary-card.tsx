@@ -43,7 +43,7 @@ export function MobileSummaryCard({
   return (
     <div
       className={cn(
-        "relative isolate flex min-h-44 w-full flex-col justify-between gap-6 overflow-hidden rounded-2xl bg-gradient-to-br from-[#168D50] via-[#14864A] to-[#0D6738] p-5 mt-10 text-white shadow-[0_12px_28px_-14px_rgba(20,134,74,0.75)]",
+        "relative isolate flex min-h-44 w-full flex-col justify-between gap-6 overflow-hidden rounded-2xl bg-gradient-to-br from-[#168D50] via-[#14864A] to-[#0D6738] p-5 mt-2 text-white shadow-[0_12px_28px_-14px_rgba(20,134,74,0.75)]",
         className
       )}
     >
