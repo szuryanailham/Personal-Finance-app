@@ -3,7 +3,13 @@ import { SummaryCard } from "@/components/cards/summaryCard";
 import { TransactionChart } from "@/components/chart/transaction-chart";
 import { SUMMARY_CONFIG } from "@/components/cards/summary-config";
 import { SearchHeader } from "@/components/header/SearchHeader";
-import { TransactionTable } from "@/components/table/TableComponent";
+import Link from "next/link";
+import { type Transaction } from "@/components/table/TableComponent";
+import TableTransactionDetail from "@/components/table/TableTransactionDetail";
+import { EditTransactionDialog } from "@/components/table/edit-transaction-dialog";
+import { DeleteTransactionDialog } from "@/components/table/delete-transaction-dialog";
+import { BulkUpdateTransactionDialog } from "@/components/table/bulk-update-transaction-dialog";
+import { DEFAULT_TRANSACTION_LIST_FILTER, type TransactionListFilter } from "@/lib/api/transaction";
 import { LoadingState } from "@/components/ui/spinner";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircleIcon } from "lucide-react";
@@ -21,6 +27,10 @@ const HOME_TRANSACTION_LIMIT = 10;
 export default function DashboardPage() {
   const [query, setQuery] = useState("");
   const [date, setDate] = useState<Date | undefined>(undefined);
+  const [listFilter, setListFilter] = useState<TransactionListFilter>(DEFAULT_TRANSACTION_LIST_FILTER);
+  const [editing, setEditing] = useState<Transaction | null>(null);
+  const [deleting, setDeleting] = useState<readonly Transaction[]>([]);
+  const [bulkUpdating, setBulkUpdating] = useState<readonly Transaction[]>([]);
   const trimmedQuery = query.trim();
   const debouncedQuery = useDebouncedValue(trimmedQuery);
   const dateFilter = date ? toLocalDateString(date) : "";
@@ -28,7 +38,8 @@ export default function DashboardPage() {
     HOME_TRANSACTION_LIMIT,
     0,
     debouncedQuery,
-    dateFilter
+    dateFilter,
+    listFilter
   );
 
   const isSearching = trimmedQuery !== debouncedQuery || isFetching;
@@ -80,6 +91,8 @@ export default function DashboardPage() {
           onQueryChange={setQuery}
           onDateChange={setDate}
           isSearching={isSearching}
+          filter={listFilter}
+          onFilterChange={setListFilter}
         />
         {error ? (
           <p className="mt-4 text-sm text-destructive">{error}</p>
@@ -91,13 +104,25 @@ export default function DashboardPage() {
             className={cn("transition-opacity", isSearching && "pointer-events-none opacity-50")}
             aria-busy={isSearching}
           >
-            <TransactionTable
+            <TableTransactionDetail
               transactions={transactions}
-              limit={HOME_TRANSACTION_LIMIT}
-              detailHref="/transaction"
+              sort={listFilter.sort}
+              onSortChange={(sort) => setListFilter((current) => ({ ...current, sort }))}
+              onEdit={setEditing}
+              onDelete={(transaction) => setDeleting([transaction])}
+              onBulkUpdate={setBulkUpdating}
+              onBulkDelete={setDeleting}
             />
+            <div className="flex justify-center rounded-b-[14px] bg-white py-4">
+              <Link href="/transaction" className="text-sm font-medium text-[#14864A] hover:underline">
+                Lihat detail transaksi
+              </Link>
+            </div>
           </div>
         )}
+        <EditTransactionDialog transaction={editing} onClose={() => setEditing(null)} />
+        <BulkUpdateTransactionDialog transactions={bulkUpdating} onClose={() => setBulkUpdating([])} />
+        <DeleteTransactionDialog transactions={deleting} onClose={() => setDeleting([])} />
       </section>
     </div>
   );
