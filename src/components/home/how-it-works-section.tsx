@@ -70,7 +70,7 @@ export function HowItWorksSection() {
                     src={step.image}
                     alt={step.imageAlt}
                     sizes="(max-width: 639px) min(352px, calc(100vw - 72px)), (max-width: 767px) 400px, (max-width: 1279px) 40vw, 464px"
-                    className="h-full w-full object-contain"
+                    className={`h-full w-full object-contain ${step.number === "02" || step.number === "03" ? "scale-125" : "scale-90 md:scale-100"}`}
                   />
                 ) : (
                   <div aria-hidden="true" className="h-full w-full rounded-2xl bg-[#D9D9D9]" />

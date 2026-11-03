@@ -95,13 +95,13 @@ export function DeleteTransactionDialog({ transactions, onClose, onDeleted }: De
         </AlertDialogHeader>
         {error && <p className="text-sm text-destructive">{error}</p>}
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isDeleting} className="border-[#8C89B4]">
+          <AlertDialogCancel disabled={isDeleting} className="border-[#14864A] text-[#14864A] hover:bg-[#DCF8E6] hover:text-[#10733e]">
             Batal
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={handleConfirm}
             disabled={isDeleting}
-            className="gap-2 bg-[#6359E9] text-white hover:bg-[#6359E9]/90"
+            className="gap-2 bg-[#14864A] text-white hover:bg-[#10733e]"
           >
             {isDeleting ? <Spinner className="text-white" /> : <Trash2Icon />}
             {isDeleting ? "Menghapus..." : "Hapus"}

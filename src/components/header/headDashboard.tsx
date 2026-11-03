@@ -1,5 +1,6 @@
 "use client"
 
+import { PersonalizedGreeting } from "@/components/home/personalized-greeting"
 import { usePathname } from "next/navigation"
 import { FilterDrawer } from "@/components/header/filter-drawer"
 import { ImportDrawer } from "@/components/header/import-drawer"
@@ -19,11 +20,15 @@ export function HeadDashboard({ title }: HeadDashboardProps) {
   const isDashboard = usePathname() === DASHBOARD_PATH
   const { filter, setFilter, isFilterLoading } = useTransactionFilter()
   return (
-    <header className="flex w-full items-center justify-between gap-4 py-10">
+    <header className="flex w-full flex-wrap items-center justify-between gap-4 py-10">
       <div className="flex items-center gap-2">
         {/* Sidebar menjadi panel layar penuh di tablet, jadi tombol tersedia hingga breakpoint lg */}
         <SidebarTrigger className="lg:hidden" aria-label="Buka sidebar" />
-        <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
+        {isDashboard ? (
+          <PersonalizedGreeting className="px-4 pt-6" />
+        ) : (
+          <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
+        )}
       </div>
 
       <div className="flex items-center gap-4">
