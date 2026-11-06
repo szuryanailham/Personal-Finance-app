@@ -9,25 +9,25 @@ const STEPS = [
     number: "01",
     image: firstFeatureIllustration,
     imageAlt: "Ilustrasi fitur pencatatan keuangan Artoku",
-    title: "Catat uang masuk dan keluar",
+    title: "Catat Pemasukan dan Pengeluaran",
     description:
-      "Catat gaji, pendapatan tambahan, serta pengeluaran untuk makan, transportasi, belanja, dan kebutuhan sehari-hari.",
+      "Simpan catatan uang masuk dan keluar dalam satu tempat agar transaksi sehari-hari tidak mudah terlupakan.",
   },
   {
     number: "02",
     image: secondFeatureIllustration,
     imageAlt: "Ilustrasi fitur memahami pola pengeluaran Artoku",
-    title: "Pahami pola pengeluaran",
+    title: "Bangun Kebiasaan Finansial yang Lebih Baik",
     description:
-      "Ketahui kategori yang paling banyak menghabiskan uang dan temukan kebiasaan yang bisa kamu perbaiki.",
+      "Mulai lebih sadar terhadap penggunaan uang dengan membiasakan diri mencatat aktivitas keuangan secara rutin.",
   },
   {
     number: "03",
     image: thirdFeatureIllustration,
     imageAlt: "Ilustrasi fitur memantau saldo dan tabungan Artoku",
-    title: "Pantau saldo dan tabungan",
+    title: "Pahami Aktivitas Keuangan Pribadi",
     description:
-      "Bedakan saldo untuk kebutuhan sehari-hari dengan uang yang kamu sisihkan sebagai tabungan.",
+      "Gunakan catatan keuanganmu untuk melihat kembali pemasukan dan pengeluaran, sehingga kamu dapat mengevaluasi kebiasaan menggunakan uang.",
   },
 ] as const;
 
@@ -40,10 +40,11 @@ export function HowItWorksSection() {
       <div className="mx-auto w-full max-w-7xl">
         <header className="mx-auto max-w-3xl text-center">
           <h2 className="font-inter text-3xl leading-[1.15] font-semibold tracking-[-0.04em] text-slate-950 sm:text-4xl lg:text-5xl">
-            Apa yang bisa kamu lakukan dengan <span className="text-[#14864A]">Artoku</span>?
+            Kenapa Menggunakan<br />
+            <span className="text-[#14864A]">MyArtoku?</span>
           </h2>
           <p className="mx-auto mt-5 max-w-2xl font-inter text-base leading-7 text-slate-600 sm:text-lg sm:leading-8">
-            Kelola uang dengan lebih mudah, pahami kebiasaan finansialmu, dan tentukan langkah yang lebih baik untuk masa depan.
+            MyArtoku membantu kamu mencatat transaksi dengan mudah, memantau kondisi keuangan, dan memahami kebiasaan pengeluaran agar lebih bijak mengelola uang.
           </p>
         </header>
 

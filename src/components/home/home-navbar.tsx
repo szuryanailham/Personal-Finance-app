@@ -11,9 +11,10 @@ import { DEFAULT_AUTHED_PATH, LOGIN_PATH } from "@/lib/auth";
 
 const NAV_ITEMS = [
   { label: "Home", href: "/" },
-  { label: "Feature", href: "#features" },
-  { label: "How it work", href: "#interface" },
-  { label: "Blogs", href: "#products" },
+  { label: "Fiture", href: "#features" },
+  { label: "Blog", href: "#blog" },
+  { label: "About", href: "#about" },
+  { label: "FAQ", href: "#faq" },
 ] as const;
 
 const loginButtonClass = cn(

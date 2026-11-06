@@ -176,3 +176,18 @@
 .artoku-guidance .driver-popover-arrow-side-bottom { border-bottom-color: var(--popover); }
 .artoku-guidance .driver-popover-arrow-side-left { border-left-color: var(--popover); }
 .artoku-guidance .driver-popover-arrow-side-right { border-right-color: var(--popover); }
+
+@keyframes hero-illustration-bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-illustration-bounce {
+    animation: hero-illustration-bounce 3.5s ease-in-out infinite;
+  }
+}
