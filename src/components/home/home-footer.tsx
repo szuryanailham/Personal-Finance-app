@@ -7,8 +7,8 @@ export function HomeFooter() {
   return (
     <footer className="bg-[#14864A] px-5 py-10 font-inter text-white sm:px-8 sm:py-12 lg:px-10">
       <div className="mx-auto w-full max-w-7xl">
-        <div className="grid gap-10 md:grid-cols-[1.5fr_1fr_1fr] lg:gap-20">
-          <div>
+        <div className="grid grid-cols-2 gap-x-5 gap-y-8 md:grid-cols-[1.5fr_1fr_1fr] md:gap-10 lg:gap-20">
+          <div className="col-span-2 min-w-0 md:col-span-1">
             <Link
               href="/"
               aria-label="Beranda Artoku"
@@ -26,8 +26,8 @@ export function HomeFooter() {
               Catat keuanganmu dengan mudah, pahami setiap pemasukan dan pengeluaran untuk keuangan yang lebih teratur.
             </p>
           </div>
-          <nav aria-label="Navigasi footer">
-            <ul className="space-y-4 text-sm sm:text-base">
+          <nav aria-label="Navigasi footer" className="min-w-0">
+            <ul className="space-y-1 text-sm leading-6 sm:text-base">
               {[
                 { label: "Beranda", href: "/" },
                 { label: "Tentang Kami", href: "/#about" },
@@ -37,15 +37,15 @@ export function HomeFooter() {
                 { label: "FAQ", href: "/#faq" },
               ].map(({ label, href }) => (
                 <li key={label}>
-                  <Link href={href} className="hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
+                  <Link href={href} className="flex min-h-11 items-center break-words py-2 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
                     {label}
                   </Link>
                 </li>
               ))}
             </ul>
           </nav>
-          <nav aria-label="Akun dan kebijakan">
-            <ul className="space-y-4 text-sm sm:text-base">
+          <nav aria-label="Akun dan kebijakan" className="min-w-0">
+            <ul className="space-y-1 text-sm leading-6 sm:text-base">
               {[
                 { label: "Daftar", href: "/sign-up" },
                 { label: "Login", href: "/login" },
@@ -53,7 +53,7 @@ export function HomeFooter() {
                 { label: "Syarat & Ketentuan", href: "/syarat-ketentuan" },
               ].map(({ label, href }) => (
                 <li key={label}>
-                  <Link href={href} className="hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
+                  <Link href={href} className="flex min-h-11 items-center break-words py-2 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
                     {label}
                   </Link>
                 </li>
