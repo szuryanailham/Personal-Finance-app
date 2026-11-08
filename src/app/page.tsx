@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { cookies } from "next/headers";
@@ -12,6 +13,11 @@ import { LandingCtaSection } from "@/components/home/landing-cta-section";
 import { ValuePropositionSection } from "@/components/home/value-proposition-section";
 import { SecuritySection } from "@/components/home/security-section";
 
+export const metadata: Metadata = {
+  title: "Artoku – Aplikasi Pencatat Keuangan Pribadi",
+  description: "Kelola keuangan lebih mudah dengan Artoku, aplikasi pencatat keuangan untuk mencatat pemasukan, pengeluaran, dan tabungan serta memahami kondisi keuangan pribadimu.",
+};
+
 export default async function Home() {
   const cookieStore = await cookies();
   const isLoggedIn = isSessionValid(
@@ -20,7 +26,7 @@ export default async function Home() {
   );
 
   return (
-    <>
+    <div className="min-h-screen bg-white">
       <HomeNavbar isLoggedIn={isLoggedIn} />
       <main>
         <section className="bg-white px-5 py-14 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
@@ -64,6 +70,6 @@ export default async function Home() {
         <FaqSection />
       </main>
       <HomeFooter />
-    </>
+    </div>
   );
 }

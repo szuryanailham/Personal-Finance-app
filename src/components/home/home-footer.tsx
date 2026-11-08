@@ -30,8 +30,8 @@ export function HomeFooter() {
             <ul className="space-y-1 text-sm leading-6 sm:text-base">
               {[
                 { label: "Beranda", href: "/" },
-                { label: "Tentang Kami", href: "/#about" },
-                { label: "Blog", href: "/#blog" },
+                { label: "Tentang Kami", href: "/about" },
+                { label: "Blog", href: "/blog" },
                 { label: "Daftar", href: "/sign-up" },
                 { label: "Contact", href: "/#contact" },
                 { label: "FAQ", href: "/#faq" },
