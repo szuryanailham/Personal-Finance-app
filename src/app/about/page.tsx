@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import heroAbout from "@/components/images/illustrations/hero-about.svg";
 import { cookies } from "next/headers";
 import { HomeNavbar } from "@/components/home/home-navbar";
@@ -7,7 +8,8 @@ import { HomeFooter } from "@/components/home/home-footer";
 import { AUTH_EXPIRED_AT_COOKIE, AUTH_TOKEN_COOKIE, isSessionValid } from "@/lib/auth";
 
 export const metadata: Metadata = {
-  title: "About | Artoku",
+  title: "Tentang Artoku | Aplikasi Pencatat Keuangan Pribadi",
+  description: "Kenali Artoku, aplikasi pencatat keuangan pribadi untuk mencatat pemasukan dan pengeluaran, mengelola saldo, serta memantau kondisi keuangan Anda.",
 };
 
 const FINANCE_STEPS = [
@@ -37,7 +39,7 @@ export default async function AboutPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <HomeNavbar isLoggedIn={isLoggedIn} variant="about" />
+      <HomeNavbar isLoggedIn={isLoggedIn} />
       <main>
         <section aria-labelledby="about-hero-title" className="bg-[#42A86E]/10 px-5 pt-12 pb-10 font-inter sm:px-8 sm:pt-16 sm:pb-14 lg:px-10 lg:pt-20">
           <div className="mx-auto flex w-full max-w-7xl flex-col items-center text-center">
@@ -146,6 +148,17 @@ export default async function AboutPage() {
               </p>
               <p>
                 Kami percaya bahwa produk yang bermanfaat dibangun dengan memahami kebutuhan nyata penggunanya.
+              </p>
+              <p>
+                Punya pertanyaan atau masukan? Hubungi kami melalui halaman{" "}
+                <Link href="/kontak" className="font-medium text-[#14864A] underline underline-offset-4 hover:text-[#10733e] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#14864A]">
+                  Kontak
+                </Link>
+                . Pelajari juga bagaimana data Anda dikelola melalui{" "}
+                <Link href="/kebijakan-privasi" className="font-medium text-[#14864A] underline underline-offset-4 hover:text-[#10733e] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#14864A]">
+                  Kebijakan Privasi
+                </Link>
+                .
               </p>
             </div>
           </div>
