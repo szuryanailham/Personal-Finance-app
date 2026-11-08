@@ -41,14 +41,14 @@ export function AppSidebar() {
   return (
     <Sidebar className="overflow-hidden rounded-r-2xl">
       <SidebarHeader>
-        <div className="flex items-center p-2">
+        <div className="mt-2 flex items-center justify-center p-2">
           <Image
             src={sidebarLogo}
             alt="Artoku"
             priority
             width={205}
             height={79}
-            className="h-16 w-auto"
+            className="h-10 w-auto"
           />
         </div>
       </SidebarHeader>
