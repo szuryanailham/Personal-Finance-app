@@ -122,7 +122,7 @@ export function EditTransactionDialog({ transaction, onClose }: EditTransactionD
               <div className="mb-1 flex size-10 items-center justify-center rounded-full bg-[#6359E9]/10 text-[#6359E9] sm:mb-2 sm:size-[52px]">
                 <PencilIcon />
               </div>
-              <DialogTitle>Edit Transaksi</DialogTitle>
+              <DialogTitle>Edit Transaction</DialogTitle>
               <DialogDescription>{transaction.transactionCode}</DialogDescription>
             </DialogHeader>
             {error && (
@@ -194,7 +194,7 @@ export function EditTransactionDialog({ transaction, onClose }: EditTransactionD
                 className={cn(BUTTON_CLASS, "gap-2 bg-[#6359E9] text-white hover:bg-[#6359E9]/90")}
               >
                 {isSubmitting && <Spinner className="animate-spin text-white" />}
-                {isSubmitting ? "Menyimpan..." : "Simpan Perubahan"}
+                {isSubmitting ? "Menyimpan..." : "Update Transaction"}
               </Button>
             </DialogFooter>
           </form>
