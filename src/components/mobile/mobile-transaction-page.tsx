@@ -3,12 +3,14 @@
 import { useState } from "react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
-import { SearchIcon } from "lucide-react"
+import { PencilIcon, SearchIcon } from "lucide-react"
 import { CATEGORY_OPTIONS } from "@/components/header/category-type-field"
 import { TransactionFilterDrawer } from "@/components/header/transaction-filter-drawer"
 import { formatAmount, type Transaction, type TransactionType } from "@/components/table/TableComponent"
 import { SortableHead, fromServerSort, nextServerSort, type SortKey } from "@/components/table/SortableHead"
 import { DEFAULT_PAGE_SIZE, TablePagination } from "@/components/table/TablePagination"
+import { EditTransactionDialog } from "@/components/table/edit-transaction-dialog"
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Spinner, LoadingState } from "@/components/ui/spinner"
 import {
@@ -55,6 +57,7 @@ interface MobileTransactionTableProps {
 }
 
 function MobileTransactionTable({ transactions, sort: serverSort, onSortChange }: MobileTransactionTableProps) {
+  const [editing, setEditing] = useState<Transaction | null>(null)
   const sort = fromServerSort(serverSort)
   const handleSort = (key: SortKey) => onSortChange(nextServerSort(serverSort, key))
   const router = useRouter()
@@ -113,11 +116,23 @@ function MobileTransactionTable({ transactions, sort: serverSort, onSortChange }
               </TableCell>
               <TableCell className={cn("px-4 py-3 text-right text-sm font-semibold", AMOUNT_CLASS[trx.type])}>
                 <span className="block truncate">{formatAmount(trx.type, trx.amount)}</span>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  aria-label={`Edit ${trx.description}`}
+                  onClick={(event) => { event.stopPropagation(); setEditing(trx) }}
+                  onKeyDown={(event) => event.stopPropagation()}
+                  className="mt-1"
+                >
+                  <PencilIcon aria-hidden="true" /> Edit
+                </Button>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
+      <EditTransactionDialog transaction={editing} onClose={() => setEditing(null)} />
     </div>
   )
 }

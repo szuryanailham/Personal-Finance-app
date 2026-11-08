@@ -23,7 +23,7 @@ export function CategoryPanel({ enabled, className }: CategoryPanelProps) {
         <p className="text-sm text-muted-foreground">Kelola kategori untuk transaksi kamu</p>
       </div>
 
-      <CategoryManagerContent manager={manager} tableClassName="max-h-none" />
+      <CategoryManagerContent manager={manager} />
     </section>
   )
 }

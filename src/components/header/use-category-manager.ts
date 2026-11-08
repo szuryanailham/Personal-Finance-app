@@ -28,7 +28,8 @@ function toErrorMessage(err: unknown): string {
 
 // State & aksi kelola kategori; dipakai bersama oleh dialog (desktop) dan halaman /category (mobile)
 export function useCategoryManager(enabled: boolean): CategoryManager {
-  const { categories, isLoading, error: loadError, reload } = useCategories(enabled)
+  // Sama dengan picker transaksi: muat daftar besar agar pencarian tidak terbatas 100 kategori.
+  const { categories, isLoading, error: loadError, reload } = useCategories(enabled, 9999)
   const { notifyTransactionsChanged } = useTransactionRevision()
   const [editing, setEditing] = useState<Category | null>(null)
   const [actionError, setActionError] = useState<string | null>(null)
