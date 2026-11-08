@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/sonner";
 import "driver.js/dist/driver.css";
 import "./globals.css";
+import { ScrollToTop } from "@/components/scroll-to-top";
 import { GuidanceProvider } from "@/components/guidance/guidance-provider";
 
 export const metadata: Metadata = {
@@ -17,6 +18,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full bg-[#F3F3FC]">
         <GuidanceProvider>{children}</GuidanceProvider>
+        <ScrollToTop />
         <Toaster position="top-right" richColors />
       </body>
     </html>
