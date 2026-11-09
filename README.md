@@ -85,3 +85,9 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 | `npm run build` | Build for production |
 | `npm run start` | Run the production build |
 | `npm run lint` | Run ESLint |
+
+### Contact page
+
+`/contact` is public and uses the shared marketing navigation and footer. The animated contact GIF is served without image optimization.
+
+No contact endpoint is currently defined in this repository. Until one is available, the form validates input and explains that messages cannot be sent; it never reports a simulated success. To connect an existing public backend endpoint, set `CONTACT_API_PATH` to its `/api/...` path and restart the app. It uses the existing API client and proxy (`API_PROXY_TARGET` or `NEXT_PUBLIC_API_BASE_URL`), sending JSON `{ name, email, subject, message }` without authentication. Subjects are sent as their displayed Indonesian labels. The endpoint must accept this payload and return the existing `{ data, message, errors, paging }` response envelope with a successful HTTP status and no `errors` for success. Failed requests retain the form values for retry.

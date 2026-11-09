@@ -12,10 +12,9 @@ import { DEFAULT_AUTHED_PATH, LOGIN_PATH } from "@/lib/auth";
 
 const NAV_ITEMS = [
   { label: "Beranda", href: "/" },
-  { label: "Fitur", href: "/#features" },
+  { label: "Fitur", href: "/fitur" },
   { label: "Tentang Kami", href: "/about" },
-  { label: "FAQ", href: "/#faq" },
-  { label: "Kontak", href: "/kontak" },
+  { label: "Kontak", href: "/contact" },
   { label: "Blog", href: "/blog" },
 ] as const;
 
