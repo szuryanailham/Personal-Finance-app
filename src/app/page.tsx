@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { cookies } from "next/headers";
 import { AUTH_EXPIRED_AT_COOKIE, AUTH_TOKEN_COOKIE, isSessionValid } from "@/lib/auth";
-import heroIllustration from "@/components/images/illustrations/demo-application.svg";
+import heroIllustration from "@/components/images/illustrations/demo-application.png";
 import { HomeFooter } from "@/components/home/home-footer";
 import { HomeNavbar } from "@/components/home/home-navbar";
 import { FaqSection } from "@/components/home/faq-section";
