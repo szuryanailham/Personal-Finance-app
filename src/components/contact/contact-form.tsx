@@ -59,7 +59,7 @@ export function ContactForm({ endpoint }: { endpoint: string | null }) {
   }
 
   return (
-    <form noValidate onSubmit={handleSubmit(submit)} aria-busy={isSubmitting} className="mt-8">
+    <form noValidate onSubmit={(event) => handleSubmit(submit)(event)} aria-busy={isSubmitting} className="mt-8">
       {!endpoint && <p className="mb-5 rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-600">Pengiriman pesan belum tersedia saat ini. Silakan coba lagi nanti.</p>}
       <fieldset disabled={isSubmitting} className="flex min-w-0 flex-col gap-5">
         <legend className="sr-only">Formulir kontak</legend>
