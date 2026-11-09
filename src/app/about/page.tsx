@@ -151,7 +151,7 @@ export default async function AboutPage() {
               </p>
               <p>
                 Punya pertanyaan atau masukan? Hubungi kami melalui halaman{" "}
-                <Link href="/kontak" className="font-medium text-[#14864A] underline underline-offset-4 hover:text-[#10733e] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#14864A]">
+                <Link href="/contact" className="font-medium text-[#14864A] underline underline-offset-4 hover:text-[#10733e] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#14864A]">
                   Kontak
                 </Link>
                 . Pelajari juga bagaimana data Anda dikelola melalui{" "}

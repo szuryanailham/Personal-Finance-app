@@ -33,7 +33,7 @@ export function HomeFooter() {
                 { label: "Tentang Kami", href: "/about" },
                 { label: "Blog", href: "/blog" },
                 { label: "Daftar", href: "/sign-up" },
-                { label: "Contact", href: "/#contact" },
+                { label: "Contact", href: "/contact" },
                 { label: "FAQ", href: "/#faq" },
               ].map(({ label, href }) => (
                 <li key={label}>
