@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import heroFiture from "@/components/images/illustrations/hero-fiture.svg";
+import heroFiture from "@/components/images/illustrations/hero-fiture.png";
 import { cookies } from "next/headers";
 import { HomeNavbar } from "@/components/home/home-navbar";
 import { MainFeaturesSection } from "@/components/features/main-features-section";

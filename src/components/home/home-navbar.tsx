@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { cn } from "cn";
 import { buttonVariants } from "@/components/ui/button";
-import artokuLogo from "@/components/images/icons/new-logo.svg";
+import artokuLogo from "@/components/images/icons/logo-light.png";
 import { DEFAULT_AUTHED_PATH, LOGIN_PATH } from "@/lib/auth";
 
 const NAV_ITEMS = [

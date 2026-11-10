@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { BookOpenIcon, SearchIcon } from "lucide-react";
-import artokuLogo from "@/components/images/icons/new-logo.svg";
+import artokuLogo from "@/components/images/icons/logo-light.png";
 import filterIcon from "@/components/images/icons/filter-horizontal.svg";
 import { FilterDrawer } from "@/components/header/filter-drawer";
 import { useTransactionFilter } from "@/components/header/transaction-filter-context";
