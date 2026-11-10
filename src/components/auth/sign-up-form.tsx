@@ -143,11 +143,11 @@ export function SignUpForm() {
             <Label htmlFor="sign-up-agree" className="text-sm font-normal leading-snug">
               <span>
                 Saya setuju dengan{" "}
-                <Link href="/terms" className={LINK_CLASS}>
+                <Link href="/syarat-ketentuan" className={LINK_CLASS}>
                   Syarat Layanan
                 </Link>{" "}
                 dan{" "}
-                <Link href="/privacy-policy" className={LINK_CLASS}>
+                <Link href="/kebijakan-pivasi" className={LINK_CLASS}>
                   Kebijakan Privasi
                 </Link>
               </span>

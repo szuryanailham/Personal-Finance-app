@@ -1,3 +1,4 @@
+import { createPageMetadata } from "@/lib/page-metadata";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
@@ -13,10 +14,12 @@ import { LandingCtaSection } from "@/components/home/landing-cta-section";
 import { ValuePropositionSection } from "@/components/home/value-proposition-section";
 import { SecuritySection } from "@/components/home/security-section";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: "Artoku – Aplikasi Pencatat Keuangan Pribadi",
   description: "Kelola keuangan lebih mudah dengan Artoku, aplikasi pencatat keuangan untuk mencatat pemasukan, pengeluaran, dan tabungan serta memahami kondisi keuangan pribadimu.",
-};
+  path: "/",
+  image: heroIllustration.src,
+});
 
 export default async function Home() {
   const cookieStore = await cookies();
@@ -28,14 +31,14 @@ export default async function Home() {
   return (
     <div className="min-h-screen bg-white">
       <HomeNavbar isLoggedIn={isLoggedIn} />
-      <main>
-        <section className="bg-white px-5 py-14 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
+      <main id="main-content" tabIndex={-1}>
+        <section aria-labelledby="home-hero-title" className="bg-white px-5 py-14 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
           <div className="mx-auto grid w-full max-w-7xl items-center gap-12 lg:grid-cols-[1fr_1.2fr] lg:gap-8 xl:gap-12">
             <div className="max-w-2xl">
               <p className="mb-5 font-inter text-xs font-bold tracking-[0.34em] text-[#14864A] sm:text-sm">
                 PERSONAL FINANCE ASSISTANT
               </p>
-              <h1 className="font-inter text-4xl leading-[1.12] font-semibold tracking-[-0.045em] text-slate-950 sm:text-5xl lg:text-6xl xl:text-[4.25rem]">
+              <h1 id="home-hero-title" className="font-inter text-4xl leading-[1.12] font-semibold tracking-[-0.045em] text-slate-950 sm:text-5xl lg:text-6xl xl:text-[4.25rem]">
                 Pahami <span className="text-[#14864A]">keuanganmu</span>, kendalikan masa depanmu.
               </h1>
               <p className="mt-6 max-w-xl font-inter text-base leading-8 text-pretty text-slate-600 sm:text-lg sm:leading-9">

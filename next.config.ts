@@ -4,6 +4,14 @@ import type { NextConfig } from "next";
 const API_PROXY_TARGET = process.env.API_PROXY_TARGET ?? "http://localhost:8080";
 
 const nextConfig: NextConfig = {
+  trailingSlash: false,
+  async redirects() {
+    return [
+      ...["/kebijakan-privasi", "/privacy-policy"].map((source) => ({ source, destination: "/kebijakan-pivasi", permanent: true })),
+      { source: "/terms", destination: "/syarat-ketentuan", permanent: true },
+      { source: "/fiture", destination: "/fitur", permanent: true },
+    ];
+  },
   // Browser memanggil /api/* di origin yang sama lalu diteruskan ke backend,
   // jadi tidak kena CORS (termasuk di preview deployment yang URL-nya berubah-ubah)
   async rewrites() {

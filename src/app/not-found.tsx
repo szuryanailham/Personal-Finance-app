@@ -7,10 +7,12 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
   return (
-    <PageStatus
-      className="min-h-screen"
-      title="Halaman Tidak Ditemukan"
-      description="Halaman yang kamu cari tidak ada atau sudah dipindahkan."
-    />
+    <main id="main-content" tabIndex={-1} className="min-h-screen bg-white">
+      <PageStatus
+        className="min-h-screen"
+        title="Halaman Tidak Ditemukan"
+        description="Halaman yang kamu cari tidak ada atau sudah dipindahkan."
+      />
+    </main>
   );
 }

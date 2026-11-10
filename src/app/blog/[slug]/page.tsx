@@ -1,3 +1,4 @@
+import { createPageMetadata } from "@/lib/page-metadata";
 import type { Metadata } from "next";
 import { BlogArticle } from "@/components/blog/blog-article";
 import Image from "next/image";
@@ -23,7 +24,13 @@ export async function generateMetadata({ params }: BlogDetailPageProps): Promise
   const { slug } = await params;
   const post = findPost(slug);
   if (!post) notFound();
-  return { title: `${post.title} | MyArtoku Blog`, description: post.excerpt };
+  return createPageMetadata({
+    title: `${post.title} | MyArtoku Blog`,
+    description: post.excerpt,
+    path: `/blog/${post.slug}`,
+    image: post.heroImage,
+    type: "article",
+  });
 }
 
 export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
@@ -43,7 +50,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
   return (
     <div className="flex min-h-screen flex-col bg-white">
       <HomeNavbar isLoggedIn={isLoggedIn} />
-      <main className="flex-1 px-5 pt-4 pb-10 font-inter sm:px-8 sm:pt-6 sm:pb-14 lg:px-10">
+      <main id="main-content" tabIndex={-1} className="flex-1 px-5 pt-4 pb-10 font-inter sm:px-8 sm:pt-6 sm:pb-14 lg:px-10">
         <div className="mx-auto w-full max-w-7xl">
           <Link href="/blog" className="inline-flex min-h-11 items-center gap-2 text-sm font-medium text-[#14864A] hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#14864A]">
             <ArrowLeftIcon aria-hidden="true" className="size-4" />

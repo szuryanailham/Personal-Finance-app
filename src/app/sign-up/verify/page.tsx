@@ -1,8 +1,17 @@
+import { createPageMetadata } from "@/lib/page-metadata";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { VerifyOtpForm } from "@/components/auth/verify-otp-form";
 import artokuLogo from "@/components/images/icons/new-logo.svg";
+
+export const metadata = {
+  ...createPageMetadata({
+    title: "Verifikasi Email | Artoku",
+    description: "Verifikasi alamat email untuk menyelesaikan pendaftaran akun Artoku kamu.",
+    path: "/sign-up/verify",
+  }),
+};
 
 export default function VerifyOtpPage() {
   return (

@@ -1,3 +1,4 @@
+import { createPageMetadata } from "@/lib/page-metadata";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
@@ -8,10 +9,12 @@ import { MainFeaturesSection } from "@/components/features/main-features-section
 import { HomeFooter } from "@/components/home/home-footer";
 import { AUTH_EXPIRED_AT_COOKIE, AUTH_TOKEN_COOKIE, isSessionValid } from "@/lib/auth";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: "Fitur Aplikasi Pencatat Keuangan | Artoku",
   description: "Jelajahi fitur Artoku untuk mencatat pemasukan dan pengeluaran, memantau saldo, melihat statistik keuangan, serta impor dan ekspor transaksi Excel.",
-};
+  path: "/fitur",
+  image: heroFiture.src,
+});
 
 export default async function FiturPage() {
   const cookieStore = await cookies();
@@ -23,7 +26,7 @@ export default async function FiturPage() {
   return (
     <div className="flex min-h-screen flex-col bg-white">
       <HomeNavbar isLoggedIn={isLoggedIn} />
-      <main className="flex-1">
+      <main id="main-content" tabIndex={-1} className="flex-1">
         <section aria-labelledby="features-title" className="bg-[#F7FBF8] px-5 py-16 font-inter sm:px-8 sm:py-20 lg:px-10 lg:py-28">
           <div className="mx-auto grid w-full max-w-7xl items-center gap-12 lg:grid-cols-2 lg:gap-16">
             <div className="flex min-w-0 flex-col items-center text-center lg:items-start lg:text-left">
