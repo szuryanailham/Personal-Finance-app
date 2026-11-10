@@ -1,3 +1,4 @@
+import { createPageMetadata } from "@/lib/page-metadata";
 import type { Metadata } from "next";
 import { BlogCard } from "@/components/blog/blog-card";
 import { dummyBlogAuthors, dummyBlogPostCategories, dummyBlogPostsResponse } from "@/lib/dummy/blog-posts";
@@ -8,10 +9,11 @@ import { HomeNavbar } from "@/components/home/home-navbar";
 import { HomeFooter } from "@/components/home/home-footer";
 import { AUTH_EXPIRED_AT_COOKIE, AUTH_TOKEN_COOKIE, isSessionValid } from "@/lib/auth";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: "Tips dan Panduan Keuangan Pribadi | Myartoku Blog",
   description: "Temukan tips keuangan pribadi dan panduan mengatur uang untuk membangun kebiasaan finansial yang lebih baik bersama MyArtoku.",
-};
+  path: "/blog",
+});
 
 export default async function BlogPage({
   searchParams,
@@ -38,7 +40,7 @@ export default async function BlogPage({
   return (
     <div className="flex min-h-screen flex-col bg-white">
       <HomeNavbar isLoggedIn={isLoggedIn} />
-      <main className="flex-1">
+      <main id="main-content" tabIndex={-1} className="flex-1">
         <section aria-labelledby="blog-hero-title" className="px-5 pt-12 pb-10 font-inter sm:px-8 sm:pt-16 sm:pb-14 lg:px-10 lg:pt-20">
           <div className="mx-auto flex w-full max-w-7xl flex-col items-center text-center">
             <span className="inline-flex items-center justify-center rounded-full bg-[#21B761]/48 px-5 py-2 text-sm font-semibold text-[#14864A]">
@@ -69,7 +71,7 @@ export default async function BlogPage({
         </section>
         <section aria-label="Konten blog" className="px-5 pb-14 font-inter sm:px-8 sm:pb-20 lg:px-10">
           <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-y-6 md:grid-cols-[11rem_minmax(0,1fr)] lg:grid-cols-[12rem_minmax(0,1fr)]">
-            <aside className="min-w-0 border-b border-slate-200 pb-4 md:border-r md:border-b-0 md:pr-4 md:pb-0">
+            <aside aria-label="Filter artikel" className="min-w-0 border-b border-slate-200 pb-4 md:border-r md:border-b-0 md:pr-4 md:pb-0">
               <BlogCategoryFilter
                 key={JSON.stringify([query, selectedSlugs])}
                 categories={dummyBlogCategories}

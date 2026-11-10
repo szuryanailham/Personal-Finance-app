@@ -1,3 +1,4 @@
+import { createPageMetadata } from "@/lib/page-metadata";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -7,10 +8,11 @@ import { HomeNavbar } from "@/components/home/home-navbar";
 import { HomeFooter } from "@/components/home/home-footer";
 import { AUTH_EXPIRED_AT_COOKIE, AUTH_TOKEN_COOKIE, isSessionValid } from "@/lib/auth";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: "Tentang Artoku | Aplikasi Pencatat Keuangan Pribadi",
   description: "Kenali Artoku, aplikasi pencatat keuangan pribadi untuk mencatat pemasukan dan pengeluaran, mengelola saldo, serta memantau kondisi keuangan Anda.",
-};
+  path: "/about",
+});
 
 const FINANCE_STEPS = [
   {
@@ -40,7 +42,7 @@ export default async function AboutPage() {
   return (
     <div className="min-h-screen bg-white">
       <HomeNavbar isLoggedIn={isLoggedIn} />
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <section aria-labelledby="about-hero-title" className="bg-[#42A86E]/10 px-5 pt-12 pb-10 font-inter sm:px-8 sm:pt-16 sm:pb-14 lg:px-10 lg:pt-20">
           <div className="mx-auto flex w-full max-w-7xl flex-col items-center text-center">
             <span className="inline-flex items-center justify-center rounded-full bg-[#21B761]/48 px-5 py-2 text-sm font-semibold text-[#14864A]">
@@ -155,7 +157,7 @@ export default async function AboutPage() {
                   Kontak
                 </Link>
                 . Pelajari juga bagaimana data Anda dikelola melalui{" "}
-                <Link href="/kebijakan-privasi" className="font-medium text-[#14864A] underline underline-offset-4 hover:text-[#10733e] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#14864A]">
+                <Link href="/kebijakan-pivasi" className="font-medium text-[#14864A] underline underline-offset-4 hover:text-[#10733e] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#14864A]">
                   Kebijakan Privasi
                 </Link>
                 .

@@ -49,7 +49,7 @@ export function HomeFooter() {
               {[
                 { label: "Daftar", href: "/sign-up" },
                 { label: "Login", href: "/login" },
-                { label: "Kebijakan Privasi", href: "/kebijakan-privasi" },
+                { label: "Kebijakan Privasi", href: "/kebijakan-pivasi" },
                 { label: "Syarat & Ketentuan", href: "/syarat-ketentuan" },
               ].map(({ label, href }) => (
                 <li key={label}>

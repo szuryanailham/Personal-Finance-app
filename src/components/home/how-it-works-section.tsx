@@ -35,11 +35,12 @@ export function HowItWorksSection() {
   return (
     <section
       id="how-it-works"
+      aria-labelledby="how-it-works-title"
       className="bg-white px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24"
     >
       <div className="mx-auto w-full max-w-7xl">
         <header className="mx-auto max-w-3xl text-center">
-          <h2 className="font-inter text-3xl leading-[1.15] font-semibold tracking-[-0.04em] text-slate-950 sm:text-4xl lg:text-5xl">
+          <h2 id="how-it-works-title" className="font-inter text-3xl leading-[1.15] font-semibold tracking-[-0.04em] text-slate-950 sm:text-4xl lg:text-5xl">
             Kenapa Menggunakan<br />
             <span className="text-[#14864A]">MyArtoku?</span>
           </h2>
