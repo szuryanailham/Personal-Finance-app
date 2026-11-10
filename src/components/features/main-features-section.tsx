@@ -1,9 +1,9 @@
 import { FeatureDetail } from "@/components/features/feature-detail";
-import transactionImage from "@/components/images/illustrations/fiture-detail-1.svg";
-import balanceImage from "@/components/images/illustrations/fiture-detail-2.svg";
-import statisticsImage from "@/components/images/illustrations/fiture-detail-3.svg";
-import historyImage from "@/components/images/illustrations/fiture-detail-4.svg";
-import excelImage from "@/components/images/illustrations/fiture-detail-5.svg";
+import transactionImage from "@/components/images/illustrations/fiture-detail-1.png";
+import balanceImage from "@/components/images/illustrations/fiture-detail-2.png";
+import statisticsImage from "@/components/images/illustrations/fiture-detail-3.png";
+import historyImage from "@/components/images/illustrations/fiture-detail-4.png";
+import excelImage from "@/components/images/illustrations/fiture-detail-5.png";
 
 const FEATURES = [
   {
