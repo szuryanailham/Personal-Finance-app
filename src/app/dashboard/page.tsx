@@ -1,4 +1,5 @@
 "use client"
+import { SummaryPeriod } from "@/components/cards/summary-period";
 import { SummaryCard } from "@/components/cards/summaryCard";
 import { TransactionChart } from "@/components/chart/transaction-chart";
 import { SUMMARY_CONFIG } from "@/components/cards/summary-config";
@@ -56,6 +57,7 @@ export default function DashboardPage() {
 
   return (
     <div className="mx-auto w-full py-4">
+      <SummaryPeriod startDate={stat?.startDate} endDate={stat?.endDate} isLoading={isStatLoading} error={statError} />
       <section data-guidance="summary" aria-busy={isStatLoading} className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4 xl:gap-8">
         {SUMMARY_CONFIG.map(({ title, key, icon }) => (
           <SummaryCard
@@ -63,7 +65,7 @@ export default function DashboardPage() {
             title={title}
             icon={icon}
             total={stat?.[key].amount ?? 0}
-            percentage={stat?.[key].changePercentage ?? 0}
+            percentage={stat?.[key].changePercentage}
             isLoading={isStatLoading}
             isHidden={isAmountHidden}
             onToggleHidden={toggleAmountHidden}
