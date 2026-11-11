@@ -1,4 +1,5 @@
 "use client"
+import { SummaryPeriod } from "@/components/cards/summary-period";
 import { useEffect, useMemo, useState } from "react";
 import Autoplay from "embla-carousel-autoplay";
 import { MobileSummaryCard } from "@/components/mobile/mobile-summary-card";
@@ -12,7 +13,7 @@ import {
 } from "@/components/ui/carousel";
 import { useTransactionStat } from "@/hooks/use-transaction-stat";
 import { useHiddenAmounts } from "@/hooks/use-hidden-amounts";
-import type { TransactionStat } from "@/lib/api/transaction";
+import type { SummaryMetricKey } from "@/lib/api/transaction";
 import { cn } from "@/lib/utils";
 import BalanceMobileIcon from "@/components/images/icons/mobile-balance.svg";
 import IncomeMobileIcon from "@/components/images/icons/Income-mobile.svg";
@@ -20,7 +21,7 @@ import SavingMobileIcon from "@/components/images/icons/saving-icon-mobile.svg";
 import ExpenseMobileIcon from "@/components/images/icons/outcome-icon -mobile.svg";
 
 // Ikon ringkasan khusus mobile dengan warna dasar yang selaras dengan identitas Artoku.
-const MOBILE_ICONS: Record<keyof TransactionStat, typeof BalanceMobileIcon> = {
+const MOBILE_ICONS: Record<SummaryMetricKey, typeof BalanceMobileIcon> = {
   totalBalance: BalanceMobileIcon,
   totalIncome: IncomeMobileIcon,
   totalSaving: SavingMobileIcon,
@@ -60,6 +61,7 @@ export function SummaryCarousel() {
 
   return (
     <section data-guidance="summary" aria-busy={isLoading} aria-label="Ringkasan transaksi" className="flex flex-col gap-3">
+      <SummaryPeriod startDate={stat?.startDate} endDate={stat?.endDate} isLoading={isLoading} error={error} />
       <Carousel
         setApi={setApi}
         opts={{ align: "center", loop: true }}
@@ -73,7 +75,7 @@ export function SummaryCarousel() {
                 title={title}
                 icon={MOBILE_ICONS[key]}
                 total={stat?.[key].amount ?? 0}
-                percentage={stat?.[key].changePercentage ?? 0}
+                percentage={stat?.[key].changePercentage}
                 isLoading={isLoading}
                 isHidden={isHidden}
                 onToggleHidden={toggleHidden}
