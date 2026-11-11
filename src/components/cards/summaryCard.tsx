@@ -73,16 +73,6 @@ export function SummaryCard({
               Rp.{isHidden ? HIDDEN_AMOUNT_MASK : currencyFormatter.format(total)}
             </span>
           )}
-          {hasPercentage && (
-            <span
-              className={cn(
-                "rounded-[10px] px-1.5 py-1 text-xs",
-                isNegative ? "bg-red-50 text-red-600" : "bg-emerald-50 text-green-600"
-              )}
-            >
-              {formatPercentage(percentage)}
-            </span>
-          )}
         </div>
       </div>
     </div>
