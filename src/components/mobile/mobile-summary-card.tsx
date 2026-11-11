@@ -57,16 +57,6 @@ export function MobileSummaryCard({
 
       <div className="relative z-10 flex items-center justify-between">
         <Image src={icon} alt="" width={ICON_SIZE} height={ICON_SIZE} unoptimized />
-        {hasPercentage && (
-          <span
-            className={cn(
-              "rounded-lg bg-white/15 px-1.5 py-0.5 text-xs font-medium",
-              isNegative ? "text-red-200" : "text-emerald-200"
-            )}
-          >
-            {formatPercentage(percentage)}
-          </span>
-        )}
       </div>
 
       <div className="relative z-10 flex flex-col gap-1">
