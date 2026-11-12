@@ -1,5 +1,5 @@
 "use client"
-import { SummaryPeriod } from "@/components/cards/summary-period";
+import { PersonalizedGreeting } from "@/components/home/personalized-greeting";
 import { useEffect, useMemo, useState } from "react";
 import Autoplay from "embla-carousel-autoplay";
 import { MobileSummaryCard } from "@/components/mobile/mobile-summary-card";
@@ -61,7 +61,7 @@ export function SummaryCarousel() {
 
   return (
     <section data-guidance="summary" aria-busy={isLoading} aria-label="Ringkasan transaksi" className="flex flex-col gap-3">
-      <SummaryPeriod startDate={stat?.startDate} endDate={stat?.endDate} isLoading={isLoading} error={error} />
+      <PersonalizedGreeting className="px-4 pt-4" period={{ startDate: stat?.startDate, endDate: stat?.endDate, isLoading, error }} />
       <Carousel
         setApi={setApi}
         opts={{ align: "center", loop: true }}

@@ -5,7 +5,7 @@ interface SummaryPeriodProps {
   error?: string | null
 }
 
-function formatDate(value?: string) {
+export function formatDate(value?: string) {
   const match = value?.match(/^(\d{4})-(\d{2})-(\d{2})(?:T.*)?$/)
   if (!match) return null
   const [, year, month, day] = match
