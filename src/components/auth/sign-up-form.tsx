@@ -7,14 +7,15 @@ import { toast } from "sonner"
 import { OTP_EMAIL_PARAM, OTP_RESEND_PARAM } from "@/components/auth/verify-otp-form"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Field, FieldGroup } from "@/components/ui/field"
+import { Field, FieldDescription, FieldGroup } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { PasswordInput } from "@/components/ui/password-input"
 import { Label } from "@/components/ui/label"
 import { Spinner } from "@/components/ui/spinner"
 import { signUp, type SignUpRequest } from "@/lib/api/auth"
+import { isValidPassword, NEW_PASSWORD_INPUT_PROPS, PASSWORD_HINT } from "@/lib/password-validation"
 
 const INPUT_CLASS = "h-11 px-3"
-const PASSWORD_MIN_LENGTH = 8
 const NAME_MAX_LENGTH = 100
 const LINK_CLASS = "font-medium text-[#14864A] underline-offset-4 hover:underline"
 
@@ -31,7 +32,8 @@ function toSignUpInput(form: HTMLFormElement): SignUpResult {
   if (!firstName || !lastName || !email || !password) {
     return { error: "Semua field wajib diisi" }
   }
-  if (password !== confirmPassword) return { error: "Password tidak sama" }
+  if (!isValidPassword(password)) return { error: PASSWORD_HINT }
+  if (password !== confirmPassword) return { error: "Konfirmasi Password tidak sama" }
   return { input: { firstName, lastName, email, password } }
 }
 
@@ -111,24 +113,22 @@ export function SignUpForm() {
           </Field>
           <Field>
             <Label htmlFor="sign-up-password">Password</Label>
-            <Input
+            <PasswordInput
               id="sign-up-password"
+              aria-describedby="sign-up-password-hint"
               name="password"
-              type="password"
-              autoComplete="new-password"
-              minLength={PASSWORD_MIN_LENGTH}
+              {...NEW_PASSWORD_INPUT_PROPS}
               className={INPUT_CLASS}
               required
             />
+            <FieldDescription id="sign-up-password-hint">{PASSWORD_HINT}</FieldDescription>
           </Field>
           <Field>
             <Label htmlFor="sign-up-confirm-password">Konfirmasi Password</Label>
-            <Input
+            <PasswordInput
               id="sign-up-confirm-password"
               name="confirmPassword"
-              type="password"
-              autoComplete="new-password"
-              minLength={PASSWORD_MIN_LENGTH}
+              {...NEW_PASSWORD_INPUT_PROPS}
               className={INPUT_CLASS}
               required
             />
