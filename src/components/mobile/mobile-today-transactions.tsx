@@ -6,7 +6,6 @@ import Link from "next/link"
 import { ArrowDownLeftIcon, ArrowUpRightIcon, ArrowRightIcon } from "lucide-react"
 import { CATEGORY_OPTIONS } from "@/components/header/category-type-field"
 import { dateFormatter, formatAmount, type TransactionType } from "@/components/table/TableComponent"
-import { compareNewestFirst } from "@/components/table/SortableHead"
 import { useTransactions } from "@/hooks/use-transactions"
 import { toLocalDateString } from "@/lib/date"
 
