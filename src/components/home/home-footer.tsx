@@ -33,7 +33,7 @@ export function HomeFooter() {
                 { label: "Tentang Kami", href: "/about" },
                 { label: "Blog", href: "/blog" },
                 { label: "Daftar", href: "/sign-up" },
-                { label: "Contact", href: "/#contact" },
+                { label: "Contact", href: "/contact" },
                 { label: "FAQ", href: "/#faq" },
               ].map(({ label, href }) => (
                 <li key={label}>
@@ -49,7 +49,7 @@ export function HomeFooter() {
               {[
                 { label: "Daftar", href: "/sign-up" },
                 { label: "Login", href: "/login" },
-                { label: "Kebijakan Privasi", href: "/kebijakan-privasi" },
+                { label: "Kebijakan Privasi", href: "/kebijakan-pivasi" },
                 { label: "Syarat & Ketentuan", href: "/syarat-ketentuan" },
               ].map(({ label, href }) => (
                 <li key={label}>

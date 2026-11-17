@@ -7,11 +7,13 @@ import { CheckCircle2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Field, FieldGroup, FieldDescription } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { PasswordInput } from "@/components/ui/password-input"
 import { Label } from "@/components/ui/label"
 import { Spinner } from "@/components/ui/spinner"
 import { forgotPassword, resetPassword } from "@/lib/api/auth"
 import { ApiError } from "@/lib/api/client"
 import { clearSession } from "@/lib/auth"
+import { isValidPassword, NEW_PASSWORD_INPUT_PROPS, PASSWORD_HINT } from "@/lib/password-validation"
 
 const BUTTON_CLASS = "h-11 w-full bg-[#14864A] text-white hover:bg-[#10733e]"
 
@@ -75,8 +77,8 @@ export function ResetPasswordForm() {
     const newPassword = String(data.get("newPassword") ?? "")
     const confirmation = String(data.get("confirmPassword") ?? "")
     setError("")
-    if (!newPassword.trim() || newPassword.length < 8) {
-      setError("Password baru minimal 8 karakter dan tidak boleh hanya berisi spasi.")
+    if (!isValidPassword(newPassword)) {
+      setError(PASSWORD_HINT)
       return
     }
     if (new TextEncoder().encode(newPassword).length > 72) {
@@ -84,7 +86,7 @@ export function ResetPasswordForm() {
       return
     }
     if (newPassword !== confirmation) {
-      setError("Konfirmasi password tidak sama.")
+      setError("Konfirmasi Password tidak sama.")
       return
     }
     setIsSubmitting(true)
@@ -122,12 +124,12 @@ export function ResetPasswordForm() {
         <FieldGroup>
           <Field>
             <Label htmlFor="reset-password">Password baru</Label>
-            <Input id="reset-password" name="newPassword" type="password" autoComplete="new-password" minLength={8} maxLength={100} required aria-describedby="password-hint" className="h-11 px-3" />
-            <FieldDescription id="password-hint">Minimal 8 karakter. Gunakan kombinasi huruf, angka, dan simbol.</FieldDescription>
+            <PasswordInput id="reset-password" name="newPassword" {...NEW_PASSWORD_INPUT_PROPS} maxLength={100} required aria-describedby="password-hint" className="h-11 px-3" />
+            <FieldDescription id="password-hint">{PASSWORD_HINT}</FieldDescription>
           </Field>
           <Field>
-            <Label htmlFor="confirm-password">Konfirmasi password baru</Label>
-            <Input id="confirm-password" name="confirmPassword" type="password" autoComplete="new-password" minLength={8} maxLength={100} required className="h-11 px-3" />
+            <Label htmlFor="confirm-password">Konfirmasi Password baru</Label>
+            <PasswordInput id="confirm-password" name="confirmPassword" {...NEW_PASSWORD_INPUT_PROPS} maxLength={100} required className="h-11 px-3" />
           </Field>
         </FieldGroup>
         {error && <p role="alert" className="text-sm text-destructive">{error}</p>}

@@ -1,0 +1,19 @@
+step membuat tampilan dashboard admin :
+
+1 membuat hirarki folder khusus untuk admin dashboard
+
+2 membuat component sidebar yang berisi 
+
+3. beranda : ringkasan tentang user dan blog
+
+4  user : detail user yang mendaftar , email dan juga berapa kali tranksaki 
+
+5. blog  : list blog yang sudah tersedia 
+
+
+6. buat dashboard berwarna hitam dan putih dan icon dan text putih mirip dashboard wordpress 
+
+
+
+
+

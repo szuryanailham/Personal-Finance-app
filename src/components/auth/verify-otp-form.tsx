@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Field } from "@/components/ui/field"
@@ -12,7 +12,7 @@ import { OtpInput } from "@/components/auth/otp-input"
 import { formatCountdown, useCountdown } from "@/hooks/use-countdown"
 import { resendSignUpOtp, verifySignUpOtp } from "@/lib/api/auth"
 import { ApiError } from "@/lib/api/client"
-import { LOGIN_PATH } from "@/lib/auth"
+import { DEFAULT_AUTHED_PATH, saveSession } from "@/lib/auth"
 
 export const OTP_EMAIL_PARAM = "email"
 export const OTP_RESEND_PARAM = "resendIn"
@@ -35,7 +35,6 @@ function toLockoutSeconds(err: unknown): number | null {
 }
 
 export function VerifyOtpForm() {
-  const router = useRouter()
   const searchParams = useSearchParams()
   const email = searchParams.get(OTP_EMAIL_PARAM)?.trim() ?? ""
   const { secondsLeft, isFinished, restart } = useCountdown(
@@ -62,6 +61,7 @@ export function VerifyOtpForm() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    if (isVerifying || isResending || !lockout.isFinished) return
     if (otp.length !== OTP_LENGTH) {
       setErrorMessage(`OTP harus ${OTP_LENGTH} digit`)
       return
@@ -70,9 +70,10 @@ export function VerifyOtpForm() {
     setErrorMessage(null)
     setIsVerifying(true)
     try {
-      await verifySignUpOtp({ email, otp })
-      toast.success("Akun berhasil dibuat, silakan login")
-      router.replace(LOGIN_PATH)
+      const session = await verifySignUpOtp({ email, otp })
+      saveSession(session)
+      toast.success("Akun berhasil dibuat. Selamat datang di Artoku!")
+      window.location.replace(DEFAULT_AUTHED_PATH)
     } catch (err) {
       handleError(err, "Gagal verifikasi OTP")
     } finally {

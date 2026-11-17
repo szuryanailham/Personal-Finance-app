@@ -66,7 +66,7 @@ export function SecuritySection() {
           className="mt-10 flex flex-col items-stretch justify-center gap-3 border-t border-[#14864A]/10 pt-8 sm:mt-12 sm:flex-row sm:items-center sm:gap-4"
         >
           {[
-            { href: "/kebijakan-privasi", label: "Kebijakan Privasi", icon: ShieldCheck },
+            { href: "/kebijakan-pivasi", label: "Kebijakan Privasi", icon: ShieldCheck },
             { href: "/syarat-ketentuan", label: "Syarat & Ketentuan", icon: FileText },
           ].map(({ href, label, icon: Icon }) => (
             <Link

@@ -34,7 +34,7 @@ export function PageStatus({
         priority
         className="h-auto w-full max-w-xs"
       />
-      <div className="flex max-w-md flex-col gap-2">r
+      <div className="flex max-w-md flex-col gap-2">
         <h1 className="text-2xl font-semibold text-gray-900">{title}</h1>
         <p className="text-sm text-gray-500">{description}</p>
       </div>
@@ -42,7 +42,7 @@ export function PageStatus({
         href={actionHref}
         className={cn(
           buttonVariants({ variant: "outline", size: "lg" }),
-          "border-[#6359E9] px-6 text-[#6359E9] hover:bg-[#6359E9]/10 hover:text-[#6359E9]"
+          "border-[#14864A] px-6 text-[#14864A] hover:bg-[#14864A]/10 hover:text-[#10733e] focus-visible:border-[#14864A] focus-visible:ring-[#14864A]/30"
         )}
       >
         {actionLabel}

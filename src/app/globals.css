@@ -187,6 +187,10 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
+  html:has(#blog-toc-title) {
+    scroll-behavior: smooth;
+  }
+
   .hero-illustration-bounce {
     animation: hero-illustration-bounce 3.5s ease-in-out infinite;
   }

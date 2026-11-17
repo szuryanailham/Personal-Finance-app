@@ -98,9 +98,10 @@ export function TransactionCalendar({ className }: TransactionCalendarProps) {
       <aside className="flex flex-col gap-4 lg:w-80">
         {selectedDay && (
           <CalendarDayDetail
+            key={selectedDay.key}
+            date={selectedDay.key}
             title={dayFormatter.format(selectedDay.date)}
             summary={data[selectedDay.key] ?? emptyDaySummary()}
-            emptyText={isLoading ? "Memuat transaksi…" : undefined}
           />
         )}
       </aside>

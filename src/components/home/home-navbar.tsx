@@ -7,15 +7,14 @@ import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { cn } from "cn";
 import { buttonVariants } from "@/components/ui/button";
-import artokuLogo from "@/components/images/icons/new-logo.svg";
+import artokuLogo from "@/components/images/icons/logo-light.png";
 import { DEFAULT_AUTHED_PATH, LOGIN_PATH } from "@/lib/auth";
 
 const NAV_ITEMS = [
   { label: "Beranda", href: "/" },
-  { label: "Fitur", href: "/#features" },
+  { label: "Fitur", href: "/fitur" },
   { label: "Tentang Kami", href: "/about" },
-  { label: "FAQ", href: "/#faq" },
-  { label: "Kontak", href: "/kontak" },
+  { label: "Kontak", href: "/contact" },
   { label: "Blog", href: "/blog" },
 ] as const;
 
@@ -72,6 +71,12 @@ export function HomeNavbar({ isLoggedIn }: HomeNavbarProps) {
 
   return (
     <header className="sticky top-0 z-50 border-b border-slate-100 bg-inherit font-inter">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:rounded-lg focus:bg-[#14864A] focus:px-5 focus:py-3 focus:font-semibold focus:text-white focus:outline-2 focus:outline-offset-2 focus:outline-[#10733e]"
+      >
+        Lewati ke konten utama
+      </a>
       <nav aria-label="Navigasi utama" className="mx-auto grid h-[4.5rem] max-w-7xl grid-cols-[1fr_auto] items-center px-5 sm:px-8 lg:grid-cols-[1fr_auto_1fr] lg:px-10">
         <Link href="/" aria-label="Beranda Artoku" className="justify-self-start">
           <Image src={artokuLogo} alt="Artoku" priority width={205} height={79} className="h-10 w-auto sm:h-12" />
@@ -114,7 +119,7 @@ export function HomeNavbar({ isLoggedIn }: HomeNavbarProps) {
       </nav>
 
       {isMenuOpen && (
-        <div id="mobile-navigation" className="border-t border-slate-100 px-5 pb-5 sm:px-8 lg:hidden">
+        <nav aria-label="Navigasi mobile" id="mobile-navigation" className="border-t border-slate-100 px-5 pb-5 sm:px-8 lg:hidden">
           <ul className="flex flex-col py-2">
             {NAV_ITEMS.map((item) => (
               <li key={item.label}>
@@ -137,7 +142,7 @@ export function HomeNavbar({ isLoggedIn }: HomeNavbarProps) {
           <Link href={authAction.href} onClick={() => setIsMenuOpen(false)} className={cn(loginButtonClass, "w-full lg:hidden")}>
             {authAction.label}
           </Link>
-        </div>
+        </nav>
       )}
     </header>
   );

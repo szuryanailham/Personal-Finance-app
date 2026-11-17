@@ -12,7 +12,7 @@ const HIDDEN_AMOUNT_MASK = "••••••"
 interface MobileSummaryCardProps {
   title: string
   total: number
-  percentage: number
+  percentage?: number
   icon: ImageProps["src"]
   isLoading?: boolean
   isHidden?: boolean
@@ -36,9 +36,9 @@ export function MobileSummaryCard({
   onToggleHidden,
   className,
 }: MobileSummaryCardProps) {
-  const hasPercentage = !isLoading && !isHidden && percentage !== 0
+  const hasPercentage = !isLoading && !isHidden && typeof percentage === "number" && Number.isFinite(percentage) && percentage !== 0
   const ToggleIcon = isHidden ? EyeOffIcon : EyeIcon
-  const isNegative = percentage < 0
+  const isNegative = (percentage ?? 0) < 0
 
   return (
     <div
@@ -57,17 +57,9 @@ export function MobileSummaryCard({
 
       <div className="relative z-10 flex items-center justify-between">
         <Image src={icon} alt="" width={ICON_SIZE} height={ICON_SIZE} unoptimized />
-        {hasPercentage && (
-          <span
-            className={cn(
-              "rounded-lg bg-white/15 px-1.5 py-0.5 text-xs font-medium",
-              isNegative ? "text-red-200" : "text-emerald-200"
-            )}
-          >
-            {formatPercentage(percentage)}
-          </span>
-        )}
       </div>
+
+      {hasPercentage && <span className={cn("self-end rounded px-2 py-1 text-xs", isNegative ? "bg-red-50 text-red-600" : "bg-emerald-50 text-green-600")}>{formatPercentage(percentage!)}</span>}
 
       <div className="relative z-10 flex flex-col gap-1">
         <div className="flex items-center gap-1.5">

@@ -2,11 +2,11 @@ import WalletIcon from "@/components/images/icons/Wallet.svg";
 import IncomeIcon from "@/components/images/icons/incomeIcon.svg";
 import SavingIcon from "@/components/images/icons/SavingIcon.svg";
 import ExpenseIcon from "@/components/images/icons/ExpenseIcon.svg";
-import type { TransactionStat } from "@/lib/api/transaction";
+import type { SummaryMetricKey } from "@/lib/api/transaction";
 
 export interface SummaryItemConfig {
   title: string;
-  key: keyof TransactionStat;
+  key: SummaryMetricKey;
   icon: typeof WalletIcon;
 }
 

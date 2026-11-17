@@ -1,10 +1,19 @@
 "use client";
 
 import { useCurrentUser } from "@/hooks/use-current-user";
+import { formatDate } from "@/components/cards/summary-period";
 import { cn } from "@/lib/utils";
 
-export function PersonalizedGreeting({ className }: { className?: string }) {
+interface PersonalizedGreetingProps {
+  className?: string;
+  period?: { startDate?: string; endDate?: string; isLoading: boolean; error?: string | null };
+}
+
+export function PersonalizedGreeting({ className, period }: PersonalizedGreetingProps) {
   const { user } = useCurrentUser();
+  const start = formatDate(period?.startDate);
+  const end = formatDate(period?.endDate);
+  const showRange = period && !period.isLoading && !period.error && start && end;
   const firstName = user?.firstName?.trim();
 
   return (
@@ -13,7 +22,11 @@ export function PersonalizedGreeting({ className }: { className?: string }) {
         {firstName ? `Halo, ${firstName}!` : "Halo!"}
       </h1>
       <p className="mt-2 text-sm text-slate-600 sm:text-base">
-        Yuk, lihat ringkasan keuanganmu hari ini.
+        {period ? (
+          <>Ringkasan:  {showRange ? (
+            <span className="font-medium text-slate-700"><span className="whitespace-nowrap">{start}</span> – <span className="whitespace-nowrap">{end}</span></span>
+          ) : period.isLoading ? "Memuat…" : "–"}</>
+        ) : "Yuk, lihat ringkasan keuanganmu hari ini."}
       </p>
     </div>
   );

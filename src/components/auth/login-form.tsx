@@ -2,11 +2,12 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Field, FieldGroup, FieldSeparator } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { PasswordInput } from "@/components/ui/password-input"
 import { Label } from "@/components/ui/label"
 import { Spinner } from "@/components/ui/spinner"
 import { GoogleLoginButton } from "@/components/auth/google-login-button"
@@ -16,8 +17,9 @@ import { FINANCIAL_SETUP_PATH, REDIRECT_PARAM, safeRedirectPath, saveSession } f
 import { ApiError } from "@/lib/api/client"
 import { fetchFinancialSetup } from "@/lib/api/financial-setup"
 
+import { PASSWORD_MIN_LENGTH } from "@/lib/password-validation"
+
 const INPUT_CLASS = "h-11 px-3"
-const PASSWORD_MIN_LENGTH = 8
 
 interface LoginInput {
   email: string
@@ -42,7 +44,6 @@ function toLoginInput(form: HTMLFormElement): LoginInput | null {
 }
 
 export function LoginForm() {
-  const router = useRouter()
   const searchParams = useSearchParams()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [hasLoginFailed, setHasLoginFailed] = useState(false)
@@ -66,7 +67,7 @@ export function LoginForm() {
   async function completeLogin(session: AuthSession) {
     saveSession(session)
     const destination = safeRedirectPath(searchParams.get(REDIRECT_PARAM))
-    router.replace((await needsFinancialSetup()) ? FINANCIAL_SETUP_PATH : destination)
+    window.location.replace((await needsFinancialSetup()) ? FINANCIAL_SETUP_PATH : destination)
   }
 
   async function handleGoogleCredential(idToken: string) {
@@ -102,7 +103,7 @@ export function LoginForm() {
               <Label htmlFor="login-password">Password</Label>
               <Link href="/forgot-password" className="text-sm font-semibold text-[#14864A] underline-offset-4 hover:underline">Lupa password?</Link>
             </div>
-            <Input
+            <PasswordInput
               id="login-password"
               name="password"
               type="password"

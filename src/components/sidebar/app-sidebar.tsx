@@ -1,5 +1,6 @@
 "use client"
 
+import { CalendarDaysIcon } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -41,14 +42,14 @@ export function AppSidebar() {
   return (
     <Sidebar className="overflow-hidden rounded-r-2xl">
       <SidebarHeader>
-        <div className="flex items-center p-2">
+        <div className="mt-2 flex items-center justify-center p-2">
           <Image
             src={sidebarLogo}
             alt="Artoku"
             priority
             width={205}
             height={79}
-            className="h-16 w-auto"
+            className="h-10 w-auto"
           />
         </div>
       </SidebarHeader>
@@ -72,6 +73,20 @@ export function AppSidebar() {
                 </div>
                 <span className="text-sm font-medium ">
                   Dashboard
+                </span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+
+            {/* Kalender */}
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                isActive={isMenuActive("/calender")}
+                render={<Link href="/calender" aria-current={isMenuActive("/calender") ? "page" : undefined} />}
+                className="gap-3 px-3 py-2.5 h-auto"
+              >
+                <CalendarDaysIcon className="size-6! shrink-0" aria-hidden="true" />
+                <span className="text-sm font-medium">
+                  Kalender
                 </span>
               </SidebarMenuButton>
             </SidebarMenuItem>

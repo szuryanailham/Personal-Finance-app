@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/seo";
 import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/sonner";
 import "driver.js/dist/driver.css";
@@ -6,6 +7,7 @@ import { ScrollToTop } from "@/components/scroll-to-top";
 import { GuidanceProvider } from "@/components/guidance/guidance-provider";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "Artoku",
   description: "Kelola keuangan pribadi dengan lebih mudah: catat transaksi, pantau pengeluaran, dan pahami kondisi finansialmu bersama Artoku.",
 };

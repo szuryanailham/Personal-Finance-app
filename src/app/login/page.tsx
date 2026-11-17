@@ -1,3 +1,5 @@
+import { redirectAuthenticatedUser } from "@/lib/guest-only";
+import { createPageMetadata } from "@/lib/page-metadata";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -5,7 +7,17 @@ import { LoginForm } from "@/components/auth/login-form";
 import artokuLogo from "@/components/images/icons/new-logo.svg";
 import loginIllustration from "@/components/images/illustrations/login-ilustration.svg";
 
-export default function LoginPage() {
+export const metadata = {
+  ...createPageMetadata({
+    title: "Login ke Artoku | Artoku",
+    description: "Masuk ke akun Artoku untuk mencatat transaksi dan memantau keuangan pribadi kamu.",
+    path: "/login",
+  }),
+};
+
+export default async function LoginPage() {
+  await redirectAuthenticatedUser();
+
   return (
     <main className="grid min-h-screen bg-[#F7FBF8] lg:grid-cols-2">
       <section className="relative flex items-center justify-center overflow-hidden bg-white px-6 py-12 sm:px-10">
@@ -35,6 +47,10 @@ export default function LoginPage() {
           <Suspense>
             <LoginForm />
           </Suspense>
+          <p className="text-center text-xs leading-6 text-slate-500">
+            Pelajari bagaimana data kamu dikelola melalui{" "}
+            <Link href="/kebijakan-pivasi" className="font-semibold text-[#14864A] underline underline-offset-4">Kebijakan Privasi</Link>.
+          </p>
         </div>
       </section>
       <section className="relative hidden min-h-screen items-center justify-center overflow-hidden bg-[#F7FBF8] px-10 py-14 lg:flex">

@@ -6,11 +6,11 @@ import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Field, FieldDescription, FieldGroup } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
+import { PasswordInput } from "@/components/ui/password-input"
 import { Label } from "@/components/ui/label"
+import { isValidPassword, NEW_PASSWORD_INPUT_PROPS, PASSWORD_HINT } from "@/lib/password-validation"
 
 const INPUT_CLASS = "h-11 px-3 sm:max-w-md"
-const PASSWORD_MIN_LENGTH = 8
 
 interface ChangePasswordInput {
   currentPassword: string
@@ -26,13 +26,13 @@ function toChangePasswordInput(form: HTMLFormElement): ChangePasswordResult {
   const confirmPassword = String(data.get("confirmPassword") ?? "")
 
   if (!currentPassword || !newPassword) return { error: "Semua field wajib diisi" }
-  if (newPassword.length < PASSWORD_MIN_LENGTH) {
-    return { error: `Password baru minimal ${PASSWORD_MIN_LENGTH} karakter` }
+  if (!isValidPassword(newPassword)) {
+    return { error: PASSWORD_HINT }
   }
   if (newPassword === currentPassword) {
     return { error: "Password baru harus berbeda dari password saat ini" }
   }
-  if (newPassword !== confirmPassword) return { error: "Konfirmasi password tidak sama" }
+  if (newPassword !== confirmPassword) return { error: "Konfirmasi Password tidak sama" }
   return { input: { currentPassword, newPassword } }
 }
 
@@ -49,7 +49,7 @@ export function PasswordForm() {
 
     setErrorMessage(null)
     // TODO: sambungkan ke endpoint ganti password setelah tersedia di backend
-    toast.info("Fitur ganti password belum tersedia")
+    toast.info("Fitur ganti Password belum tersedia")
   }
 
   return (
@@ -64,39 +64,39 @@ export function PasswordForm() {
           <FieldGroup>
             <Field>
               <Label htmlFor="settings-current-password">Password Saat Ini</Label>
-              <Input
+              <PasswordInput
                 id="settings-current-password"
                 name="currentPassword"
                 type="password"
                 autoComplete="current-password"
                 className={INPUT_CLASS}
+                wrapperClassName="sm:max-w-md"
                 required
               />
             </Field>
 
             <Field>
               <Label htmlFor="settings-new-password">Password Baru</Label>
-              <Input
+              <PasswordInput
                 id="settings-new-password"
+                aria-describedby="settings-password-hint"
                 name="newPassword"
-                type="password"
-                autoComplete="new-password"
-                minLength={PASSWORD_MIN_LENGTH}
+                {...NEW_PASSWORD_INPUT_PROPS}
                 className={INPUT_CLASS}
+                wrapperClassName="sm:max-w-md"
                 required
               />
-              <FieldDescription>Minimal {PASSWORD_MIN_LENGTH} karakter.</FieldDescription>
+              <FieldDescription id="settings-password-hint">{PASSWORD_HINT}</FieldDescription>
             </Field>
 
             <Field>
               <Label htmlFor="settings-confirm-password">Konfirmasi Password Baru</Label>
-              <Input
+              <PasswordInput
                 id="settings-confirm-password"
                 name="confirmPassword"
-                type="password"
-                autoComplete="new-password"
-                minLength={PASSWORD_MIN_LENGTH}
+                {...NEW_PASSWORD_INPUT_PROPS}
                 className={INPUT_CLASS}
+                wrapperClassName="sm:max-w-md"
                 required
               />
             </Field>

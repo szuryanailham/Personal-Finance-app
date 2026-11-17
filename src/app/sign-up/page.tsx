@@ -1,9 +1,21 @@
+import { redirectAuthenticatedUser } from "@/lib/guest-only";
+import { createPageMetadata } from "@/lib/page-metadata";
 import Image from "next/image";
 import Link from "next/link";
 import { SignUpForm } from "@/components/auth/sign-up-form";
 import artokuLogo from "@/components/images/icons/new-logo.svg";
 
-export default function SignUpPage() {
+export const metadata = {
+  ...createPageMetadata({
+    title: "Daftar Akun | Artoku",
+    description: "Buat akun Artoku dan mulai membangun kebiasaan mencatat pemasukan serta pengeluaran pribadi.",
+    path: "/sign-up",
+  }),
+};
+
+export default async function SignUpPage() {
+  await redirectAuthenticatedUser();
+
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#F7FBF8] px-4 py-12">
       <div

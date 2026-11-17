@@ -63,7 +63,7 @@ export default function DashboardPage() {
             title={title}
             icon={icon}
             total={stat?.[key].amount ?? 0}
-            percentage={stat?.[key].changePercentage ?? 0}
+            percentage={stat?.[key].changePercentage}
             isLoading={isStatLoading}
             isHidden={isAmountHidden}
             onToggleHidden={toggleAmountHidden}

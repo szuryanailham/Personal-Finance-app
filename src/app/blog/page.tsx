@@ -1,34 +1,44 @@
+import { createPageMetadata } from "@/lib/page-metadata";
 import type { Metadata } from "next";
 import { BlogCard } from "@/components/blog/blog-card";
-import { dummyBlogAuthors, dummyBlogPostCategories, dummyBlogPostsResponse } from "@/lib/dummy/blog-posts";
+import Link from "next/link";
+import { fetchPublishedBlogPosts, PUBLISHED_BLOG_PAGE_SIZE } from "@/lib/api/blog";
 import { BlogCategoryFilter } from "@/components/blog/blog-category-filter";
 import { cookies } from "next/headers";
-import { dummyBlogCategories } from "@/lib/dummy/blog-categories";
+
 import { HomeNavbar } from "@/components/home/home-navbar";
 import { HomeFooter } from "@/components/home/home-footer";
 import { AUTH_EXPIRED_AT_COOKIE, AUTH_TOKEN_COOKIE, isSessionValid } from "@/lib/auth";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: "Tips dan Panduan Keuangan Pribadi | Myartoku Blog",
   description: "Temukan tips keuangan pribadi dan panduan mengatur uang untuk membangun kebiasaan finansial yang lebih baik bersama MyArtoku.",
-};
+  path: "/blog",
+});
 
 export default async function BlogPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string | string[]; category?: string | string[] }>;
+  searchParams: Promise<{ q?: string | string[]; skip?: string | string[] }>;
 }) {
-  const { q, category } = await searchParams;
-  const categorySlugs = Array.isArray(category) ? category : category ? [category] : [];
-  const selectedSlugs = dummyBlogCategories
-    .filter((item) => categorySlugs.includes(item.slug))
-    .map((item) => item.slug);
+  const { q, skip: rawSkip } = await searchParams;
   const query = (Array.isArray(q) ? q[0] : q)?.trim() ?? "";
-  const posts = dummyBlogPostsResponse.data.filter((post) => {
-    const matchesQuery = `${post.title} ${post.excerpt}`.toLocaleLowerCase("id-ID").includes(query.toLocaleLowerCase("id-ID"));
-    const matchesCategory = selectedSlugs.length === 0 || selectedSlugs.includes(dummyBlogPostCategories[post.id]);
-    return post.status === "PUBLISHED" && matchesQuery && matchesCategory;
-  });
+  const parsedSkip = Number(Array.isArray(rawSkip) ? rawSkip[0] : rawSkip);
+  const skip = Number.isSafeInteger(parsedSkip) && parsedSkip >= 0 ? parsedSkip : 0;
+  let result: Awaited<ReturnType<typeof fetchPublishedBlogPosts>> | null = null;
+  try {
+    result = await fetchPublishedBlogPosts(skip);
+  } catch (error) {
+    console.error("Gagal memuat artikel publik", error);
+  }
+  const posts = (result?.data ?? []).filter((post) =>
+    `${post.title} ${post.excerpt ?? ""}`.toLocaleLowerCase("id-ID").includes(query.toLocaleLowerCase("id-ID")),
+  );
+  function pageHref(offset: number) {
+    const params = new URLSearchParams({ skip: String(offset) });
+    if (query) params.set("q", query);
+    return `/blog?${params}`;
+  }
   const cookieStore = await cookies();
   const isLoggedIn = isSessionValid(
     cookieStore.get(AUTH_TOKEN_COOKIE)?.value,
@@ -38,7 +48,7 @@ export default async function BlogPage({
   return (
     <div className="flex min-h-screen flex-col bg-white">
       <HomeNavbar isLoggedIn={isLoggedIn} />
-      <main className="flex-1">
+      <main id="main-content" tabIndex={-1} className="flex-1">
         <section aria-labelledby="blog-hero-title" className="px-5 pt-12 pb-10 font-inter sm:px-8 sm:pt-16 sm:pb-14 lg:px-10 lg:pt-20">
           <div className="mx-auto flex w-full max-w-7xl flex-col items-center text-center">
             <span className="inline-flex items-center justify-center rounded-full bg-[#21B761]/48 px-5 py-2 text-sm font-semibold text-[#14864A]">
@@ -51,7 +61,6 @@ export default async function BlogPage({
               Temukan tips keuangan pribadi dan panduan mengatur uang untuk membangun kebiasaan finansial yang lebih baik bersama MyArtoku.
             </p>
             <form action="/blog" method="get" role="search" className="mt-8 flex w-full max-w-2xl items-stretch gap-3">
-              {selectedSlugs.map((slug) => <input key={slug} type="hidden" name="category" value={slug} />)}
               <label htmlFor="blog-search" className="sr-only">Cari tips dan panduan keuangan</label>
               <input
                 id="blog-search"
@@ -69,24 +78,28 @@ export default async function BlogPage({
         </section>
         <section aria-label="Konten blog" className="px-5 pb-14 font-inter sm:px-8 sm:pb-20 lg:px-10">
           <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-y-6 md:grid-cols-[11rem_minmax(0,1fr)] lg:grid-cols-[12rem_minmax(0,1fr)]">
-            <aside className="min-w-0 border-b border-slate-200 pb-4 md:border-r md:border-b-0 md:pr-4 md:pb-0">
+            <aside aria-label="Filter artikel" className="min-w-0 border-b border-slate-200 pb-4 md:border-r md:border-b-0 md:pr-4 md:pb-0">
               <BlogCategoryFilter
-                key={JSON.stringify([query, selectedSlugs])}
-                categories={dummyBlogCategories}
-                selectedSlugs={selectedSlugs}
+                key={query}
+                categories={[]}
+                selectedSlugs={[]}
                 query={query}
               />
             </aside>
             <section aria-labelledby="blog-articles-title" className="min-w-0 md:pl-6">
               <h2 id="blog-articles-title" className="text-xl font-semibold text-slate-950">Artikel Blog</h2>
-              {posts.length > 0 ? (
-                <div className="mt-5 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
+              {!result ? (
+                <div role="alert" className="mt-4 text-sm leading-6 text-slate-600">
+                  <p>Artikel belum dapat dimuat. Silakan coba lagi.</p>
+                  <Link href={pageHref(skip)} className="text-[#14864A] underline">Coba lagi</Link>
+                </div>
+              ) : posts.length > 0 ? (
+                <div className="mt-5 grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
                   {posts.map((post) => (
                     <BlogCard
                       key={post.id}
                       post={post}
-                      category={dummyBlogCategories.find((item) => item.slug === dummyBlogPostCategories[post.id])?.name ?? "Keuangan Pribadi"}
-                      author={dummyBlogAuthors[post.authorId] ?? "Tim MyArtoku"}
+                      
                     />
                   ))}
                 </div>
@@ -94,9 +107,16 @@ export default async function BlogPage({
                 <p role="status" className="mt-4 text-sm leading-6 text-slate-600">
                   {query
                     ? `Belum ada artikel tersedia untuk pencarian “${query}”.`
-                    : "Belum ada artikel tersedia untuk kategori yang dipilih."}
+                    : "Belum ada artikel tersedia."}
                 </p>
               )}
+              {result && (skip > 0 || result.paging.hasMore) && (
+                <nav aria-label="Navigasi halaman blog" className="mt-8 flex justify-between gap-4 text-sm font-medium text-[#14864A]">
+                  {skip > 0 ? <Link href={pageHref(Math.max(0, skip - PUBLISHED_BLOG_PAGE_SIZE))}>Sebelumnya</Link> : <span />}
+                  {result.paging.hasMore && <Link href={pageHref(skip + result.paging.limit)}>Selanjutnya</Link>}
+                </nav>
+              )}
+              {query && result && <p className="mt-4 text-xs text-slate-500">Pencarian berlaku untuk artikel pada halaman ini.</p>}
             </section>
           </div>
         </section>

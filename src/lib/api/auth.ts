@@ -54,7 +54,7 @@ export interface VerifyOtpRequest {
   otp: string
 }
 
-export interface RegisteredUser {
+export interface RegisteredUser extends AuthSession {
   firstName: string
   lastName: string
   email: string
@@ -66,7 +66,16 @@ export async function verifySignUpOtp(request: VerifyOtpRequest): Promise<Regist
     body: request,
     isPublic: true,
   })
-  if (!res.data?.email) throw new Error("Response verifikasi OTP tidak valid")
+  if (
+    !res.data?.email ||
+    typeof res.data.token !== "string" ||
+    !res.data.token.trim() ||
+    typeof res.data.expiredAt !== "number" ||
+    !Number.isFinite(res.data.expiredAt) ||
+    res.data.expiredAt <= Date.now()
+  ) {
+    throw new Error("Akun sudah diverifikasi, tetapi sesi login tidak valid. Silakan login untuk melanjutkan.")
+  }
   return res.data
 }
 

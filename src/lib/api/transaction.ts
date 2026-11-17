@@ -267,10 +267,14 @@ export async function runBulk(
 
 export interface StatItem {
   amount: number
-  changePercentage: number
+  changePercentage?: number
 }
 
+export type SummaryMetricKey = "totalBalance" | "totalIncome" | "totalExpense" | "totalSaving"
+
 export interface TransactionStat {
+  startDate?: string
+  endDate?: string
   totalBalance: StatItem
   totalIncome: StatItem
   totalExpense: StatItem
@@ -297,7 +301,7 @@ const EMPTY_STAT_ITEM: StatItem = { amount: 0, changePercentage: 0 }
 
 function toStatItem(item: StatItem | null | undefined): StatItem {
   if (!item) return EMPTY_STAT_ITEM
-  return { amount: Number(item.amount), changePercentage: Number(item.changePercentage) }
+  return { amount: Number(item.amount), changePercentage: typeof item.changePercentage === "number" && Number.isFinite(item.changePercentage) ? item.changePercentage : undefined }
 }
 
 export async function fetchTransactionStat({
@@ -308,6 +312,8 @@ export async function fetchTransactionStat({
   const body = await apiGet<TransactionStat>("/api/transaction/stat", params, "statistik", signal)
 
   return {
+    startDate: body.data?.startDate,
+    endDate: body.data?.endDate,
     totalBalance: toStatItem(body.data?.totalBalance),
     totalIncome: toStatItem(body.data?.totalIncome),
     totalExpense: toStatItem(body.data?.totalExpense),
