@@ -91,3 +91,29 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 `/contact` is public and uses the shared marketing navigation and footer. The animated contact GIF is served without image optimization.
 
 No contact endpoint is currently defined in this repository. Until one is available, the form validates input and explains that messages cannot be sent; it never reports a simulated success. To connect an existing public backend endpoint, set `CONTACT_API_PATH` to its `/api/...` path and restart the app. It uses the existing API client and proxy (`API_PROXY_TARGET` or `NEXT_PUBLIC_API_BASE_URL`), sending JSON `{ name, email, subject, message }` without authentication. Subjects are sent as their displayed Indonesian labels. The endpoint must accept this payload and return the existing `{ data, message, errors, paging }` response envelope with a successful HTTP status and no `errors` for success. Failed requests retain the form values for retry.
+
+### Create blog admin dan ImageKit
+
+Buka `/admin/blogs/create` melalui tombol **Tambah Blog** di `/admin/blogs`.
+Judul menghasilkan slug otomatis; editor menghasilkan `contentHtml`. Pilih minimal
+satu kategori. AUTHOR dapat menyimpan draf; ADMIN/EDITOR dapat menerbitkan.
+Penulis, waktu publikasi, waktu baca, ID, dan timestamp ditentukan backend.
+
+Upload gambar utama memakai `POST /api/blog/media` dengan token CMS dan multipart
+`file` dan `type=HERO` untuk folder ImageKit `/blog/hero`. Gambar di editor konten
+memakai endpoint yang sama dengan `type=CONTENT` untuk folder `/blog/content`.
+Backend mengunggah ke ImageKit dan menyimpan referensi pada tabel `media`;
+form mengirim `featuredMediaId` ke `POST /api/blog/posts`. Tanpa gambar, nilainya null.
+Format gambar: JPG, PNG, WebP, GIF, maksimal 5 MB.
+
+Set environment variable **pada proses backend Spring Boot** lalu restart backend:
+
+```dotenv
+IMAGEKIT_PRIVATE_KEY=private_your_imagekit_key
+```
+
+Jangan gunakan prefix `NEXT_PUBLIC_` untuk private key. API key tersedia di dashboard
+ImageKit; autentikasi server mengikuti https://imagekit.io/docs/api-keys.
+Modul blog memerlukan `BLOG_ENABLED=true` dan konfigurasi database blog yang sudah ada.
+Upload nyata membutuhkan kredensial ImageKit. Halaman daftar blog saat ini masih
+menggunakan data contoh, sehingga artikel baru belum muncul di tabel tersebut.

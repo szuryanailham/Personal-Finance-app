@@ -1,3 +1,4 @@
+import { redirectAuthenticatedUser } from "@/lib/guest-only";
 import { createPageMetadata } from "@/lib/page-metadata";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,7 +15,9 @@ export const metadata = {
   }),
 };
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  await redirectAuthenticatedUser();
+
   return (
     <main className="grid min-h-screen bg-[#F7FBF8] lg:grid-cols-2">
       <section className="relative flex items-center justify-center overflow-hidden bg-white px-6 py-12 sm:px-10">

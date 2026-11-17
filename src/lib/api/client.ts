@@ -69,6 +69,8 @@ export interface Paging {
 type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE"
 
 interface ApiRequestOptions {
+  /** Sesi layanan terpisah; HTTP 401 tidak menghapus sesi aplikasi utama. */
+  accessToken?: string
   method?: HttpMethod
   params?: URLSearchParams
   body?: unknown
@@ -80,11 +82,11 @@ interface ApiRequestOptions {
 export async function apiRequest<T>(
   path: string,
   errorLabel: string,
-  { method = "GET", params, body, signal, isPublic = false }: ApiRequestOptions = {}
+  { method = "GET", params, body, signal, isPublic = false, accessToken }: ApiRequestOptions = {}
 ): Promise<ApiResponse<T>> {
   const query = params ? `?${params}` : ""
   const headers: Record<string, string> = {}
-  if (!isPublic) headers.Authorization = `Bearer ${requireToken()}`
+  if (!isPublic) headers.Authorization = `Bearer ${accessToken ?? requireToken()}`
   if (body !== undefined) headers["Content-Type"] = "application/json"
 
   const res = await fetch(`${API_BASE_URL}${path}${query}`, {
@@ -93,7 +95,11 @@ export async function apiRequest<T>(
     body: body === undefined ? undefined : JSON.stringify(body),
     signal,
   })
-  assertAuthorized(res, isPublic)
+  assertAuthorized(res, isPublic || accessToken !== undefined)
+
+  if (res.ok && res.status === 204) {
+    return { data: null, message: null, errors: null, paging: null }
+  }
 
   const json = (await res.json().catch(() => null)) as ApiResponse<T> | null
 

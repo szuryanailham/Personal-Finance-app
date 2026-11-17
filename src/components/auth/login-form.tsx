@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Field, FieldGroup, FieldSeparator } from "@/components/ui/field"
@@ -44,7 +44,6 @@ function toLoginInput(form: HTMLFormElement): LoginInput | null {
 }
 
 export function LoginForm() {
-  const router = useRouter()
   const searchParams = useSearchParams()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [hasLoginFailed, setHasLoginFailed] = useState(false)
@@ -68,7 +67,7 @@ export function LoginForm() {
   async function completeLogin(session: AuthSession) {
     saveSession(session)
     const destination = safeRedirectPath(searchParams.get(REDIRECT_PARAM))
-    router.replace((await needsFinancialSetup()) ? FINANCIAL_SETUP_PATH : destination)
+    window.location.replace((await needsFinancialSetup()) ? FINANCIAL_SETUP_PATH : destination)
   }
 
   async function handleGoogleCredential(idToken: string) {
