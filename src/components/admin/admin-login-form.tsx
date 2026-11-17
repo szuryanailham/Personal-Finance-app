@@ -2,7 +2,6 @@
 
 import { useState, type FormEvent } from "react";
 import { PasswordInput } from "@/components/ui/password-input";
-import { adminLogin } from "@/app/admin/actions";
 
 const control = "min-h-10 w-full rounded border border-[#8c8f94] bg-white px-3 text-sm";
 
@@ -15,8 +14,16 @@ export function AdminLoginForm() {
     const data = new FormData(event.currentTarget);
     setBusy(true); setError(null);
     try {
-      const result = await adminLogin(String(data.get("email") ?? "").trim(), String(data.get("password") ?? ""));
-      if (result.error) { setError(result.error); return; }
+      const response = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: String(data.get("email") ?? "").trim(),
+          password: String(data.get("password") ?? ""),
+        }),
+      });
+      const result = await response.json();
+      if (!response.ok) { setError(result.error ?? "Login gagal. Silakan coba lagi."); return; }
       const from = new URLSearchParams(window.location.search).get("from");
       const destination = from && /^\/admin(?:\/|$)/.test(from) && !from.startsWith("/admin/login") && !/[\\\r\n]/.test(from) ? from : "/admin/dashboard";
       window.location.replace(destination);
