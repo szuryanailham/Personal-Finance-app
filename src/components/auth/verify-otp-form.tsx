@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Field } from "@/components/ui/field"
@@ -35,7 +35,6 @@ function toLockoutSeconds(err: unknown): number | null {
 }
 
 export function VerifyOtpForm() {
-  const router = useRouter()
   const searchParams = useSearchParams()
   const email = searchParams.get(OTP_EMAIL_PARAM)?.trim() ?? ""
   const { secondsLeft, isFinished, restart } = useCountdown(
@@ -74,7 +73,7 @@ export function VerifyOtpForm() {
       const session = await verifySignUpOtp({ email, otp })
       saveSession(session)
       toast.success("Akun berhasil dibuat. Selamat datang di Artoku!")
-      router.replace(DEFAULT_AUTHED_PATH)
+      window.location.replace(DEFAULT_AUTHED_PATH)
     } catch (err) {
       handleError(err, "Gagal verifikasi OTP")
     } finally {

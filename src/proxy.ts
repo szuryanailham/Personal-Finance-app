@@ -22,6 +22,15 @@ function isGuestOnlyPath(pathname: string): boolean {
 
 export function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl
+  if (pathname === "/admin" || pathname.startsWith("/admin/")) {
+    if (pathname === "/admin/login") return NextResponse.next();
+    if (!request.cookies.get("artoku_admin_session")?.value) {
+      const loginUrl = new URL("/admin/login", request.url);
+      loginUrl.searchParams.set("from", `${pathname}${search}`);
+      return NextResponse.redirect(loginUrl);
+    }
+    return NextResponse.next();
+  }
   const isLoggedIn = isSessionValid(
     request.cookies.get(AUTH_TOKEN_COOKIE)?.value,
     request.cookies.get(AUTH_EXPIRED_AT_COOKIE)?.value
@@ -47,6 +56,7 @@ export function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
+    "/admin/:path*",
     "/",
     "/login",
     "/sign-up/:path*",

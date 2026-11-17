@@ -1,3 +1,4 @@
+import { redirectAuthenticatedUser } from "@/lib/guest-only";
 import { createPageMetadata } from "@/lib/page-metadata";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,7 +13,9 @@ export const metadata = {
   }),
 };
 
-export default function SignUpPage() {
+export default async function SignUpPage() {
+  await redirectAuthenticatedUser();
+
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#F7FBF8] px-4 py-12">
       <div
