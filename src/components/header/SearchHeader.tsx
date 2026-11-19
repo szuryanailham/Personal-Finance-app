@@ -11,7 +11,7 @@ import { TransactionFilterDrawer } from "./transaction-filter-drawer"
 import type { TransactionListFilter } from "@/lib/api/transaction"
 
 interface SearchHeaderProps {
-  query: string
+  query?: string
   date?: Date
   onQueryChange?: (query: string) => void
   onDateChange?: (date: Date | undefined) => void
@@ -25,10 +25,6 @@ interface SearchHeaderProps {
 function toInputValue(date?: Date): string {
   return date ? toLocalDateString(date) : ""
 }
-
-// Mobile: satu baris [Search | Date | Filter]; Add New jadi tombol float.
-// sm ke atas: Add New di kiri, Filter/Search/Date di kanan.
-const ACTION_BUTTON_CLASS = cn("min-w-28 px-5 max-sm:hidden sm:mr-auto", ACCENT_OUTLINE_CLASS)
 
 // Di mobile input berbagi lebar sama rata; sm ke atas lebarnya tetap
 const INPUT_WRAPPER_CLASS = "group/accent relative min-w-0 flex-1 sm:flex-none"
@@ -66,9 +62,7 @@ export function SearchHeader({
   onFilterChange,
 }: SearchHeaderProps) {
   return (
-    // Urutan DOM mengikuti layout desktop; `max-sm:order-*` menyusun ulang untuk mobile
     <header className="flex w-full items-center gap-2 py-6 sm:gap-3">
-      <AddActionMenu triggerClassName={ACTION_BUTTON_CLASS} />
       <AddActionMenu variant="floating" triggerClassName="sm:hidden" />
 
       {filter && onFilterChange && (
@@ -77,7 +71,7 @@ export function SearchHeader({
         </div>
       )}
 
-      <div className={cn(INPUT_WRAPPER_CLASS, "max-sm:order-1 sm:w-64")}>
+      {query !== undefined && <div className={cn(INPUT_WRAPPER_CLASS, "max-sm:order-1 sm:w-64")}>
         {isSearching ? (
           <Spinner className={cn(INPUT_ICON_CLASS, "animate-spin")} />
         ) : (
@@ -91,7 +85,7 @@ export function SearchHeader({
           className={ACCENT_INPUT_CLASS}
           aria-label="Cari transaksi"
         />
-      </div>
+      </div>}
 
       <div className={cn(INPUT_WRAPPER_CLASS, "max-sm:order-2 sm:w-48")}>
         <CalendarIcon className={INPUT_ICON_CLASS} />
@@ -114,6 +108,7 @@ export function SearchHeader({
           </button>
         )}
       </div>
+      <AddActionMenu triggerClassName={cn("max-sm:hidden", query === undefined ? "sm:ml-auto" : "sm:order-first sm:mr-auto")} />
     </header>
   )
 }

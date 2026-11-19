@@ -18,9 +18,9 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart"
 import type { UseCategoryStatisticResult } from "@/hooks/use-category-statistic"
-import type { CategoryStatisticItem } from "@/lib/api/category"
+import type { Category, CategoryStatisticItem } from "@/lib/api/category"
 
-// Warna ditentukan FE; dipakai berurutan dan berulang jika kategori lebih banyak dari palet
+// Warna cadangan untuk kategori yang belum punya warna.
 export const CATEGORY_COLORS = ["#0F5F37", "#14864A", "#2D9A5F", "#54B879", "#91D6A9"] as const
 
 const currencyFormatter = new Intl.NumberFormat("id-ID")
@@ -36,13 +36,14 @@ interface ChartDatum {
 // Key chart harus aman dipakai sebagai nama CSS variable, jadi pakai index bukan nama kategori
 const toChartKey = (index: number) => `category-${index}`
 
-function buildChart(categories: readonly CategoryStatisticItem[]) {
+function buildChart(categories: readonly CategoryStatisticItem[], categoriesById: ReadonlyMap<string, Category>) {
   const config: ChartConfig = { amount: { label: "Jumlah" } }
   const data: ChartDatum[] = categories.map((item, index) => {
     const key = toChartKey(index)
+    const category = categoriesById.get(item.categoryId)
     config[key] = {
-      label: item.categoryName,
-      color: CATEGORY_COLORS[index % CATEGORY_COLORS.length],
+      label: category?.name ?? item.categoryName,
+      color: category?.color ?? CATEGORY_COLORS[index % CATEGORY_COLORS.length],
     }
     return { key, amount: item.totalAmount, percentage: item.percentage, fill: `var(--color-${key})` }
   })
@@ -59,8 +60,8 @@ const renderPercentageLabel = ({ payload }: PieLabelRenderProps) =>
   `${(payload as ChartDatum).percentage}%`
 
 // Data di-fetch di level halaman agar chart dan tabel berbagi satu request
-export function ExpenseCategoryChart({ statistic, isLoading, error }: UseCategoryStatisticResult) {
-  const { config, data } = React.useMemo(() => buildChart(statistic?.categories ?? []), [statistic])
+export function ExpenseCategoryChart({ statistic, isLoading, error, categoriesById }: UseCategoryStatisticResult & { categoriesById: ReadonlyMap<string, Category> }) {
+  const { config, data } = React.useMemo(() => buildChart(statistic?.categories ?? [], categoriesById), [statistic, categoriesById])
 
   const description = statistic
     ? `${formatDate(statistic.period.startDate)} - ${formatDate(statistic.period.endDate)}`

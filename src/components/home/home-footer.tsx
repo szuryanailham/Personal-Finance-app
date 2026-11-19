@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import artokuLogo from "@/components/images/icons/logo-dashboard.svg";
 
-export function HomeFooter() {
+export function HomeFooter({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
   return (
     <footer className="bg-[#14864A] px-5 py-10 font-inter text-white sm:px-8 sm:py-12 lg:px-10">
       <div className="mx-auto w-full max-w-7xl">
@@ -48,7 +48,7 @@ export function HomeFooter() {
             <ul className="space-y-1 text-sm leading-6 sm:text-base">
               {[
                 { label: "Daftar", href: "/sign-up" },
-                { label: "Login", href: "/login" },
+                { label: isLoggedIn ? "Dashboard" : "Login", href: isLoggedIn ? "/dashboard" : "/login" },
                 { label: "Kebijakan Privasi", href: "/kebijakan-pivasi" },
                 { label: "Syarat & Ketentuan", href: "/syarat-ketentuan" },
               ].map(({ label, href }) => (

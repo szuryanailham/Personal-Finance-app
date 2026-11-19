@@ -24,6 +24,8 @@ import {
 import { useDebouncedValue } from "@/hooks/use-debounced-value"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { useTransactions } from "@/hooks/use-transactions"
+import { useCategoriesById } from "@/hooks/use-categories"
+import { CategoryIcon } from "@/components/table/category-icon"
 import {
   DEFAULT_TRANSACTION_LIST_FILTER,
   type TransactionListFilter,
@@ -57,6 +59,7 @@ interface MobileTransactionTableProps {
 }
 
 function MobileTransactionTable({ transactions, sort: serverSort, onSortChange }: MobileTransactionTableProps) {
+  const categories = useCategoriesById()
   const [editing, setEditing] = useState<Transaction | null>(null)
   const sort = fromServerSort(serverSort)
   const handleSort = (key: SortKey) => onSortChange(nextServerSort(serverSort, key))
@@ -89,47 +92,52 @@ function MobileTransactionTable({ transactions, sort: serverSort, onSortChange }
           </TableRow>
         </TableHeader>
         <TableBody >
-          {transactions.map((trx) => (
-            <TableRow
-              key={trx.transactionCode}
-              role="link"
-              tabIndex={0}
-              aria-label={`Lihat detail ${trx.description}`}
-              className="cursor-pointer active:bg-[#F3F2FB]"
-              onClick={() => openDetail(trx.transactionCode)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") openDetail(trx.transactionCode)
-              }}
-            >
-              <TableCell className="px-4 py-3">
-                <div className="flex min-w-0 items-center gap-3">
-                  <Image
-                    src={TYPE_ICON[trx.type]}
-                    alt={trx.category}
-                    title={trx.category}
-                    width={32}
-                    height={32}
-                    className="size-8 shrink-0"
-                  />
-                  <span className="truncate text-sm font-medium text-[#282458]">{trx.description}</span>
-                </div>
-              </TableCell>
-              <TableCell className={cn("px-4 py-3 text-right text-sm font-semibold", AMOUNT_CLASS[trx.type])}>
-                <span className="block truncate">{formatAmount(trx.type, trx.amount)}</span>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  aria-label={`Edit ${trx.description}`}
-                  onClick={(event) => { event.stopPropagation(); setEditing(trx) }}
-                  onKeyDown={(event) => event.stopPropagation()}
-                  className="mt-1"
-                >
-                  <PencilIcon aria-hidden="true" /> Edit
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
+          {transactions.map((trx) => {
+            const category = categories.get(trx.categoryId)
+            return (
+              <TableRow
+                key={trx.transactionCode}
+                role="link"
+                tabIndex={0}
+                aria-label={`Lihat detail ${trx.description}`}
+                className="cursor-pointer active:bg-[#F3F2FB]"
+                onClick={() => openDetail(trx.transactionCode)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") openDetail(trx.transactionCode)
+                }}
+              >
+                <TableCell className="px-4 py-3">
+                  <div className="flex min-w-0 items-center gap-3">
+                    {category?.icon || category?.color ? <CategoryIcon category={category} /> : <Image
+                      src={TYPE_ICON[trx.type]}
+                      alt=""
+                      width={32}
+                      height={32}
+                      className="size-8 shrink-0"
+                    />}
+                    <span className="min-w-0">
+                      <span className="block truncate text-sm font-medium text-[#282458]">{trx.description}</span>
+                      <span className="block truncate text-xs text-muted-foreground">{category?.name ?? trx.category}</span>
+                    </span>
+                  </div>
+                </TableCell>
+                <TableCell className={cn("px-4 py-3 text-right text-sm font-semibold", AMOUNT_CLASS[trx.type])}>
+                  <span className="block truncate">{formatAmount(trx.type, trx.amount)}</span>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    aria-label={`Edit ${trx.description}`}
+                    onClick={(event) => { event.stopPropagation(); setEditing(trx) }}
+                    onKeyDown={(event) => event.stopPropagation()}
+                    className="mt-1"
+                  >
+                    <PencilIcon aria-hidden="true" /> Edit
+                  </Button>
+                </TableCell>
+              </TableRow>
+            )
+          })}
         </TableBody>
       </Table>
       <EditTransactionDialog transaction={editing} onClose={() => setEditing(null)} />

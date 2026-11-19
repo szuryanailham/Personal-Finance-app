@@ -1,6 +1,6 @@
 "use client"
 import { SummaryCard } from "@/components/cards/summaryCard";
-import { TransactionChart } from "@/components/chart/transaction-chart";
+import { CategoryBudgetTable } from "@/components/table/category-budget-table";
 import { SUMMARY_CONFIG } from "@/components/cards/summary-config";
 import { SearchHeader } from "@/components/header/SearchHeader";
 import Link from "next/link";
@@ -15,7 +15,6 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircleIcon } from "lucide-react";
 import { useTransactions } from "@/hooks/use-transactions";
 import { useTransactionStat } from "@/hooks/use-transaction-stat";
-import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import { useHiddenAmounts } from "@/hooks/use-hidden-amounts";
 import { toLocalDateString } from "@/lib/date";
 import { toStatQuery, useTransactionFilter } from "@/components/header/transaction-filter-context";
@@ -25,24 +24,19 @@ import { useEffect, useMemo, useState } from "react";
 const HOME_TRANSACTION_LIMIT = 10;
 
 export default function DashboardPage() {
-  const [query, setQuery] = useState("");
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [listFilter, setListFilter] = useState<TransactionListFilter>(DEFAULT_TRANSACTION_LIST_FILTER);
   const [editing, setEditing] = useState<Transaction | null>(null);
   const [deleting, setDeleting] = useState<readonly Transaction[]>([]);
   const [bulkUpdating, setBulkUpdating] = useState<readonly Transaction[]>([]);
-  const trimmedQuery = query.trim();
-  const debouncedQuery = useDebouncedValue(trimmedQuery);
-  const dateFilter = date ? toLocalDateString(date) : "";
   const { transactions, isLoading, isFetching, error } = useTransactions(
     HOME_TRANSACTION_LIMIT,
     0,
-    debouncedQuery,
-    dateFilter,
+    "",
+    date ? toLocalDateString(date) : "",
     listFilter
   );
 
-  const isSearching = trimmedQuery !== debouncedQuery || isFetching;
   const { filter, setIsFilterLoading } = useTransactionFilter();
   const statQuery = useMemo(() => toStatQuery(filter), [filter]);
   const { stat, isLoading: isStatLoading, error: statError } = useTransactionStat(statQuery);
@@ -78,31 +72,21 @@ export default function DashboardPage() {
         </Alert>
       )}
 
-      {/* Chart */}
+      {/* Anggaran kategori */}
       <section className="mt-8 min-w-0 overflow-hidden">
-        <TransactionChart />
+        <CategoryBudgetTable />
       </section>
 
-      {/* Search & filter */}
       <section className="mt-8">
-        <SearchHeader
-          query={query}
-          date={date}
-          onQueryChange={setQuery}
-          onDateChange={setDate}
-          isSearching={isSearching}
-          filter={listFilter}
-          onFilterChange={setListFilter}
-        />
+        <SearchHeader date={date} onDateChange={setDate} />
         {error ? (
           <p className="mt-4 text-sm text-destructive">{error}</p>
         ) : isLoading ? (
           <LoadingState label="Memuat transaksi..." className="mt-4" />
         ) : (
-          // Data lama tetap tampil (diredupkan) selama hasil search baru dimuat
           <div
-            className={cn("transition-opacity", isSearching && "pointer-events-none opacity-50")}
-            aria-busy={isSearching}
+            className={cn("transition-opacity", isFetching && "pointer-events-none opacity-50")}
+            aria-busy={isFetching}
           >
             <TableTransactionDetail
               transactions={transactions}

@@ -30,6 +30,8 @@ import {
 } from "@/components/table/SortableHead"
 import type { TransactionSortValue } from "@/lib/api/transaction"
 import { cn } from "@/lib/utils"
+import { useCategoriesById } from "@/hooks/use-categories"
+import { CategoryIcon } from "./category-icon"
 
 interface TableTransactionDetailProps {
   transactions: readonly Transaction[]
@@ -132,6 +134,7 @@ export default function TableTransactionDetail({
   onBulkDelete,
   className,
 }: TableTransactionDetailProps) {
+  const categories = useCategoriesById()
   const sort = fromServerSort(serverSort)
   const handleSort = (key: SortKey) => onSortChange(nextServerSort(serverSort, key))
   const [selectedCodes, setSelectedCodes] = useState<ReadonlySet<string>>(() => new Set())
@@ -184,48 +187,50 @@ export default function TableTransactionDetail({
                 aria-label="Pilih semua"
               />
             </TableHead>
-            <SortableHead label="Kode Transaksi" sortKey="transactionCode" sort={sort} onSort={handleSort} className="w-[160px]" />
-            <SortableHead label="Nama" sortKey="description" sort={sort} onSort={handleSort} className="w-[260px]" />
             <SortableHead label="Kategori" sortKey="category" sort={sort} onSort={handleSort} className="w-[200px]" />
+            <SortableHead label="Nama" sortKey="description" sort={sort} onSort={handleSort} className="w-[260px]" />
             <SortableHead label="Tanggal" sortKey="date" sort={sort} onSort={handleSort} className="w-[160px]" />
             <SortableHead label="Jumlah" sortKey="amount" sort={sort} onSort={handleSort} className="w-[200px] text-right" align="right" />
             <TableHead className={cn(HEAD_CLASS, "w-[100px] text-right")}>Aksi</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {transactions.map((trx) => (
-            <TableRow
-              key={trx.transactionCode}
-              data-state={selectedCodes.has(trx.transactionCode) ? "selected" : undefined}
-            >
-              <TableCell className="px-4">
-                <Checkbox
-                  checked={selectedCodes.has(trx.transactionCode)}
-                  className={CHECKBOX_CLASS}
-                  onCheckedChange={(checked) => toggleRow(trx.transactionCode, checked)}
-                  aria-label={`Pilih ${trx.description}`}
-                />
-              </TableCell>
-              <TableCell className="truncate px-4 text-center text-slate-500">
-                {trx.transactionCode}
-              </TableCell>
-              <TableCell className="truncate px-4 text-center font-medium text-[#282458]">
-                {trx.description}
-              </TableCell>
-              <TableCell className="truncate px-4 text-center text-slate-500">
-                {trx.category}
-              </TableCell>
-              <TableCell className="px-4 text-center text-slate-500">
-                {dateFormatter.format(trx.date)}
-              </TableCell>
-              <TableCell className="px-4 text-right font-semibold text-slate-500">
-                {formatAmount(trx.type, trx.amount)}
-              </TableCell>
-              <TableCell className="px-4 text-right">
-                <TransactionActions transaction={trx} onEdit={onEdit} onDelete={onDelete} />
-              </TableCell>
-            </TableRow>
-          ))}
+          {transactions.map((trx) => {
+            const category = categories.get(trx.categoryId)
+            return (
+              <TableRow
+                key={trx.transactionCode}
+                data-state={selectedCodes.has(trx.transactionCode) ? "selected" : undefined}
+              >
+                <TableCell className="px-4">
+                  <Checkbox
+                    checked={selectedCodes.has(trx.transactionCode)}
+                    className={CHECKBOX_CLASS}
+                    onCheckedChange={(checked) => toggleRow(trx.transactionCode, checked)}
+                    aria-label={`Pilih ${trx.description}`}
+                  />
+                </TableCell>
+                <TableCell className="truncate px-4 text-center text-slate-500">
+                  <span className="inline-flex max-w-full items-center gap-2 align-middle">
+                    <CategoryIcon category={category ?? {}} />
+                    <span className="truncate">{category?.name ?? trx.category}</span>
+                  </span>
+                </TableCell>
+                <TableCell className="truncate px-4 text-center font-medium text-[#282458]">
+                  {trx.description}
+                </TableCell>
+                <TableCell className="px-4 text-center text-slate-500">
+                  {dateFormatter.format(trx.date)}
+                </TableCell>
+                <TableCell className="px-4 text-right font-semibold text-slate-500">
+                  {formatAmount(trx.type, trx.amount)}
+                </TableCell>
+                <TableCell className="px-4 text-right">
+                  <TransactionActions transaction={trx} onEdit={onEdit} onDelete={onDelete} />
+                </TableCell>
+              </TableRow>
+            )
+          })}
         </TableBody>
       </Table>
     </div>

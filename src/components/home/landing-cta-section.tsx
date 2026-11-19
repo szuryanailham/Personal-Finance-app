@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-export function LandingCtaSection() {
+export function LandingCtaSection({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
   return (
     <section aria-labelledby="landing-cta-title" className="bg-white px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
       <div className="relative isolate mx-auto w-full max-w-7xl overflow-hidden rounded-3xl bg-[#14864A] px-8 py-20 shadow-xl shadow-[#14864A]/15 sm:rounded-[2rem] sm:px-16 sm:py-24 lg:px-24 lg:py-28">
@@ -31,10 +31,10 @@ export function LandingCtaSection() {
             </p>
           </div>
           <Link
-            href="/sign-up"
+            href={isLoggedIn ? "/dashboard" : "/sign-up"}
             className="mt-8 inline-flex min-h-12 max-w-full items-center justify-center gap-2 rounded-xl border border-white bg-transparent px-6 py-3 font-inter text-sm font-semibold text-white transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
           >
-            Mulai Catat Keuangan
+            {isLoggedIn ? "Masuk Dashboard" : "Mulai Catat Keuangan"}
             <ArrowRight aria-hidden="true" className="size-4" />
           </Link>
         </div>

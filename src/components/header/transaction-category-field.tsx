@@ -4,6 +4,7 @@ import { useState } from "react"
 import Image from "next/image"
 import { AlertCircleIcon, Check, ChevronDown, Search } from "lucide-react"
 import { Alert, AlertAction, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { CategoryIcon } from "@/components/table/category-icon"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -20,10 +21,8 @@ import { useCategories } from "@/hooks/use-categories"
 import type { Category } from "@/lib/api/category"
 import { CATEGORY_OPTIONS } from "./category-type-field"
 
-// Ikon kategori mengikuti tipenya (INCOME/EXPENSE/SAVING)
+// Ikon bawaan untuk kategori tanpa ikon dan warna tersimpan.
 const TYPE_ICON = Object.fromEntries(CATEGORY_OPTIONS.map((o) => [o.value, o.icon]))
-// Ambil seluruh kategori dalam satu request jika backend menerapkan pagination.
-const CATEGORY_PICKER_LIMIT = 9999
 
 interface TransactionCategoryFieldProps {
   // Fetch hanya berjalan saat dialog terbuka
@@ -42,10 +41,14 @@ function withSelected(categories: Category[], selected?: Category): Category[] {
 
 function CategoryOption({ category }: { category: Category }) {
   return (
-    <>
-      <Image src={TYPE_ICON[category.type]} alt="" width={24} height={24} />
+    <span className="flex min-w-0 items-center gap-3">
+      {category.icon || category.color ? (
+        <CategoryIcon category={category} />
+      ) : (
+        <Image src={TYPE_ICON[category.type]} alt="" width={24} height={24} className="shrink-0" />
+      )}
       <span className="truncate">{category.name}</span>
-    </>
+    </span>
   )
 }
 
@@ -58,7 +61,7 @@ export function TransactionCategoryField({
   const [search, setSearch] = useState("")
   const [pickerOpen, setPickerOpen] = useState(false)
   const [selectedCategoryId, setSelectedCategoryId] = useState(selected?.id ?? "")
-  const { categories: fetched, isLoading, error, reload } = useCategories(enabled, CATEGORY_PICKER_LIMIT)
+  const { categories: fetched, isLoading, error, reload } = useCategories(enabled, null)
   const categories = withSelected(fetched, selected)
   const filteredCategories = categories.filter((category) =>
     category.name.toLocaleLowerCase().includes(search.trim().toLocaleLowerCase())
@@ -109,7 +112,7 @@ export function TransactionCategoryField({
             ) : (
               <span className="text-muted-foreground">Pilih kategori</span>
             )}
-            <ChevronDown aria-hidden="true" className="size-4 text-muted-foreground" />
+            <ChevronDown aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
           </Button>
           <Dialog open={pickerOpen} onOpenChange={setPickerOpen}>
             <DialogContent className="max-h-[calc(100svh-2rem)] gap-4 overflow-hidden sm:max-w-md">
@@ -143,7 +146,7 @@ export function TransactionCategoryField({
                       className="h-11 w-full justify-start gap-3 px-3"
                     >
                       <CategoryOption category={category} />
-                      {category.id === effectiveCategoryId && <Check aria-hidden="true" className="ml-auto size-4 text-[#14864A]" />}
+                      {category.id === effectiveCategoryId && <Check aria-hidden="true" className="ml-auto size-4 shrink-0 text-[#14864A]" />}
                     </Button>
                   </li>
                 )) : (

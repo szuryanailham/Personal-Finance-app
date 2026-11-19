@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { PencilIcon, SearchIcon, Trash2Icon } from "lucide-react"
+import { categoryCurrency, CATEGORY_ICON_OPTIONS, DEFAULT_CATEGORY_COLOR } from "@/lib/category-appearance"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { TablePagination } from "@/components/table/TablePagination"
@@ -39,6 +40,8 @@ interface CategoryRowProps {
 
 // Delete butuh klik kedua (konfirmasi) agar tidak terhapus tanpa sengaja
 function CategoryRow({ category, isEditing, onEdit, onDelete }: CategoryRowProps) {
+  const Icon = (CATEGORY_ICON_OPTIONS.find(option => option.value === category.icon) ?? CATEGORY_ICON_OPTIONS[10]).icon
+  const color = category.color ?? DEFAULT_CATEGORY_COLOR
   const [isConfirming, setIsConfirming] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
 
@@ -54,8 +57,14 @@ function CategoryRow({ category, isEditing, onEdit, onDelete }: CategoryRowProps
 
   return (
     <TableRow data-state={isEditing ? "selected" : undefined}>
-      <TableCell className="max-w-40 whitespace-normal break-words font-medium sm:max-w-xs">{category.name}</TableCell>
+      <TableCell className="max-w-40 whitespace-normal break-words font-medium sm:max-w-xs">
+        <span className="flex items-center gap-2">
+          <span className="flex size-8 shrink-0 items-center justify-center rounded-lg" style={{ color, backgroundColor: `${color}1a` }}><Icon aria-hidden="true" className="size-4" /></span>
+          {category.name}
+        </span>
+      </TableCell>
       <TableCell>{TYPE_LABEL[category.type] ?? category.type}</TableCell>
+      <TableCell className="text-right whitespace-nowrap tabular-nums">{category.budget === undefined ? "—" : categoryCurrency.format(category.budget)}</TableCell>
       <TableCell className="text-right">
         {isConfirming ? (
           <div className="flex justify-end gap-2">
@@ -148,19 +157,20 @@ export function CategoryTable({
             <TableRow>
               <TableHead>Nama</TableHead>
               <TableHead>Tipe</TableHead>
+              <TableHead className="text-right">Budget</TableHead>
               <TableHead className="text-right">Aksi</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={3} className="h-20 text-center text-muted-foreground">
+                <TableCell colSpan={4} className="h-20 text-center text-muted-foreground">
                   <Spinner className="mx-auto" />
                 </TableCell>
               </TableRow>
             ) : filtered.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={3} className="h-20 text-center text-muted-foreground">
+                <TableCell colSpan={4} className="h-20 text-center text-muted-foreground">
                   {categories.length === 0 ? "Belum ada kategori" : "Kategori tidak ditemukan. Coba kata kunci lain."}
                 </TableCell>
               </TableRow>

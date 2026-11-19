@@ -6,20 +6,22 @@ import { CategoryStatisticFilterDrawer } from "@/components/chart/category-stati
 import { ExpenseCategoryChart } from "@/components/chart/expense-category-chart"
 import { CategoryStatisticTable } from "@/components/table/category-statistic-table"
 import { useCategoryStatistic } from "@/hooks/use-category-statistic"
+import { useCategoriesById } from "@/hooks/use-categories"
 import { DEFAULT_CATEGORY_STATISTIC_QUERY, type CategoryStatisticQuery } from "@/lib/api/category"
 
 // Konten analisis (filter, chart, tabel) yang dipakai halaman desktop dan mobile
 export function CategoryAnalysis({ className }: { className?: string }) {
   const [query, setQuery] = React.useState<CategoryStatisticQuery>(DEFAULT_CATEGORY_STATISTIC_QUERY)
   const categoryStatistic = useCategoryStatistic(query)
+  const categoriesById = useCategoriesById()
 
   return (
     <div className={`flex w-full flex-col gap-4 ${className ?? ""}`}>
       <div className="flex justify-end">
         <CategoryStatisticFilterDrawer value={query} onApply={setQuery} />
       </div>
-      <div data-guidance="spending" aria-busy={categoryStatistic.isLoading}><ExpenseCategoryChart {...categoryStatistic} /></div>
-      <CategoryStatisticTable {...categoryStatistic} />
+      <div data-guidance="spending" aria-busy={categoryStatistic.isLoading}><ExpenseCategoryChart {...categoryStatistic} categoriesById={categoriesById} /></div>
+      <CategoryStatisticTable {...categoryStatistic} categoriesById={categoriesById} />
     </div>
   )
 }
