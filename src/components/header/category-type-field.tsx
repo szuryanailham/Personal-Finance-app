@@ -21,12 +21,16 @@ interface CategoryTypeFieldProps {
   idPrefix: string
   label?: string
   defaultValue?: CategoryType
+  value?: CategoryType
+  onValueChange?: (value: CategoryType) => void
 }
 
 export function CategoryTypeField({
   idPrefix,
   label = "Kategori",
   defaultValue = CATEGORY_OPTIONS[0].value,
+  value,
+  onValueChange,
 }: CategoryTypeFieldProps) {
   return (
     <Field>
@@ -34,6 +38,11 @@ export function CategoryTypeField({
       <RadioGroup
         name="categoryType"
         defaultValue={defaultValue}
+        value={value}
+        onValueChange={nextValue => {
+          const option = CATEGORY_OPTIONS.find(option => option.value === nextValue)
+          if (option) onValueChange?.(option.value)
+        }}
         className="grid-cols-3 gap-2"
       >
         {CATEGORY_OPTIONS.map((option) => {

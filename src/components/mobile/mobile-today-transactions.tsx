@@ -6,6 +6,8 @@ import Link from "next/link"
 import { ArrowDownLeftIcon, ArrowUpRightIcon, ArrowRightIcon } from "lucide-react"
 import { CATEGORY_OPTIONS } from "@/components/header/category-type-field"
 import { formatAmount, type TransactionType } from "@/components/table/TableComponent"
+import { CategoryIcon } from "@/components/table/category-icon"
+import { useCategoriesById } from "@/hooks/use-categories"
 import { useTransactions } from "@/hooks/use-transactions"
 import { toLocalDateString } from "@/lib/date"
 
@@ -50,6 +52,7 @@ export function MobileTodayTransactions() {
     }
   }, [])
 
+  const categories = useCategoriesById()
   const { transactions, isLoading, error } = useTransactions(5, 0, "", today)
   // The shared hook retains previous results while fetching the new day.
   const latestTransactions = transactions
@@ -90,6 +93,7 @@ export function MobileTodayTransactions() {
       ) : (
         <ul className="flex flex-col gap-2.5">
           {latestTransactions.map((transaction) => {
+            const category = categories.get(transaction.categoryId)
             const style = TYPE_STYLE[transaction.type]
             const TypeIcon = style.icon
 
@@ -100,13 +104,15 @@ export function MobileTodayTransactions() {
                   className="flex min-w-0 items-center gap-3 rounded-2xl border border-emerald-100/80 bg-white p-3.5 shadow-[0_4px_14px_-12px_rgba(15,75,45,0.5)] transition-colors active:bg-emerald-50"
                 >
                   <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-emerald-50">
-                    <Image
-                      src={TYPE_ICON[transaction.type]}
-                      alt=""
-                      width={28}
-                      height={28}
-                      unoptimized
-                    />
+                    {category?.icon || category?.color ? <CategoryIcon category={category} /> : (
+                      <Image
+                        src={TYPE_ICON[transaction.type]}
+                        alt=""
+                        width={28}
+                        height={28}
+                        unoptimized
+                      />
+                    )}
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-sm font-semibold text-slate-800">
@@ -114,7 +120,7 @@ export function MobileTodayTransactions() {
                     </span>
                     <span className="mt-1 flex items-center gap-1.5 text-xs text-slate-500">
                       <TypeIcon className="size-3.5" aria-hidden="true" />
-                      {transaction.category || style.label}
+                      <span className="truncate">{category?.name ?? (transaction.category || style.label)}</span>
                     </span>
                   </span>
                   <span className="shrink-0 text-right">

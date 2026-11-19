@@ -15,7 +15,7 @@ const category: TutorialStep = {
 const transaction: TutorialStep = {
   path: "/dashboard", target: "add-transaction",
   title: "Catat pemasukan dan pengeluaran",
-  description: "Catat pemasukan dan pengeluaranmu untuk mulai memahami ke mana uangmu digunakan. Pilih Tambah Baru, lalu Tambah Transaksi. Di ponsel, gunakan tombol +. Isi kategori, nominal, dan tanggal, lalu simpan.",
+  description: "Catat pemasukan dan pengeluaranmu untuk mulai memahami ke mana uangmu digunakan. Klik Add Transaction untuk membuka form transaksi. Di ponsel, gunakan tombol +. Isi kategori, nominal, dan tanggal, lalu simpan.",
 }
 const summary: TutorialStep = {
   path: "/dashboard", target: "summary",

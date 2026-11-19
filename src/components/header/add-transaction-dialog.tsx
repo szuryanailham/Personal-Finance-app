@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Image from "next/image"
-import { CircleCheckIcon } from "lucide-react"
+import { CircleCheckIcon, PlusIcon } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import {
@@ -21,6 +21,7 @@ import { Label } from "@/components/ui/label"
 import { Spinner } from "@/components/ui/spinner"
 import { Textarea } from "@/components/ui/textarea"
 import { createTransaction } from "@/lib/api/transaction"
+import { AddCategoryDialog } from "./add-category-dialog"
 import { RupiahAmountInput } from "./rupiah-amount-input"
 import { TransactionCategoryField } from "./transaction-category-field"
 import { toTransactionInput } from "./transaction-form"
@@ -40,8 +41,9 @@ interface AddTransactionDialogProps {
   onOpenChange: (open: boolean) => void
 }
 
-// Dialog dikontrol dari luar (dibuka lewat menu AddActionMenu)
+// Dialog dikontrol dari luar (dibuka lewat tombol AddActionMenu)
 export function AddTransactionDialog({ open, onOpenChange }: AddTransactionDialogProps) {
+  const [categoryOpen, setCategoryOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isSuccess, setIsSuccess] = useState(false)
@@ -55,6 +57,7 @@ export function AddTransactionDialog({ open, onOpenChange }: AddTransactionDialo
 
   // Adjust only the date when the controlled dialog opens, before rendering its children.
   if (dateState.open !== open) {
+    if (!open) setCategoryOpen(false)
     setDateState({
       open,
       date: open ? toLocalDateString(new Date()) : dateState.date,
@@ -74,6 +77,8 @@ export function AddTransactionDialog({ open, onOpenChange }: AddTransactionDialo
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    // A submit from the portaled category form bubbles through the React tree.
+    if (e.target !== e.currentTarget) return
     e.preventDefault()
     const input = toTransactionInput(e.currentTarget)
     if (!input) {
@@ -135,9 +140,23 @@ export function AddTransactionDialog({ open, onOpenChange }: AddTransactionDialo
                 <Label htmlFor="transaction-name">Judul Transaksi</Label>
                 <Input id="transaction-name" name="transactionName" className={INPUT_CLASS} required />
               </Field>
-              {/* select category */}
-              <TransactionCategoryField enabled={open} idPrefix="transaction-category" label="Kategori" />
-  
+              <div className="flex flex-col items-start gap-1">
+                <div className="w-full">
+                  <TransactionCategoryField enabled={open} idPrefix="transaction-category" label="Kategori" />
+                </div>
+                <AddCategoryDialog
+                  open={open && categoryOpen}
+                  onOpenChange={setCategoryOpen}
+                  closeOnSuccess
+                  trigger={
+                    <Button type="button" variant="ghost" size="sm" disabled={isLocked} className="text-[#14864A]">
+                      <PlusIcon aria-hidden="true" />
+                      Create New Category
+                    </Button>
+                  }
+                />
+              </div>
+
               <Field>
                 <Label htmlFor="transaction-amount">Jumlah</Label>
                 <RupiahAmountInput id="transaction-amount" name="amount" className={INPUT_CLASS} required />

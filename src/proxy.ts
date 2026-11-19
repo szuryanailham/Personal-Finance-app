@@ -10,10 +10,9 @@ import {
   isSessionValid,
 } from "@/lib/auth"
 
-// Halaman khusus tamu: landing page, login, daftar, dan verifikasi OTP
+// Halaman khusus tamu: login, daftar, dan verifikasi OTP
 function isGuestOnlyPath(pathname: string): boolean {
   return (
-    pathname === "/" ||
     pathname === LOGIN_PATH ||
     pathname === SIGN_UP_PATH ||
     pathname.startsWith(`${SIGN_UP_PATH}/`)
@@ -22,6 +21,9 @@ function isGuestOnlyPath(pathname: string): boolean {
 
 export function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl
+
+  // Beranda dapat diakses baik oleh tamu maupun user yang sudah login.
+  if (pathname === "/") return NextResponse.next()
   if (pathname === "/admin" || pathname.startsWith("/admin/")) {
     if (pathname === "/admin/login") return NextResponse.next();
     if (!request.cookies.get("artoku_admin_session")?.value) {
@@ -36,7 +38,7 @@ export function proxy(request: NextRequest) {
     request.cookies.get(AUTH_EXPIRED_AT_COOKIE)?.value
   )
 
-  // Sudah login tapi membuka landing page, /login, atau /sign-up → langsung ke dashboard
+  // Sudah login tapi membuka /login atau /sign-up → langsung ke dashboard
   if (isGuestOnlyPath(pathname)) {
     return isLoggedIn
       ? NextResponse.redirect(new URL(DEFAULT_AUTHED_PATH, request.url))

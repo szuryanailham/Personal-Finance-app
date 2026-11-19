@@ -1,3 +1,4 @@
+import type { CategoryAppearance } from "@/lib/category-appearance"
 import type { DateRange } from "@/lib/date"
 
 import { apiRequest } from "./client"
@@ -5,37 +6,57 @@ import { apiRequest } from "./client"
 // Nilai mengikuti enum TransactionType di backend
 export type CategoryType = "INCOME" | "EXPENSE" | "SAVING"
 
-export interface Category {
+export interface Category extends CategoryAppearance {
   id: string
   name: string
   type: CategoryType
+  totalExpense?: number
+  remainingBudget?: number
 }
 
-export interface CategoryInput {
+export interface CategoryInput extends CategoryAppearance {
   name: string
   type: CategoryType
 }
 
 const CATEGORY_PATH = "/api/categories"
 
-// Jumlah kategori per user relatif kecil, jadi cukup ambil sekaligus tanpa paginasi
 export const CATEGORY_FETCH_LIMIT = 100
+const CATEGORY_PAGE_SIZE = 10
 
 export async function fetchCategories(
-  limit: number = CATEGORY_FETCH_LIMIT,
+  limit: number | null = CATEGORY_FETCH_LIMIT,
   signal?: AbortSignal
 ): Promise<Category[]> {
-  const params = new URLSearchParams({ skip: "0", limit: String(limit) })
-  const body = await apiRequest<Category[]>(CATEGORY_PATH, "memuat kategori", { params, signal })
-  return body.data ?? []
+  const pageSize = limit ?? CATEGORY_PAGE_SIZE
+  const categories: Category[] = []
+  let totalPages = 1
+  for (let page = 0; page < totalPages; page++) {
+    const params = new URLSearchParams({ skip: String(page * pageSize), limit: String(pageSize) })
+    const body = await apiRequest<Category[]>(CATEGORY_PATH, "memuat kategori", { params, signal })
+    categories.push(...(body.data ?? []))
+    totalPages = limit === null ? body.paging?.totalPage ?? 1 : 1
+  }
+  return categories.map(category => ({
+    ...category,
+    budget: category.budget ?? undefined,
+    icon: category.icon ?? undefined,
+    color: category.color && /^#[0-9a-f]{6}$/i.test(category.color) ? category.color : undefined,
+    totalExpense: category.totalExpense ?? undefined,
+    remainingBudget: category.remainingBudget ?? undefined,
+  }))
 }
 
 export async function createCategory(input: CategoryInput): Promise<void> {
-  await apiRequest(CATEGORY_PATH, "menambah kategori", { method: "POST", body: input })
+  await apiRequest(CATEGORY_PATH, "menambah kategori", { method: "POST", body: categoryPayload(input) })
 }
 
 export async function updateCategory(id: string, input: CategoryInput): Promise<void> {
-  await apiRequest(`${CATEGORY_PATH}/${id}`, "mengubah kategori", { method: "PUT", body: input })
+  await apiRequest(`${CATEGORY_PATH}/${id}`, "mengubah kategori", { method: "PUT", body: categoryPayload(input) })
+}
+
+function categoryPayload({ name, type, budget, icon, color }: CategoryInput) {
+  return { name, type, budget: type === "EXPENSE" ? budget : undefined, icon, color }
 }
 
 export async function deleteCategory(id: string): Promise<void> {

@@ -13,6 +13,8 @@ interface RupiahAmountInputProps {
   defaultValue?: number
   className?: string
   required?: boolean
+  max?: number
+  "aria-describedby"?: string
 }
 
 function toDigits(value: string): string {
@@ -34,7 +36,7 @@ function caretAfterDigits(formatted: string, digitCount: number): number {
 }
 
 // Input nominal format Rupiah (1.500.000); nilai angka mentah dikirim lewat hidden input
-export function RupiahAmountInput({ id, name, defaultValue, className, required }: RupiahAmountInputProps) {
+export function RupiahAmountInput({ id, name, defaultValue, className, required, max, "aria-describedby": describedBy }: RupiahAmountInputProps) {
   const [digits, setDigits] = useState(() =>
     defaultValue === undefined ? "" : toDigits(String(Math.round(defaultValue)))
   )
@@ -55,6 +57,11 @@ export function RupiahAmountInput({ id, name, defaultValue, className, required 
     const { value, selectionStart } = e.target
     const digitsBeforeCaret = value.slice(0, selectionStart ?? value.length).replace(/\D/g, "").length
     const nextDigits = toDigits(value)
+    e.currentTarget.setCustomValidity(
+      max !== undefined && Number(nextDigits) > max
+        ? `Nominal maksimal Rp ${rupiahFormatter.format(max)}.`
+        : ""
+    )
     // Nol di depan dibuang, jadi batasi agar tidak melebihi jumlah digit yang tersisa
     pendingCaretDigits.current = Math.min(digitsBeforeCaret, nextDigits.length)
     setDigits(nextDigits)
@@ -76,6 +83,7 @@ export function RupiahAmountInput({ id, name, defaultValue, className, required 
         autoComplete="off"
         placeholder="0"
         required={required}
+        aria-describedby={describedBy}
       />
       <input type="hidden" name={name} value={digits} />
     </div>

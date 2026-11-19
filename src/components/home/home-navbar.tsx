@@ -66,7 +66,7 @@ export function HomeNavbar({ isLoggedIn }: HomeNavbarProps) {
   };
   // /dashboard sendiri memilih tampilan mobile atau desktop sesuai lebar layar
   const authAction = isLoggedIn
-    ? { label: "Dasbor", href: DEFAULT_AUTHED_PATH }
+    ? { label: "Dashboard", href: DEFAULT_AUTHED_PATH }
     : { label: "Masuk", href: LOGIN_PATH };
 
   return (

@@ -1,19 +1,10 @@
 "use client"
 
 import { useState } from "react"
-import { ChevronDownIcon, FolderPlusIcon, PlusIcon, ReceiptIcon } from "lucide-react"
+import { PlusIcon } from "lucide-react"
 import { cn } from "cn"
 import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { AddTransactionDialog } from "./add-transaction-dialog"
-import { AddCategoryDialog } from "./add-category-dialog"
-
-type ActiveDialog = "transaction" | "category" | null
 
 interface AddActionMenuProps {
   triggerClassName?: string
@@ -21,61 +12,29 @@ interface AddActionMenuProps {
   variant?: "button" | "floating"
 }
 
+const PRIMARY_TRIGGER_CLASS =
+  "bg-[#14864A] text-white hover:bg-[#10733e]"
 const FLOATING_TRIGGER_CLASS =
-  "fixed right-5 bottom-5 z-40 size-14 rounded-full bg-[#14864A] text-white shadow-lg hover:bg-[#10733e] [&_svg:not([class*='size-'])]:size-6"
+  "fixed right-5 bottom-5 z-40 size-14 rounded-full [&_svg:not([class*='size-'])]:size-6"
 
-// Tombol "Add" dengan dropdown; tiap item membuka dialog masing-masing.
-// Dialog dirender di luar menu agar tetap terbuka setelah menu tertutup.
 export function AddActionMenu({ triggerClassName, variant = "button" }: AddActionMenuProps) {
   const isFloating = variant === "floating"
-  const [activeDialog, setActiveDialog] = useState<ActiveDialog>(null)
-
-  function handleOpenChange(dialog: Exclude<ActiveDialog, null>) {
-    return (open: boolean) => setActiveDialog(open ? dialog : null)
-  }
+  const [open, setOpen] = useState(false)
 
   return (
     <>
-      <DropdownMenu>
-        <DropdownMenuTrigger
-          render={
-            isFloating ? (
-              <Button data-guidance="add-transaction" className={cn(FLOATING_TRIGGER_CLASS, triggerClassName)} aria-label="Tambah baru">
-                <PlusIcon />
-              </Button>
-            ) : (
-              <Button data-guidance="add-transaction" className={cn("gap-2", triggerClassName)} variant="outline" size="lg">
-                Tambah Baru
-                <ChevronDownIcon className="size-4" />
-              </Button>
-            )
-          }
-        />
-        <DropdownMenuContent
-          align={isFloating ? "end" : "start"}
-          side={isFloating ? "top" : "bottom"}
-          sideOffset={isFloating ? 8 : 4}
-          className="min-w-44"
-        >
-          <DropdownMenuItem onClick={() => setActiveDialog("transaction")}>
-            <ReceiptIcon />
-            Tambah Transaksi
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setActiveDialog("category")}>
-            <FolderPlusIcon />
-            Tambah Kategori
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-
-      <AddTransactionDialog
-        open={activeDialog === "transaction"}
-        onOpenChange={handleOpenChange("transaction")}
-      />
-      <AddCategoryDialog
-        open={activeDialog === "category"}
-        onOpenChange={handleOpenChange("category")}
-      />
+      <Button
+        type="button"
+        data-guidance="add-transaction"
+        aria-label="Add Transaction"
+        size="lg"
+        className={cn(PRIMARY_TRIGGER_CLASS, isFloating ? FLOATING_TRIGGER_CLASS : "px-4", triggerClassName)}
+        onClick={() => setOpen(true)}
+      >
+        <PlusIcon aria-hidden="true" />
+        {!isFloating && "Add Transaction"}
+      </Button>
+      <AddTransactionDialog open={open} onOpenChange={setOpen} />
     </>
   )
 }

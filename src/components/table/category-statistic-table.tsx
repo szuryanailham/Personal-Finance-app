@@ -12,6 +12,8 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import type { UseCategoryStatisticResult } from "@/hooks/use-category-statistic"
+import type { Category } from "@/lib/api/category"
+import { CategoryIcon } from "./category-icon"
 
 const currencyFormatter = new Intl.NumberFormat("id-ID")
 
@@ -25,7 +27,7 @@ function StatusRow({ message, className }: { message: string; className: string 
   )
 }
 
-export function CategoryStatisticTable({ statistic, isLoading, error }: UseCategoryStatisticResult) {
+export function CategoryStatisticTable({ statistic, isLoading, error, categoriesById }: UseCategoryStatisticResult & { categoriesById: ReadonlyMap<string, Category> }) {
   const categories = statistic?.categories ?? []
   const totalTransactions = categories.reduce((sum, item) => sum + item.transactionCount, 0)
 
@@ -52,23 +54,26 @@ export function CategoryStatisticTable({ statistic, isLoading, error }: UseCateg
             ) : categories.length === 0 ? (
               <StatusRow message="Belum ada pengeluaran pada periode ini" className="text-muted-foreground" />
             ) : (
-              categories.map((item, index) => (
-                <TableRow key={item.categoryId}>
-                  <TableCell className="font-medium">
-                    <div className="flex items-center gap-2">
-                      {/* Warna sama dengan urutan slice di pie chart */}
-                      <span
-                        className="size-2.5 shrink-0 rounded-full"
-                        style={{ backgroundColor: CATEGORY_COLORS[index % CATEGORY_COLORS.length] }}
-                      />
-                      {item.categoryName}
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-right">{item.transactionCount}</TableCell>
-                  <TableCell className="text-right">Rp {currencyFormatter.format(item.totalAmount)}</TableCell>
-                  <TableCell className="text-right">{item.percentage}%</TableCell>
-                </TableRow>
-              ))
+              categories.map((item, index) => {
+                const category = categoriesById.get(item.categoryId)
+                const color = category?.color ?? CATEGORY_COLORS[index % CATEGORY_COLORS.length]
+                return (
+                  <TableRow key={item.categoryId}>
+                    <TableCell className="font-medium">
+                      <div className="flex items-center gap-2">
+                        {category?.icon ? <CategoryIcon category={{ ...category, color }} /> : <span
+                          className="size-2.5 shrink-0 rounded-full"
+                          style={{ backgroundColor: color }}
+                        />}
+                        {category?.name ?? item.categoryName}
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-right">{item.transactionCount}</TableCell>
+                    <TableCell className="text-right">Rp {currencyFormatter.format(item.totalAmount)}</TableCell>
+                    <TableCell className="text-right">{item.percentage}%</TableCell>
+                  </TableRow>
+                )
+              })
             )}
           </TableBody>
           {statistic && categories.length > 0 && (
