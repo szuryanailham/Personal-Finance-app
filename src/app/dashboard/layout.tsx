@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { AppShell } from "@/components/layout/app-shell";
-import { SummaryCarousel } from "@/components/mobile/summary-carousel";
-import { MenuGrid } from "@/components/mobile/menu-grid";
+import { MobileSummaryCard } from "@/components/mobile/mobile-summary-card";
 import { MobileTodayTransactions } from "@/components/mobile/mobile-today-transactions";
+import { CategoryBudgetTable } from "@/components/table/category-budget-table";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -14,11 +14,9 @@ export default function DashboardLayout({ children }: LayoutProps<"/dashboard">)
       title="Dashboard"
       mobile={
         <div className="flex flex-col gap-6 pb-6">
-          <div className="flex flex-col gap-3">
-            <SummaryCarousel />
-          </div>
-          <div className="px-4">
-            <MenuGrid />
+          <MobileSummaryCard />
+          <div className="min-w-0 px-4">
+            <CategoryBudgetTable compact />
             <MobileTodayTransactions />
           </div>
         </div>

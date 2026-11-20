@@ -25,30 +25,37 @@ const TYPE_LABEL = Object.fromEntries(CATEGORY_OPTIONS.map((o) => [o.value, o.la
 interface CategoryTableProps {
   categories: readonly Category[]
   isLoading: boolean
+  actions?: CategoryTableActions
+  onViewDetails?: (category: Category) => void
+  showBudget?: boolean
+  className?: string
+}
+
+interface CategoryTableActions {
   editingId: string | null
   onEdit: (category: Category) => void
   onDelete: (category: Category) => Promise<void>
-  className?: string
 }
 
 interface CategoryRowProps {
   category: Category
-  isEditing: boolean
-  onEdit: (category: Category) => void
-  onDelete: (category: Category) => Promise<void>
+  actions?: CategoryTableActions
+  onViewDetails?: (category: Category) => void
+  showBudget: boolean
 }
 
 // Delete butuh klik kedua (konfirmasi) agar tidak terhapus tanpa sengaja
-function CategoryRow({ category, isEditing, onEdit, onDelete }: CategoryRowProps) {
+function CategoryRow({ category, actions, onViewDetails, showBudget }: CategoryRowProps) {
   const Icon = (CATEGORY_ICON_OPTIONS.find(option => option.value === category.icon) ?? CATEGORY_ICON_OPTIONS[10]).icon
   const color = category.color ?? DEFAULT_CATEGORY_COLOR
   const [isConfirming, setIsConfirming] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
 
   async function handleConfirmDelete() {
+    if (!actions) return
     setIsDeleting(true)
     try {
-      await withMinLoading(onDelete(category))
+      await withMinLoading(actions.onDelete(category))
     } finally {
       setIsDeleting(false)
       setIsConfirming(false)
@@ -56,16 +63,25 @@ function CategoryRow({ category, isEditing, onEdit, onDelete }: CategoryRowProps
   }
 
   return (
-    <TableRow data-state={isEditing ? "selected" : undefined}>
+    <TableRow data-state={actions?.editingId === category.id ? "selected" : undefined}>
       <TableCell className="max-w-40 whitespace-normal break-words font-medium sm:max-w-xs">
         <span className="flex items-center gap-2">
           <span className="flex size-8 shrink-0 items-center justify-center rounded-lg" style={{ color, backgroundColor: `${color}1a` }}><Icon aria-hidden="true" className="size-4" /></span>
-          {category.name}
+          {onViewDetails ? (
+            <button
+              type="button"
+              aria-haspopup="dialog"
+              className="min-w-0 text-left text-[#14864A] underline decoration-current/40 underline-offset-2 hover:decoration-current focus-visible:outline-2"
+              onClick={() => onViewDetails(category)}
+            >
+              {category.name}
+            </button>
+          ) : category.name}
         </span>
       </TableCell>
       <TableCell>{TYPE_LABEL[category.type] ?? category.type}</TableCell>
-      <TableCell className="text-right whitespace-nowrap tabular-nums">{category.budget === undefined ? "—" : categoryCurrency.format(category.budget)}</TableCell>
-      <TableCell className="text-right">
+      {showBudget && <TableCell className="text-right whitespace-nowrap tabular-nums">{category.budget === undefined ? "—" : categoryCurrency.format(category.budget)}</TableCell>}
+      {actions && <TableCell className="text-right">
         {isConfirming ? (
           <div className="flex justify-end gap-2">
             <Button
@@ -94,7 +110,7 @@ function CategoryRow({ category, isEditing, onEdit, onDelete }: CategoryRowProps
               size="icon"
               variant="ghost"
               className="size-8"
-              onClick={() => onEdit(category)}
+              onClick={() => actions.onEdit(category)}
               aria-label={`Edit ${category.name}`}
             >
               <PencilIcon />
@@ -110,7 +126,7 @@ function CategoryRow({ category, isEditing, onEdit, onDelete }: CategoryRowProps
             </Button>
           </div>
         )}
-      </TableCell>
+      </TableCell>}
     </TableRow>
   )
 }
@@ -118,11 +134,12 @@ function CategoryRow({ category, isEditing, onEdit, onDelete }: CategoryRowProps
 export function CategoryTable({
   categories,
   isLoading,
-  editingId,
-  onEdit,
-  onDelete,
+  actions,
+  onViewDetails,
+  showBudget = true,
   className,
 }: CategoryTableProps) {
+  const columnCount = 2 + Number(showBudget) + Number(Boolean(actions))
   const [query, setQuery] = useState("")
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
@@ -157,20 +174,20 @@ export function CategoryTable({
             <TableRow>
               <TableHead>Nama</TableHead>
               <TableHead>Tipe</TableHead>
-              <TableHead className="text-right">Budget</TableHead>
-              <TableHead className="text-right">Aksi</TableHead>
+              {showBudget && <TableHead className="text-right">Budget</TableHead>}
+              {actions && <TableHead className="text-right">Aksi</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={4} className="h-20 text-center text-muted-foreground">
+                <TableCell colSpan={columnCount} className="h-20 text-center text-muted-foreground">
                   <Spinner className="mx-auto" />
                 </TableCell>
               </TableRow>
             ) : filtered.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={4} className="h-20 text-center text-muted-foreground">
+                <TableCell colSpan={columnCount} className="h-20 text-center text-muted-foreground">
                   {categories.length === 0 ? "Belum ada kategori" : "Kategori tidak ditemukan. Coba kata kunci lain."}
                 </TableCell>
               </TableRow>
@@ -179,9 +196,9 @@ export function CategoryTable({
                 <CategoryRow
                   key={category.id}
                   category={category}
-                  isEditing={category.id === editingId}
-                  onEdit={onEdit}
-                  onDelete={onDelete}
+                  actions={actions}
+                  onViewDetails={onViewDetails}
+                  showBudget={showBudget}
                 />
               ))
             )}

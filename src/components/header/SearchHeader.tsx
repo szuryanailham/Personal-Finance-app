@@ -61,9 +61,15 @@ export function SearchHeader({
   filter,
   onFilterChange,
 }: SearchHeaderProps) {
+  const showSearch = query !== undefined
+
   return (
     <header className="flex w-full items-center gap-2 py-6 sm:gap-3">
-      <AddActionMenu variant="floating" triggerClassName="sm:hidden" />
+      {showSearch ? (
+        <AddActionMenu variant="floating" triggerClassName="sm:hidden" />
+      ) : (
+        <AddActionMenu triggerClassName="mr-auto shrink-0" />
+      )}
 
       {filter && onFilterChange && (
         <div className="flex shrink-0 max-sm:order-3">
@@ -71,7 +77,7 @@ export function SearchHeader({
         </div>
       )}
 
-      {query !== undefined && <div className={cn(INPUT_WRAPPER_CLASS, "max-sm:order-1 sm:w-64")}>
+      {showSearch && <div className={cn(INPUT_WRAPPER_CLASS, "max-sm:order-1 sm:w-64")}>
         {isSearching ? (
           <Spinner className={cn(INPUT_ICON_CLASS, "animate-spin")} />
         ) : (
@@ -87,7 +93,7 @@ export function SearchHeader({
         />
       </div>}
 
-      <div className={cn(INPUT_WRAPPER_CLASS, "max-sm:order-2 sm:w-48")}>
+      <div className={cn(INPUT_WRAPPER_CLASS, "max-sm:order-2 sm:w-48", !showSearch && "max-sm:flex-none max-sm:max-w-[50%]")}>
         <CalendarIcon className={INPUT_ICON_CLASS} />
         <Input
           type="date"
@@ -108,7 +114,7 @@ export function SearchHeader({
           </button>
         )}
       </div>
-      <AddActionMenu triggerClassName={cn("max-sm:hidden", query === undefined ? "sm:ml-auto" : "sm:order-first sm:mr-auto")} />
+      {showSearch && <AddActionMenu triggerClassName="max-sm:hidden sm:order-first sm:mr-auto" />}
     </header>
   )
 }

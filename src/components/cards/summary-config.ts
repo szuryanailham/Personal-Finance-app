@@ -10,7 +10,7 @@ export interface SummaryItemConfig {
   icon: typeof WalletIcon;
 }
 
-// Daftar card ringkasan, dipakai di dashboard desktop & carousel mobile
+// Daftar kartu ringkasan untuk dashboard desktop
 export const SUMMARY_CONFIG: readonly SummaryItemConfig[] = [
   { title: "Total Saldo", key: "totalBalance", icon: WalletIcon },
   { title: "Total Income", key: "totalIncome", icon: IncomeIcon },
