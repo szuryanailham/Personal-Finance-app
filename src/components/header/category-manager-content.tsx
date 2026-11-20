@@ -28,9 +28,7 @@ export function CategoryManagerContent({ manager, tableClassName, showTable = tr
       {showTable && <CategoryTable
         categories={categories}
         isLoading={isLoading}
-        editingId={editing?.id ?? null}
-        onEdit={setEditing}
-        onDelete={handleDelete}
+        actions={{ editingId: editing?.id ?? null, onEdit: setEditing, onDelete: handleDelete }}
         className={tableClassName}
       />}
     </>

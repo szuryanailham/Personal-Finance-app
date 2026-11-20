@@ -26,7 +26,7 @@ export function PersonalizedGreeting({ className, period }: PersonalizedGreeting
           <>Ringkasan:  {showRange ? (
             <span className="font-medium text-slate-700"><span className="whitespace-nowrap">{start}</span> – <span className="whitespace-nowrap">{end}</span></span>
           ) : period.isLoading ? "Memuat…" : "–"}</>
-        ) : "Yuk, lihat ringkasan keuanganmu hari ini."}
+        ) : "Yuk, lihat ringkasan keuanganmu."}
       </p>
     </div>
   );

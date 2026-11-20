@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useId, useState } from "react"
 import { Pencil, Plus, Trash2 } from "lucide-react"
 import { CategoryManagerContent } from "@/components/header/category-manager-content"
 import { useCategoryManager } from "@/components/header/use-category-manager"
@@ -12,12 +12,59 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog"
 import { cn } from "@/lib/utils"
 
-export function CategoryBudgetTable() {
+const MOBILE_CATEGORY_LIMIT = 5
+
+const mobileRowClass = "max-md:grid max-md:grid-cols-[minmax(0,1fr)_auto] max-md:gap-y-2 max-md:p-3"
+
+function BudgetAmount({ label, amount, className, overBudget, desktopOnly }: { label: string; amount?: number; className?: string; overBudget?: boolean; desktopOnly?: boolean }) {
+  return (
+    <td role="cell" className={cn("text-right tabular-nums md:px-6 md:py-4 md:whitespace-nowrap", desktopOnly ? "max-md:hidden" : "max-md:col-span-2 max-md:flex max-md:justify-between max-md:gap-2", className)}>
+      <span className="text-left text-xs font-normal text-muted-foreground md:hidden">{label}</span>
+      <span className="min-w-0 [overflow-wrap:anywhere]">
+        {amount === undefined ? "—" : currency.format(amount)}
+        {overBudget && (
+          <span className="mt-0.5 block text-xs font-normal">Melebihi anggaran</span>
+        )}
+      </span>
+    </td>
+  )
+}
+
+function BudgetUsage({ expense, budget }: { expense?: number; budget?: number }) {
+  const canCalculateUsage = expense !== undefined && budget !== undefined && budget > 0
+  const overBudget = canCalculateUsage && expense > budget
+  const usage = canCalculateUsage ? Math.max(0, Math.min(100, (expense / budget) * 100)) : 0
+
+  return (
+    <td role="cell" className="col-span-2 min-w-0 md:hidden">
+      <p className="text-sm font-medium tabular-nums [overflow-wrap:anywhere]">
+        <span className="sr-only">Pengeluaran / Total Anggaran: </span>
+        {expense === undefined ? "—" : currency.format(expense)}
+        {" / "}
+        {budget === undefined ? "—" : currency.format(budget)}
+      </p>
+      <div aria-hidden="true" className="mt-1.5 h-2 overflow-hidden rounded-full bg-muted">
+        <div
+          className={cn("h-full rounded-full", overBudget ? "bg-red-600" : "bg-[#14864A]")}
+          style={{ width: `${usage}%` }}
+        />
+      </div>
+    </td>
+  )
+}
+
+export function CategoryBudgetTable({ compact = false }: { compact?: boolean }) {
+  const titleId = useId()
+  const rowsId = useId()
+  const [showAll, setShowAll] = useState(false)
   const manager = useCategoryManager(true)
   const { setEditing, reset, isLoading, error } = manager
   const [open, setOpen] = useState(false)
   const [deleting, setDeleting] = useState<Category | null>(null)
   const categories = manager.categories.filter(category => category.type === "EXPENSE")
+  categories.sort((a, b) => (b.totalExpense ?? 0) - (a.totalExpense ?? 0))
+  const canExpand = compact && categories.length > MOBILE_CATEGORY_LIMIT
+  const visibleCategories = canExpand && !showAll ? categories.slice(0, MOBILE_CATEGORY_LIMIT) : categories
   const totals = categories.reduce((total, category) => ({
     expense: total.expense + (category.totalExpense ?? 0),
     budget: total.budget + (category.budget ?? 0),
@@ -26,46 +73,54 @@ export function CategoryBudgetTable() {
 
   return (
     <div className="overflow-hidden rounded-[14px] border border-border bg-background">
-      <div className="flex flex-wrap items-center justify-between gap-4 p-5 sm:p-6">
-        <div>
-          <div className="flex flex-wrap items-center gap-2">
-            <h2 id="category-budget-title" className="text-lg font-semibold">Anggaran Kategori</h2>
-          </div>
-          <p className="mt-1 text-sm text-muted-foreground">Pantau pengeluaran dan sisa anggaran setiap kategori.</p>
-        </div>
-        <Button size="lg" className="bg-[#14864A] px-4 text-white hover:bg-[#10733e]" onClick={() => { reset(); setOpen(true) }}>
-          <Plus aria-hidden="true" /> Add Category
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 gap-y-1 p-3 sm:p-6">
+        <h2 id={titleId} className="text-base font-semibold sm:text-lg">Anggaran Kategori</h2>
+        <Button
+          size="lg"
+          aria-label="Tambah kategori"
+          className="bg-[#14864A] px-2.5 text-white hover:bg-[#10733e] md:row-span-2 md:px-4"
+          onClick={() => { reset(); setOpen(true) }}
+        >
+          <Plus aria-hidden="true" />
+          <span className="md:hidden">Tambah</span>
+          <span className="hidden md:inline">Add Category</span>
         </Button>
+        <p className="hidden text-sm text-muted-foreground md:block">
+          Pantau pengeluaran dan sisa anggaran setiap kategori.
+        </p>
       </div>
-      <div className="overflow-x-auto">
-        <table aria-labelledby="category-budget-title" className="w-full min-w-[800px] text-sm">
-          <thead className="border-y border-border bg-muted/40 text-muted-foreground">
+      <div className="md:overflow-x-auto">
+        <table role="table" aria-labelledby={titleId} className="w-full text-sm max-md:block md:min-w-[800px]">
+          <thead className="border-y border-border bg-muted/40 text-muted-foreground max-md:hidden">
             <tr>
-              <th scope="col" className="px-6 py-4 text-left font-medium">Nama Kategori</th>
-              <th scope="col" className="px-6 py-4 text-right font-medium">Total Pengeluaran</th>
-              <th scope="col" className="px-6 py-4 text-right font-medium">Total Anggaran</th>
-              <th scope="col" className="px-6 py-4 text-right font-medium">Sisa Anggaran</th>
-              <th scope="col" className="px-6 py-4 text-right font-medium">Aksi</th>
+              <th scope="col" className="px-3 py-3 md:px-6 md:py-4 text-left font-medium">Nama Kategori</th>
+              <th scope="col" aria-sort="descending" className="px-3 py-3 md:px-6 md:py-4 text-right font-medium">Total Pengeluaran</th>
+              <th scope="col" className="px-3 py-3 md:px-6 md:py-4 text-right font-medium">Total Anggaran</th>
+              <th scope="col" className="px-3 py-3 md:px-6 md:py-4 text-right font-medium">Sisa Anggaran</th>
+              <th scope="col" className="px-3 py-3 md:px-6 md:py-4 text-right font-medium">Aksi</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-border">
-            {categories.map(category => {
+          <tbody id={rowsId} role="rowgroup" className="divide-y divide-border max-md:block">
+            {visibleCategories.map(category => {
               const remaining = category.remainingBudget
               return (
-                <tr key={category.id} className="hover:bg-muted/20">
-                  <th scope="row" className="px-6 py-4 text-left font-medium">
+                <tr role="row" key={category.id} className={cn(mobileRowClass, "hover:bg-muted/20")}>
+                  <th role="rowheader" scope="row" className="min-w-0 text-left font-medium md:px-6 md:py-4">
                     <span className="flex items-center gap-3">
                       <CategoryIcon category={category} />
-                      {category.name}
+                      <span className="min-w-0 [overflow-wrap:anywhere]">{category.name}</span>
                     </span>
                   </th>
-                  <td className="px-6 py-4 text-right whitespace-nowrap tabular-nums">{category.totalExpense === undefined ? "—" : currency.format(category.totalExpense)}</td>
-                  <td className="px-6 py-4 text-right whitespace-nowrap tabular-nums">{category.budget === undefined ? "—" : currency.format(category.budget)}</td>
-                  <td className={cn("px-6 py-4 text-right whitespace-nowrap tabular-nums font-medium", remaining !== undefined && remaining < 0 ? "text-red-600" : "text-[#14864A]")}>
-                    {remaining === undefined ? "—" : currency.format(remaining)}
-                    {remaining !== undefined && remaining < 0 && <span className="mt-0.5 block text-xs font-normal">Melebihi anggaran</span>}
-                  </td>
-                  <td className="px-6 py-4">
+                  <BudgetUsage expense={category.totalExpense} budget={category.budget} />
+                  <BudgetAmount label="Total Pengeluaran" amount={category.totalExpense} desktopOnly />
+                  <BudgetAmount label="Total Anggaran" amount={category.budget} desktopOnly />
+                  <BudgetAmount
+                    label="Sisa Anggaran"
+                    amount={remaining}
+                    overBudget={remaining !== undefined && remaining < 0}
+                    className={cn("font-medium", remaining !== undefined && remaining < 0 ? "text-red-600" : "text-[#14864A]")}
+                  />
+                  <td role="cell" className="max-md:col-start-2 max-md:row-start-1 md:px-6 md:py-4">
                     <div className="flex justify-end gap-2">
                       <Button type="button" variant="outline" size="icon" aria-label={`Edit kategori ${category.name}`} title="Edit" onClick={() => { reset(); setEditing(category); setOpen(true) }}>
                         <Pencil aria-hidden="true" />
@@ -79,20 +134,33 @@ export function CategoryBudgetTable() {
               )
             })}
             {categories.length === 0 && (
-              <tr><td colSpan={5} className="px-6 py-10 text-center text-muted-foreground">{isLoading ? "Memuat anggaran kategori..." : error ?? "Belum ada kategori pengeluaran."}</td></tr>
+              <tr role="row" className="max-md:block"><td role="cell" colSpan={5} className="px-6 py-10 text-center text-muted-foreground max-md:block">{isLoading ? "Memuat anggaran kategori..." : error ?? "Belum ada kategori pengeluaran."}</td></tr>
             )}
           </tbody>
-          <tfoot className="border-t border-border bg-muted/40 font-semibold">
-            <tr>
-              <th scope="row" className="px-6 py-4 text-left">Total</th>
-              <td className="px-6 py-4 text-right whitespace-nowrap tabular-nums">{currency.format(totals.expense)}</td>
-              <td className="px-6 py-4 text-right whitespace-nowrap tabular-nums">{currency.format(totals.budget)}</td>
-              <td className={cn("px-6 py-4 text-right whitespace-nowrap tabular-nums", totals.remaining < 0 ? "text-red-600" : "text-[#14864A]")}>{currency.format(totals.remaining)}</td>
-              <td />
+          <tfoot role="rowgroup" className="border-t border-border bg-muted/40 font-semibold max-md:hidden">
+            <tr role="row" className={mobileRowClass}>
+              <th role="rowheader" scope="row" className="text-left max-md:col-span-2 md:px-6 md:py-4">Total</th>
+              <BudgetAmount label="Total Pengeluaran" amount={totals.expense} />
+              <BudgetAmount label="Total Anggaran" amount={totals.budget} />
+              <BudgetAmount label="Sisa Anggaran" amount={totals.remaining} className={totals.remaining < 0 ? "text-red-600" : "text-[#14864A]"} />
+              <td className="max-md:hidden" />
             </tr>
           </tfoot>
         </table>
       </div>
+      {canExpand && (
+        <div className="flex justify-center border-t border-border p-3">
+          <Button
+            type="button"
+            variant="outline"
+            aria-controls={rowsId}
+            aria-expanded={showAll}
+            onClick={() => setShowAll(current => !current)}
+          >
+            {showAll ? "See less" : "See more"}
+          </Button>
+        </div>
+      )}
       {error && !open && categories.length > 0 && <p role="alert" className="p-4 text-sm text-destructive">{error}</p>}
       <Dialog open={open} onOpenChange={nextOpen => { if (!nextOpen) reset(); setOpen(nextOpen) }}>
         <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-2xl">

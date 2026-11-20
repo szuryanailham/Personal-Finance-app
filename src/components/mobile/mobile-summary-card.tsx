@@ -1,89 +1,76 @@
-import Image, { type ImageProps } from "next/image"
+"use client"
+
+import { useMemo } from "react"
 import { EyeIcon, EyeOffIcon } from "lucide-react"
 
-import { Spinner } from "@/components/ui/spinner"
-import { cn } from "@/lib/utils"
+import { toStatQuery, useTransactionFilter } from "@/components/header/transaction-filter-context"
+import { PersonalizedGreeting } from "@/components/home/personalized-greeting"
+import { useHiddenAmounts } from "@/hooks/use-hidden-amounts"
+import { useTransactionStat } from "@/hooks/use-transaction-stat"
+import type { SummaryMetricKey } from "@/lib/api/transaction"
 
-const ICON_SIZE = 44
+const currencyFormatter = new Intl.NumberFormat("id-ID", {
+  style: "currency",
+  currency: "IDR",
+  maximumFractionDigits: 0,
+})
 
-const currencyFormatter = new Intl.NumberFormat("id-ID")
-const HIDDEN_AMOUNT_MASK = "••••••"
+const summaryMetrics = [
+  { key: "totalIncome", label: "Pemasukan" },
+  { key: "totalExpense", label: "Pengeluaran" },
+  { key: "totalSaving", label: "Tabungan" },
+] as const
 
-interface MobileSummaryCardProps {
-  title: string
-  total: number
-  percentage?: number
-  icon: ImageProps["src"]
-  isLoading?: boolean
-  isHidden?: boolean
-  onToggleHidden?: () => void
-  className?: string
-}
-
-function formatPercentage(value: number) {
-  const sign = value > 0 ? "+" : ""
-  return `${sign}${value.toFixed(2)}%`
-}
-
-
-export function MobileSummaryCard({
-  title,
-  total,
-  percentage,
-  icon,
-  isLoading = false,
-  isHidden = false,
-  onToggleHidden,
-  className,
-}: MobileSummaryCardProps) {
-  const hasPercentage = !isLoading && !isHidden && typeof percentage === "number" && Number.isFinite(percentage) && percentage !== 0
+export function MobileSummaryCard() {
+  const { filter } = useTransactionFilter()
+  const statQuery = useMemo(() => toStatQuery(filter), [filter])
+  const { stat, isLoading, error } = useTransactionStat(statQuery)
+  const { isHidden, toggleHidden } = useHiddenAmounts()
   const ToggleIcon = isHidden ? EyeOffIcon : EyeIcon
-  const isNegative = (percentage ?? 0) < 0
+
+  function renderAmount(key: SummaryMetricKey) {
+    if (isLoading) return "…"
+    if (error || !stat) return "—"
+    if (isHidden) return "••••••"
+    return currencyFormatter.format(stat[key].amount)
+  }
 
   return (
-    <div
-      className={cn(
-        "relative isolate flex min-h-44 w-full flex-col justify-between gap-6 overflow-hidden rounded-2xl bg-gradient-to-br from-[#168D50] via-[#14864A] to-[#0D6738] p-5 mt-2 text-white shadow-[0_12px_28px_-14px_rgba(20,134,74,0.75)]",
-        className
-      )}
+    <section
+      data-guidance="summary"
+      aria-busy={isLoading}
+      aria-label="Ringkasan transaksi"
+      className="flex flex-col gap-3 px-4 pt-4"
     >
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -right-8 -top-12 size-40 rounded-full border border-white/10" />
-        <div className="absolute -right-1 -top-5 size-26 rounded-full border border-white/10" />
-        <div className="absolute right-8 top-7 size-3 rounded-full bg-white/15" />
-        <div className="absolute -bottom-14 -left-10 size-36 rounded-full bg-emerald-200/10 blur-xl" />
-        <div className="absolute bottom-5 right-5 size-1 rounded-full bg-white/35 shadow-[8px_-8px_0_rgba(255,255,255,0.2),16px_0_0_rgba(255,255,255,0.15),24px_-8px_0_rgba(255,255,255,0.2)]" />
-      </div>
+      <PersonalizedGreeting />
 
-      <div className="relative z-10 flex items-center justify-between">
-        <Image src={icon} alt="" width={ICON_SIZE} height={ICON_SIZE} unoptimized />
-      </div>
-
-      {hasPercentage && <span className={cn("self-end rounded px-2 py-1 text-xs", isNegative ? "bg-red-50 text-red-600" : "bg-emerald-50 text-green-600")}>{formatPercentage(percentage!)}</span>}
-
-      <div className="relative z-10 flex flex-col gap-1">
-        <div className="flex items-center gap-1.5">
-          <span className="text-sm text-white/70">{title}</span>
-          {onToggleHidden && (
-            <button
-              type="button"
-              onClick={onToggleHidden}
-              aria-label={isHidden ? "Tampilkan nominal" : "Sembunyikan nominal"}
-              aria-pressed={isHidden}
-              className="p-1 text-white/70 active:opacity-60"
-            >
-              <ToggleIcon className="size-4" />
-            </button>
-          )}
+      <div className="rounded-2xl bg-linear-to-br from-[#168D50] via-[#14864A] to-[#0D6738] p-4 text-white shadow-sm">
+        <div className="flex items-center justify-between gap-2">
+          <h2 className="text-sm font-medium text-emerald-50">Total Saldo</h2>
+          <button
+            type="button"
+            onClick={toggleHidden}
+            aria-label={isHidden ? "Tampilkan semua nominal" : "Sembunyikan semua nominal"}
+            className="grid size-10 shrink-0 place-items-center rounded-lg hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-white"
+          >
+            <ToggleIcon aria-hidden="true" className="size-5" />
+          </button>
         </div>
-        {isLoading ? (
-          <Spinner className="size-7 text-white" />
-        ) : (
-          <span className="truncate text-2xl font-bold text-white">
-            Rp.{isHidden ? HIDDEN_AMOUNT_MASK : currencyFormatter.format(total)}
-          </span>
-        )}
+        <p className="text-2xl font-bold break-words tabular-nums">
+          {renderAmount("totalBalance")}
+        </p>
+
+        <dl className="mt-4 space-y-2 border-t border-white/25 pt-3 text-sm">
+          {summaryMetrics.map(({ key, label }) => (
+            <div key={key} className="flex items-baseline justify-between gap-3">
+              <dt className="text-emerald-50">{label}</dt>
+              <dd className="min-w-0 text-right font-semibold break-words tabular-nums">{renderAmount(key)}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
-    </div>
+
+      {!isLoading && error && <p className="text-sm text-destructive">{error}</p>}
+    </section>
   )
 }

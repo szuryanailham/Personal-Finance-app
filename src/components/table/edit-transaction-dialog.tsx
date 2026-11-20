@@ -191,7 +191,7 @@ export function EditTransactionDialog({ transaction, onClose }: EditTransactionD
                 type="submit"
                 disabled={isSubmitting}
                 aria-busy={isSubmitting}
-                className={cn(BUTTON_CLASS, "gap-2 bg-[#6359E9] text-white hover:bg-[#6359E9]/90")}
+                className={cn(BUTTON_CLASS, "gap-2 bg-[#14864A] text-white hover:bg-[#10733e]")}
               >
                 {isSubmitting && <Spinner className="animate-spin text-white" />}
                 {isSubmitting ? "Menyimpan..." : "Update Transaction"}

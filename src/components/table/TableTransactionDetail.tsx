@@ -173,10 +173,15 @@ export default function TableTransactionDetail({
           onBulkDelete={onBulkDelete}
         />
       )}
-      <Table className="min-w-[900px] table-fixed">
+      <Table className="min-w-[1128px] table-fixed">
         {isEmpty && <TableCaption>Tidak ada transaksi.</TableCaption>}
         <TableHeader>
           <TableRow className="bg-[#DCF8E6] hover:bg-[#DCF8E6]">
+            <SortableHead label="Kode Transaksi" sortKey="transactionCode" sort={sort} onSort={handleSort} className="w-[160px]" />
+            <SortableHead label="Nama" sortKey="description" sort={sort} onSort={handleSort} className="w-[260px]" />
+            <SortableHead label="Kategori" sortKey="category" sort={sort} onSort={handleSort} className="w-[200px]" />
+            <SortableHead label="Tanggal" sortKey="date" sort={sort} onSort={handleSort} className="w-[160px]" />
+            <SortableHead label="Jumlah" sortKey="amount" sort={sort} onSort={handleSort} className="w-[200px] text-right" align="right" />
             <TableHead className="w-[48px] bg-[#DCF8E6] px-4">
               <Checkbox
                 checked={isAllSelected}
@@ -187,10 +192,6 @@ export default function TableTransactionDetail({
                 aria-label="Pilih semua"
               />
             </TableHead>
-            <SortableHead label="Kategori" sortKey="category" sort={sort} onSort={handleSort} className="w-[200px]" />
-            <SortableHead label="Nama" sortKey="description" sort={sort} onSort={handleSort} className="w-[260px]" />
-            <SortableHead label="Tanggal" sortKey="date" sort={sort} onSort={handleSort} className="w-[160px]" />
-            <SortableHead label="Jumlah" sortKey="amount" sort={sort} onSort={handleSort} className="w-[200px] text-right" align="right" />
             <TableHead className={cn(HEAD_CLASS, "w-[100px] text-right")}>Aksi</TableHead>
           </TableRow>
         </TableHeader>
@@ -202,13 +203,11 @@ export default function TableTransactionDetail({
                 key={trx.transactionCode}
                 data-state={selectedCodes.has(trx.transactionCode) ? "selected" : undefined}
               >
-                <TableCell className="px-4">
-                  <Checkbox
-                    checked={selectedCodes.has(trx.transactionCode)}
-                    className={CHECKBOX_CLASS}
-                    onCheckedChange={(checked) => toggleRow(trx.transactionCode, checked)}
-                    aria-label={`Pilih ${trx.description}`}
-                  />
+                <TableCell className="px-4 text-center text-slate-500">
+                  {trx.transactionCode}
+                </TableCell>
+                <TableCell className="truncate px-4 text-center font-medium text-[#282458]">
+                  {trx.description}
                 </TableCell>
                 <TableCell className="truncate px-4 text-center text-slate-500">
                   <span className="inline-flex max-w-full items-center gap-2 align-middle">
@@ -216,14 +215,19 @@ export default function TableTransactionDetail({
                     <span className="truncate">{category?.name ?? trx.category}</span>
                   </span>
                 </TableCell>
-                <TableCell className="truncate px-4 text-center font-medium text-[#282458]">
-                  {trx.description}
-                </TableCell>
                 <TableCell className="px-4 text-center text-slate-500">
                   {dateFormatter.format(trx.date)}
                 </TableCell>
                 <TableCell className="px-4 text-right font-semibold text-slate-500">
                   {formatAmount(trx.type, trx.amount)}
+                </TableCell>
+                <TableCell className="px-4">
+                  <Checkbox
+                    checked={selectedCodes.has(trx.transactionCode)}
+                    className={CHECKBOX_CLASS}
+                    onCheckedChange={(checked) => toggleRow(trx.transactionCode, checked)}
+                    aria-label={`Pilih ${trx.description}`}
+                  />
                 </TableCell>
                 <TableCell className="px-4 text-right">
                   <TransactionActions transaction={trx} onEdit={onEdit} onDelete={onDelete} />
