@@ -10,7 +10,7 @@ export default function robots(): MetadataRoute.Robots {
         ...CRAWLABLE_PATHS.map((path) => `${path}$`),
         "/_next/static/",
         "/_next/image?",
-        "/favicon.ico$",
+        "/favicon.ico",
         "/hero.png$",
         "/sitemap.xml$",
       ],
