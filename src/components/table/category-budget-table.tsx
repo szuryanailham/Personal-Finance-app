@@ -71,6 +71,18 @@ export function CategoryBudgetTable({ compact = false }: { compact?: boolean }) 
     remaining: total.remaining + (category.remainingBudget ?? 0),
   }), { expense: 0, budget: 0, remaining: 0 })
 
+  function handleOpenChange(nextOpen: boolean) {
+    if (!nextOpen) reset()
+    setOpen(nextOpen)
+  }
+
+  const handleSubmit: typeof manager.handleSubmit = async (input) => {
+    const closeAfterSave = compact && manager.editing !== null
+    const saved = await manager.handleSubmit(input)
+    if (saved && closeAfterSave) handleOpenChange(false)
+    return saved
+  }
+
   return (
     <div className="overflow-hidden rounded-[14px] border border-border bg-background">
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 gap-y-1 p-3 sm:p-6">
@@ -162,13 +174,13 @@ export function CategoryBudgetTable({ compact = false }: { compact?: boolean }) 
         </div>
       )}
       {error && !open && categories.length > 0 && <p role="alert" className="p-4 text-sm text-destructive">{error}</p>}
-      <Dialog open={open} onOpenChange={nextOpen => { if (!nextOpen) reset(); setOpen(nextOpen) }}>
+      <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-2xl">
           <DialogHeader>
             <DialogTitle>{manager.editing ? "Edit Kategori" : "Tambah Kategori"}</DialogTitle>
             <DialogDescription>Kelola kategori untuk transaksi kamu.</DialogDescription>
           </DialogHeader>
-          <CategoryManagerContent manager={manager} showTable={false} />
+          <CategoryManagerContent manager={{ ...manager, handleSubmit }} showTable={false} />
         </DialogContent>
       </Dialog>
       <AlertDialog open={deleting !== null} onOpenChange={nextOpen => { if (!nextOpen) setDeleting(null) }}>

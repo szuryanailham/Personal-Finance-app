@@ -12,14 +12,18 @@ type Props = {
   disabled: boolean;
   onChange: (content: BlogEditorContent) => void;
   onImageUpload: (file: File) => Promise<string>;
-  onUploadStateChange: (uploading: boolean) => void;
+  onBusyChange: (uploading: boolean) => void;
 };
 
-export function BlogRichEditor({ initialHtml = "", disabled, onChange, onImageUpload, onUploadStateChange }: Props) {
+export function BlogRichEditor({ initialHtml = "", disabled, onChange, onImageUpload, onBusyChange }: Props) {
   const initialHtmlRef = useRef(initialHtml);
   const host = useRef<HTMLDivElement>(null);
   const instance = useRef<Quill | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
+  const markdownInput = useRef<HTMLInputElement>(null);
+  const importingRef = useRef(false);
+  const [importing, setImporting] = useState(false);
+  const [importError, setImportError] = useState("");
   const insertionIndex = useRef(0);
   const uploadingRef = useRef(false);
   const [uploading, setUploading] = useState(false);
@@ -146,8 +150,9 @@ export function BlogRichEditor({ initialHtml = "", disabled, onChange, onImageUp
           theme: "snow",
           placeholder: "Mulai menulis artikel di sini…",
           readOnly: disabledRef.current,
-          formats: ["header", "bold", "italic", "underline", "strike", "blockquote", "list", "link", "image"],
+          formats: ["header", "bold", "italic", "underline", "strike", "blockquote", "list", "link", "image", "table", "code", "code-block"],
           modules: {
+            table: true,
             toolbar: { container: [
               [{ header: [2, 3, false] }],
               ["bold", "italic", "underline", "strike"],
@@ -156,7 +161,7 @@ export function BlogRichEditor({ initialHtml = "", disabled, onChange, onImageUp
               ["link", "image", "clean"],
             ], handlers: {
               image: () => {
-                if (!quill || disabledRef.current || uploadingRef.current) return;
+                if (!quill || disabledRef.current || uploadingRef.current || importingRef.current) return;
                 insertionIndex.current = quill.getSelection(true)?.index ?? Math.max(0, quill.getLength() - 1);
                 fileInput.current?.click();
               },
@@ -164,6 +169,8 @@ export function BlogRichEditor({ initialHtml = "", disabled, onChange, onImageUp
             history: { delay: 1000, maxStack: 100, userOnly: true },
           },
         });
+        // Quill exports empty cells without a break, so restore their newline on load.
+        quill.clipboard.addMatcher("td", (_node, delta) => delta.length() ? delta : delta.insert("\n"));
         instance.current = quill;
         quill.root.addEventListener("click", handleClick);
         quill.root.setAttribute("role", "textbox");
@@ -222,7 +229,7 @@ export function BlogRichEditor({ initialHtml = "", disabled, onChange, onImageUp
 
   async function uploadImage(file: File) {
     const quill = instance.current;
-    if (!quill || uploadingRef.current || disabled) return;
+    if (!quill || uploadingRef.current || importingRef.current || disabled) return;
     setUploadError("");
     if (!["image/jpeg", "image/png", "image/webp", "image/gif"].includes(file.type) || file.size > 5 * 1024 * 1024) {
       setUploadError("Pilih JPG, PNG, WebP, atau GIF maksimal 5 MB."); return;
@@ -230,7 +237,7 @@ export function BlogRichEditor({ initialHtml = "", disabled, onChange, onImageUp
     uploadingRef.current = true;
     quill.disable();
     setUploading(true);
-    onUploadStateChange(true);
+    onBusyChange(true);
     try {
       const url = await onImageUpload(file);
       if (instance.current !== quill) return;
@@ -243,7 +250,7 @@ export function BlogRichEditor({ initialHtml = "", disabled, onChange, onImageUp
       if (instance.current === quill) setUploadError(error instanceof Error ? error.message : "Upload gambar gagal. Silakan coba lagi.");
     } finally {
       uploadingRef.current = false;
-      onUploadStateChange(false);
+      onBusyChange(false);
       if (instance.current === quill) {
         setUploading(false);
         quill.enable(!disabledRef.current);
@@ -251,9 +258,82 @@ export function BlogRichEditor({ initialHtml = "", disabled, onChange, onImageUp
     }
   }
 
-  return <div className={styles.editor} aria-busy={uploading || (!ready && !loadError)}>
+  async function importMarkdown(file: File) {
+    const quill = instance.current;
+    if (!quill || uploadingRef.current || importingRef.current || disabledRef.current) return;
+    setImportError("");
+    if (!/\.(md|markdown)$/i.test(file.name) || file.size > 1_000_000) {
+      setImportError("Pilih file .md atau .markdown maksimal 1 MB.");
+      return;
+    }
+
+    importingRef.current = true;
+    setImporting(true);
+    onBusyChange(true);
+    try {
+      const [{ Marked }, markdown] = await Promise.all([import("marked"), file.text()]);
+      if (instance.current !== quill || disabledRef.current) return;
+
+      const parser = new Marked({
+        gfm: true,
+        renderer: {
+          html: () => "",
+          tablecell({ header, tokens }) {
+            const text = this.parser.parseInline(tokens);
+            // Quill uses TD for every editable cell and needs a break for empty cells.
+            return `<td>${text ? (header ? `<strong>${text}</strong>` : text) : "<br>"}</td>`;
+          },
+          table({ header, rows }) {
+            // Whitespace between rows is interpreted by Quill as a separate paragraph.
+            const body = [header, ...rows].map(row =>
+              `<tr>${row.map(cell => this.tablecell(cell)).join("")}</tr>`,
+            ).join("");
+            return `<table><tbody>${body}</tbody></table><p><br></p>`;
+          },
+        },
+      });
+      const html = parser.parse(markdown, { async: false });
+      const contents = quill.clipboard.convert({ html });
+      if (!contents.length()) {
+        setImportError("File Markdown tidak berisi konten yang bisa diimpor.");
+        return;
+      }
+
+      const end = quill.getLength();
+      const insertion = quill.getContents(0, 0).retain(end === 1 ? 0 : end);
+      // Keep separately imported tables from merging when they touch.
+      if (quill.getContents(end - 1, 1).ops[0]?.attributes?.table) insertion.insert("\n");
+      quill.history.cutoff();
+      quill.updateContents(insertion.concat(contents), "user");
+      quill.history.cutoff();
+      quill.setSelection(quill.getLength() - 1, 0, "silent");
+    } catch {
+      if (instance.current === quill) setImportError("File Markdown gagal diimpor. Silakan coba lagi.");
+    } finally {
+      importingRef.current = false;
+      if (instance.current === quill) {
+        setImporting(false);
+        onBusyChange(false);
+      }
+    }
+  }
+
+  return <div className={styles.editor} aria-busy={uploading || importing || (!ready && !loadError)}>
     {!ready && !loadError && <p role="status" className="p-3 text-sm text-[#646970]">Memuat editor…</p>}
     {loadError && <p role="alert" className="p-3 text-sm text-red-700">Editor gagal dimuat. Muat ulang halaman untuk mencoba lagi.</p>}
+    {ready && <div className="flex flex-wrap items-center gap-2 p-3 text-sm">
+      <button type="button" disabled={disabled || uploading || importing} onClick={() => markdownInput.current?.click()} className="rounded border border-[#8c8f94] px-3 py-1.5 font-medium hover:bg-[#f6f7f7] disabled:opacity-60">
+        Impor Markdown
+      </button>
+      <span className="text-xs text-[#646970]">Isi file ditambahkan di akhir artikel.</span>
+      <input ref={markdownInput} type="file" accept=".md,.markdown" hidden aria-label="Pilih file Markdown" onChange={event => {
+        const file = event.target.files?.[0];
+        event.target.value = "";
+        if (file) void importMarkdown(file);
+      }} />
+    </div>}
+    {importing && <p role="status" className="px-3 pb-2 text-sm text-[#2271b1]">Mengimpor Markdown…</p>}
+    {importError && <p role="alert" className="px-3 pb-2 text-sm text-red-700">{importError}</p>}
     <div ref={host} className={styles.editorHost} />
     {hasSelectedImage && <fieldset disabled={disabled || uploading} className={styles.imageControls}>
       <legend>Ukuran gambar terpilih</legend>

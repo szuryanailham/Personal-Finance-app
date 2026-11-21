@@ -1,9 +1,11 @@
 import { createPageMetadata } from "@/lib/page-metadata";
 import type { Metadata } from "next";
+import { BlogShareActions } from "@/components/blog/blog-share-actions";
 import { BlogTableOfContents } from "@/components/blog/blog-table-of-contents";
 import { prepareBlogContent } from "@/lib/blog-content";
 import fallbackImage from "@/components/images/blog/image-blog.png";
 import { fetchPublishedBlogPost } from "@/lib/api/blog";
+import { SITE_URL } from "@/lib/seo";
 import { cache } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -38,6 +40,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
   const post = await findPost(slug);
   if (!post) notFound();
 
+  const excerpt = post.excerpt?.trim();
   const author = post.author;
   const authorName = author?.name?.trim();
   const socialLinks = Object.entries(author?.socialMedia ?? {}).flatMap(([label, value]) => {
@@ -76,23 +79,25 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
               <h1 id="blog-detail-title" className="scroll-mt-24 mt-4 text-3xl leading-tight font-semibold break-words tracking-tight text-slate-950 sm:text-4xl lg:text-5xl">
                 {post.title}
               </h1>
-              <div className="mt-5 overflow-x-auto whitespace-nowrap text-xs text-slate-500 sm:text-sm">
-                {post.publishedAt && (
-                  <>
+              {(post.publishedAt || authorName) && (
+                <div className="mt-5 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-xs text-slate-500 sm:text-sm">
+                  {post.publishedAt && (
                     <time dateTime={post.publishedAt}>
                       {new Intl.DateTimeFormat("id-ID", { day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Jakarta" }).format(new Date(post.publishedAt))}
                     </time>
-                    <span aria-hidden="true" className="mx-2">·</span>
-                  </>
-                )}
-                {authorName && (
-                  <>
+                  )}
+                  {post.publishedAt && authorName && <span aria-hidden="true">·</span>}
+                  {authorName && (
                     <span>Oleh <a href="#blog-author-title" className="font-medium text-[#14864A] hover:underline">{authorName}</a></span>
-                    <span aria-hidden="true" className="mx-2">·</span>
-                  </>
-                )}
-                <span>{post.readingTimeMinutes} menit baca</span>
-              </div>
+                  )}
+                </div>
+              )}
+              {excerpt && (
+                <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed wrap-anywhere text-neutral-500 sm:text-lg">
+                  {excerpt}
+                </p>
+              )}
+              <BlogShareActions title={post.title} url={new URL(`/blog/${post.slug}`, SITE_URL).href} />
             </header>
             <div className="relative mt-8 aspect-[380/228] overflow-hidden rounded-2xl">
               <Image
@@ -108,7 +113,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
           <div className={`grid grid-cols-1 items-start gap-6 lg:grid-cols-[16rem_minmax(0,1fr)] ${authorName ? "2xl:grid-cols-[18rem_minmax(0,1fr)_14rem]" : ""} xl:gap-8`}>
             {toc.length > 0 && <BlogTableOfContents items={toc} />}
             <article className={`min-w-0 ${toc.length === 0 ? "lg:col-span-2" : ""}`} aria-labelledby="blog-detail-title">
-              <div id="blog-content" className="mx-auto max-w-[70ch] space-y-5 text-base leading-8 [overflow-wrap:anywhere] text-slate-600 [&_h1]:mt-8 [&_h1]:leading-snug [&_h1]:text-2xl [&_h1]:font-semibold [&_h2]:mt-8 [&_h2]:leading-snug [&_h2]:scroll-mt-24 [&_h2]:text-xl [&_h2]:font-semibold [&_h3]:mt-6 [&_h3]:leading-snug [&_h3]:scroll-mt-24 [&_h3]:text-lg [&_h3]:font-semibold [&_a]:text-[#14864A] [&_a]:underline [&_li]:mt-2 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_img]:max-w-full [&_table]:block [&_table]:overflow-x-auto [&_th]:p-2 [&_td]:p-2" dangerouslySetInnerHTML={{ __html: html }} />
+              <div id="blog-content" className="mx-auto max-w-[70ch] space-y-5 text-base leading-8 [overflow-wrap:anywhere] text-slate-600 [&_h1]:mt-8 [&_h1]:leading-snug [&_h1]:text-2xl [&_h1]:font-semibold [&_h2]:mt-8 [&_h2]:leading-snug [&_h2]:scroll-mt-24 [&_h2]:text-xl [&_h2]:font-semibold [&_h3]:mt-6 [&_h3]:leading-snug [&_h3]:scroll-mt-24 [&_h3]:text-lg [&_h3]:font-semibold [&_a]:text-[#14864A] [&_a]:underline [&_li]:mt-2 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_img]:max-w-full [&_table]:block [&_table]:overflow-x-auto [&_th]:border [&_th]:border-slate-300 [&_th]:p-2 [&_td]:border [&_td]:border-slate-300 [&_td]:p-2" dangerouslySetInnerHTML={{ __html: html }} />
               {post.tags.length > 0 && <ul aria-label="Tag artikel" className="mt-8 flex flex-wrap gap-2">{post.tags.map(tag => <li key={tag.id} className="rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-600">#{tag.name}</li>)}</ul>}
             </article>
             {authorName && <aside aria-labelledby="blog-author-title" className="min-w-0 rounded-2xl border border-slate-200 bg-slate-50/60 p-5 lg:col-start-2 2xl:col-start-auto 2xl:sticky 2xl:top-24">
