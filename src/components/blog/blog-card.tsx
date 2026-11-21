@@ -10,6 +10,8 @@ interface BlogCardProps {
   author?: string;
 }
 
+const EXCERPT_MAX_LENGTH = 120;
+
 const dateFormatter = new Intl.DateTimeFormat("id-ID", {
   day: "numeric",
   month: "long",
@@ -18,6 +20,11 @@ const dateFormatter = new Intl.DateTimeFormat("id-ID", {
 });
 
 export function BlogCard({ post, category, author }: BlogCardProps) {
+  const excerpt = post.excerpt?.trim() ?? "";
+  const excerptCharacters = Array.from(excerpt);
+  const preview = excerptCharacters.length > EXCERPT_MAX_LENGTH
+    ? `${excerptCharacters.slice(0, EXCERPT_MAX_LENGTH - 3).join("").trimEnd()}...`
+    : excerpt;
   const readingTime = Number.isFinite(post.readingTimeMinutes) && post.readingTimeMinutes > 0
     ? Math.ceil(post.readingTimeMinutes)
     : null;
@@ -61,8 +68,8 @@ export function BlogCard({ post, category, author }: BlogCardProps) {
           <h3 className="mt-3 line-clamp-3 text-lg leading-snug font-semibold break-words text-slate-950 transition-colors group-hover:text-[#14864A] group-focus-visible:text-[#14864A] sm:text-xl">
             {post.title}
           </h3>
-          <p className="mt-3 mb-5 line-clamp-3 text-sm leading-6 break-words text-slate-500">
-            {post.excerpt}
+          <p className="mt-3 mb-5 line-clamp-3 shrink-0 text-sm leading-6 break-words text-slate-500">
+            {preview}
           </p>
           <div className="mt-auto flex items-center justify-between gap-3 border-t border-slate-100 pt-4">
             <span className="text-sm font-semibold text-[#14864A]">Baca artikel</span>

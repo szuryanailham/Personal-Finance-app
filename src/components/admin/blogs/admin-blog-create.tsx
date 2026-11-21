@@ -35,10 +35,13 @@ function EditLoader({ slug, session, onExpired }: { slug: string; session: BlogS
   if (post) return <CreateForm session={session} onExpired={onExpired} initialPost={post} editSlug={slug} />;
   return <div><Link href="/admin/blogs" className="text-[#2271b1] underline">Kembali ke Blogs</Link>{error ? <div role="alert" className="my-4"><p>{error}</p><button type="button" onClick={() => { setError(""); setRetry(value => value + 1); }}>Coba lagi</button></div> : <p role="status" className="my-4">Memuat artikel…</p>}</div>;
 }
+const EXCERPT_MAX_LENGTH = 160;
+
 function CreateForm({ session, onExpired, initialPost, editSlug }: { session: BlogSession; onExpired: () => void; initialPost?: BlogPostDetail; editSlug?: string }) {
   const [content, setContent] = useState<BlogEditorContent>({ html: "", text: "" });
   const [title, setTitle] = useState(initialPost?.title ?? "");
   const [excerpt, setExcerpt] = useState(initialPost?.excerpt ?? "");
+  const excerptTooLong = excerpt.length > EXCERPT_MAX_LENGTH;
   const [status, setStatus] = useState(initialPost?.status ?? "DRAFT");
   const [categories, setCategories] = useState<Term[]>([]);
   const [tags, setTags] = useState<Term[]>([]);
@@ -51,7 +54,7 @@ function CreateForm({ session, onExpired, initialPost, editSlug }: { session: Bl
     return () => { if (preview) URL.revokeObjectURL(preview.url); };
   }, [preview]);
   const [uploading, setUploading] = useState(false);
-  const [editorUploading, setEditorUploading] = useState(false);
+  const [editorBusy, setEditorBusy] = useState(false);
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -117,7 +120,9 @@ function CreateForm({ session, onExpired, initialPost, editSlug }: { session: Bl
 
   async function submit(event: FormEvent) {
     event.preventDefault(); setError("");
-    if (uploading || editorUploading || (preview && !media)) { setError("Tunggu upload gambar selesai, atau hapus gambar yang gagal diunggah sebelum menyimpan."); return; }
+    if (excerptTooLong) { setError(`Ringkasan maksimal ${EXCERPT_MAX_LENGTH} karakter.`); return; }
+    if (editorBusy) { setError("Tunggu proses di editor selesai sebelum menyimpan."); return; }
+    if (uploading || (preview && !media)) { setError("Tunggu upload gambar selesai, atau hapus gambar yang gagal diunggah sebelum menyimpan."); return; }
     const contentHtml = content.html;
     if (!slug || !content.text.trim() || !categoryIds.length) { setError("Isi judul, konten artikel, dan pilih minimal satu kategori."); return; }
     if (contentHtml.length > 1000000) { setError("Konten terlalu panjang (maksimal 1.000.000 karakter HTML)."); return; }
@@ -154,13 +159,30 @@ function CreateForm({ session, onExpired, initialPost, editSlug }: { session: Bl
         <div className="min-w-0 space-y-5">
           <div><label htmlFor="blog-title" className="mb-2 block font-medium">Judul *</label><input id="blog-title" required maxLength={250} value={title} onChange={e => setTitle(e.target.value)} placeholder="Masukkan judul artikel" className={`${control} text-lg`} /></div>
           <div><label htmlFor="blog-slug" className="mb-2 block text-sm font-medium">Slug otomatis</label><input id="blog-slug" readOnly value={slug} className={`${control} bg-gray-100`} /><p className="mt-1 break-all text-xs text-[#646970]">/blog/{slug || "judul-artikel"}</p></div>
-          <div><label htmlFor="blog-excerpt" className="mb-2 block text-sm font-medium">Ringkasan</label><textarea id="blog-excerpt" value={excerpt} onChange={e => setExcerpt(e.target.value)} maxLength={10000} rows={3} className={control} placeholder="Ringkasan singkat artikel…" /></div>
+          <div>
+            <label htmlFor="blog-excerpt" className="mb-2 block text-sm font-medium">Ringkasan</label>
+            <textarea
+              id="blog-excerpt"
+              value={excerpt}
+              onChange={event => setExcerpt(event.target.value)}
+              maxLength={EXCERPT_MAX_LENGTH}
+              aria-describedby="blog-excerpt-count"
+              aria-invalid={excerptTooLong}
+              rows={3}
+              className={control}
+              placeholder="Ringkasan singkat artikel…"
+            />
+            <p id="blog-excerpt-count" className={`mt-1 text-right text-xs tabular-nums ${excerptTooLong ? "text-red-700" : "text-[#646970]"}`}>
+              {excerptTooLong && "Ringkasan perlu dipersingkat. "}
+              {excerpt.length}/{EXCERPT_MAX_LENGTH} karakter
+            </p>
+          </div>
           <div><span id="content-label" className="mb-2 block text-sm font-medium">Konten artikel *</span>
-            <BlogRichEditor initialHtml={initialPost?.contentHtml} disabled={saving} onChange={setContent} onImageUpload={uploadArticleImage} onUploadStateChange={setEditorUploading} />
+            <BlogRichEditor initialHtml={initialPost?.contentHtml} disabled={saving} onChange={setContent} onImageUpload={uploadArticleImage} onBusyChange={setEditorBusy} />
           </div>
         </div>
         <aside className="space-y-5">
-          <section className="space-y-3 border border-[#c3c4c7] bg-white p-4"><h2 className="font-medium">Publikasi</h2><label htmlFor="blog-status" className="block text-sm">Status</label><select id="blog-status" value={status} onChange={e => setStatus(e.target.value as BlogPostDetail["status"])} className={control}><option value="DRAFT">Draf</option>{initialPost?.status === "ARCHIVED" && <option value="ARCHIVED">Arsip</option>}{canPublish && <option value="PUBLISHED">Terbit</option>}</select><p className="text-xs text-[#646970]">Penulis: {session.user.displayName}</p><button disabled={saving || uploading || editorUploading || loading || !categories.length || Boolean(preview && !media)} className="w-full rounded bg-[#2271b1] px-4 py-2 text-sm text-white disabled:opacity-50">{saving ? "Menyimpan…" : editSlug ? "Simpan perubahan" : status === "PUBLISHED" ? "Terbitkan blog" : "Simpan draf"}</button></section>
+          <section className="space-y-3 border border-[#c3c4c7] bg-white p-4"><h2 className="font-medium">Publikasi</h2><label htmlFor="blog-status" className="block text-sm">Status</label><select id="blog-status" value={status} onChange={e => setStatus(e.target.value as BlogPostDetail["status"])} className={control}><option value="DRAFT">Draf</option>{initialPost?.status === "ARCHIVED" && <option value="ARCHIVED">Arsip</option>}{canPublish && <option value="PUBLISHED">Terbit</option>}</select><p className="text-xs text-[#646970]">Penulis: {session.user.displayName}</p><button disabled={saving || uploading || editorBusy || loading || !categories.length || Boolean(preview && !media)} className="w-full rounded bg-[#2271b1] px-4 py-2 text-sm text-white disabled:opacity-50">{saving ? "Menyimpan…" : editSlug ? "Simpan perubahan" : status === "PUBLISHED" ? "Terbitkan blog" : "Simpan draf"}</button></section>
           <section className="space-y-3 border border-[#c3c4c7] bg-white p-4">
             <h2 className="font-medium">Gambar utama</h2>
             {!preview && !mediaChanged && initialPost?.heroImage && <figure className="space-y-2">
