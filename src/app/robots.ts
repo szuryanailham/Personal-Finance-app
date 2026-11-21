@@ -5,9 +5,10 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
       userAgent: "*",
-      // Akhiran $ membatasi izin ke URL persis, bukan semua turunannya.
+      // Akhiran $ membatasi izin ke URL persis.
       allow: [
         ...CRAWLABLE_PATHS.map((path) => `${path}$`),
+        "/blog/",
         "/_next/static/",
         "/_next/image?",
         "/favicon.ico",
