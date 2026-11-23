@@ -2,7 +2,8 @@
 
 import { useEffect, useRef } from "react"
 import Image from "next/image"
-import { ArrowRightIcon, ChartPieIcon, WalletIcon, TrendingUpIcon } from "lucide-react"
+import { ArrowRightIcon, ChartPieIcon, WalletIcon, TrendingUpIcon, TagsIcon } from "lucide-react"
+import { useIsMobile } from "@/hooks/use-mobile"
 import { Button } from "@/components/ui/button"
 import logo from "@/components/images/icons/new-logo.svg"
 import illustration from "@/components/images/illustrations/login-ilustration.svg"
@@ -13,7 +14,13 @@ const benefits = [
   { icon: TrendingUpIcon, title: "Bangun kebiasaan keuangan yang lebih baik", description: "Pantau perkembangan keuanganmu dan buat keputusan yang lebih bijak." },
 ]
 
+const mobileBenefits = [
+  benefits[0],
+  { icon: TagsIcon, title: "Kelola kategori transaksi", description: "Buat kategori saat mencatat transaksi dan kelola daftarnya di tab Kategori." },
+]
+
 export function WelcomeScreen({ onStart, onSkip }: { onStart: () => void; onSkip: () => void }) {
+  const isMobile = useIsMobile()
   const heading = useRef<HTMLHeadingElement>(null)
   useEffect(() => { heading.current?.focus() }, [])
 
@@ -28,10 +35,10 @@ export function WelcomeScreen({ onStart, onSkip }: { onStart: () => void; onSkip
           <div>
             <p className="mb-3 text-xs font-bold tracking-[0.2em] text-[#14864A]">PERJALANAN KEUANGANMU DIMULAI DI SINI</p>
             <h1 id="welcome-title" ref={heading} tabIndex={-1} className="text-3xl font-bold tracking-tight outline-none sm:text-4xl">Selamat datang di Artoku!</h1>
-            <p className="mt-4 text-base leading-7 text-slate-600">Asisten keuangan pribadimu untuk memahami pola pengeluaran, mengelola uang, dan membangun kebiasaan keuangan yang lebih baik.</p>
+            <p className="mt-4 text-base leading-7 text-slate-600">{isMobile ? "Mulai catat transaksimu dan atur kategori sesuai kebutuhanmu." : "Asisten keuangan pribadimu untuk memahami pola pengeluaran, mengelola uang, dan membangun kebiasaan keuangan yang lebih baik."}</p>
           </div>
           <ul className="space-y-4">
-            {benefits.map(({ icon: Icon, title, description }) => (
+            {(isMobile ? mobileBenefits : benefits).map(({ icon: Icon, title, description }) => (
               <li key={title} className="flex gap-3">
                 <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#DCF8E6] text-[#14864A]"><Icon className="size-5" aria-hidden /></span>
                 <div><h2 className="text-sm font-semibold">{title}</h2><p className="mt-1 text-sm leading-6 text-slate-600">{description}</p></div>

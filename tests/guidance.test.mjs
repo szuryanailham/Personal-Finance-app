@@ -130,11 +130,16 @@ test('mobile controls finish and close the Driver instance', async () => {
   assert.equal(last.destroyed, true)
 })
 
-test('all seven tutorials stay available; automatic steps exclude import/export', () => {
-  const { TUTORIALS } = load('src/lib/guidance/tutorials.ts', {})
-  assert.equal(Object.keys(TUTORIALS).length, 7)
-  assert.equal(TUTORIALS.initial.steps.length, 6)
-  assert.equal(TUTORIALS.initial.steps.some(step => /import|export/.test(step.target ?? '')), false)
-  assert.equal(TUTORIALS.transfer.steps[0].mobilePath, '/import')
-  assert.equal(TUTORIALS.transfer.steps[1].mobilePath, '/export')
+test('mobile onboarding starts with recording transactions, then managing categories', () => {
+  const { getTutorial } = load('src/lib/guidance/tutorials.ts', {})
+  const { steps } = getTutorial('initial', true)
+  assert.equal(steps.length, 2)
+  assert.equal(steps[0].target, 'add-transaction')
+  assert.equal(steps[1].mobileTarget, 'category-nav')
+  assert.match(steps[0].mobileDescription, /Create New Category/)
+  for (const id of ['analysis', 'analysisFilter', 'transfer', 'calendar']) {
+    assert.equal(getTutorial(id, true), undefined)
+    assert.ok(getTutorial(id, false))
+  }
+  assert.equal(getTutorial('initial', false).steps.length, 6)
 })

@@ -3,17 +3,23 @@ export interface TutorialStep {
   target?: string
   mobilePath?: string
   mobileTarget?: string
+  mobileTitle?: string
+  mobileDescription?: string
   title: string
   description: string
 }
 
 const category: TutorialStep = {
   path: "/category", target: "category",
+  mobileTarget: "category-nav",
+  mobileTitle: "Kelola kategori transaksi",
+  mobileDescription: "Ketuk tab Kategori di navigasi bawah untuk melihat, mengedit, atau menghapus kategori. Untuk membuat kategori baru, buka formulir transaksi lewat tombol +, lalu ketuk Create New Category.",
   title: "Buat kategori transaksi",
   description: "Mulai dengan membuat kategori transaksi agar pemasukan dan pengeluaranmu lebih terorganisir. Isi nama dan jenis kategori, lalu simpan. Kategori yang sudah dibuat dapat dikelola di daftar kategori.",
 }
 const transaction: TutorialStep = {
   path: "/dashboard", target: "add-transaction",
+  mobileDescription: "Ketuk tombol + di tengah navigasi bawah. Isi judul, kategori, jumlah, dan tanggal transaksi, lalu simpan. Jika kategori belum tersedia, ketuk Create New Category di bawah kolom Kategori.",
   title: "Catat pemasukan dan pengeluaran",
   description: "Catat pemasukan dan pengeluaranmu untuk mulai memahami ke mana uangmu digunakan. Klik Add Transaction untuk membuka form transaksi. Di ponsel, gunakan tombol +. Isi kategori, nominal, dan tanggal, lalu simpan.",
 }
@@ -122,3 +128,18 @@ export const TUTORIALS = {
 } satisfies Record<string, { title: string; description: string; steps: TutorialStep[] }>
 
 export type TutorialId = keyof typeof TUTORIALS
+
+const MOBILE_INITIAL = {
+  ...TUTORIALS.initial,
+  description: "Pelajari cara mencatat transaksi dan mengelola kategori di ponsel.",
+  steps: [transaction, category],
+}
+
+const DESKTOP_ONLY_TUTORIALS: ReadonlySet<TutorialId> = new Set(["analysis", "analysisFilter", "transfer", "calendar"])
+
+export function getTutorial(id: TutorialId, isMobile: boolean) {
+  if (!isMobile) return TUTORIALS[id]
+  if (id === "initial") return MOBILE_INITIAL
+  if (DESKTOP_ONLY_TUTORIALS.has(id)) return undefined
+  return TUTORIALS[id]
+}

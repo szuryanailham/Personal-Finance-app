@@ -2,10 +2,12 @@
 
 import { BookOpenIcon, PlayIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { TUTORIALS, type TutorialId } from "@/lib/guidance/tutorials"
+import { getTutorial, TUTORIALS, type TutorialId } from "@/lib/guidance/tutorials"
+import { useIsMobile } from "@/hooks/use-mobile"
 import { useGuidance } from "./guidance-provider"
 
 export function GuidanceCenter() {
+  const isMobile = useIsMobile()
   const { startTutorial, busy } = useGuidance()
   return (
     <section className="mx-auto w-full max-w-5xl py-4">
@@ -18,7 +20,8 @@ export function GuidanceCenter() {
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         {(Object.keys(TUTORIALS) as TutorialId[]).map((id) => {
-          const tutorial = TUTORIALS[id]
+          const tutorial = getTutorial(id, isMobile)
+          if (!tutorial) return null
           return (
             <article key={id} className="flex flex-col gap-3 rounded-2xl border bg-card p-5 text-card-foreground">
               <h3 className="font-semibold">{tutorial.title}</h3>
