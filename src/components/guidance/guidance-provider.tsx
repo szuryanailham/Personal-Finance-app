@@ -5,7 +5,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { getSessionToken } from "@/lib/auth"
 import { completeGuidance, fetchGuidanceStatus } from "@/lib/api/guidance"
-import { TUTORIALS, type TutorialId } from "@/lib/guidance/tutorials"
+import { getTutorial, type TutorialId } from "@/lib/guidance/tutorials"
 import { createTutorialRunner } from "@/lib/guidance/runner"
 import { WelcomeScreen } from "./welcome-screen"
 import { Spinner } from "@/components/ui/spinner"
@@ -59,12 +59,14 @@ export function GuidanceProvider({ children }: { children: ReactNode }) {
 
   const startTutorial = useCallback((id: TutorialId) => {
     if (!getSessionToken() || !document.querySelector("[data-guidance-shell]")) return
+    const tutorial = getTutorial(id, window.matchMedia("(max-width: 767px)").matches)
+    if (!tutorial) return
     attempted.current = true
     setShowWelcome(false)
     runner.current?.destroy()
     setBusy(true)
     runner.current = createTutorialRunner({
-      steps: TUTORIALS[id].steps,
+      steps: tutorial.steps,
       navigate: (path) => router.push(path),
       onLoading: setLoadingStep,
       onFinish: () => {

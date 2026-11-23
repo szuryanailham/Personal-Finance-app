@@ -1,18 +1,20 @@
 "use client"
 
 import { useId, useState } from "react"
-import { Pencil, Plus, Trash2 } from "lucide-react"
+import { Pencil, Plus, SearchIcon, Trash2 } from "lucide-react"
 import { CategoryManagerContent } from "@/components/header/category-manager-content"
 import { useCategoryManager } from "@/components/header/use-category-manager"
 import type { Category } from "@/lib/api/category"
 import { categoryCurrency as currency } from "@/lib/category-appearance"
+import { TablePagination } from "@/components/table/TablePagination"
 import { CategoryIcon } from "@/components/table/category-icon"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog"
 import { cn } from "@/lib/utils"
 
-const MOBILE_CATEGORY_LIMIT = 5
+const PAGE_SIZE_OPTIONS = [5, 10, 20] as const
 
 const mobileRowClass = "max-md:grid max-md:grid-cols-[minmax(0,1fr)_auto] max-md:gap-y-2 max-md:p-3"
 
@@ -55,16 +57,23 @@ function BudgetUsage({ expense, budget }: { expense?: number; budget?: number })
 
 export function CategoryBudgetTable({ compact = false }: { compact?: boolean }) {
   const titleId = useId()
-  const rowsId = useId()
-  const [showAll, setShowAll] = useState(false)
+  const [query, setQuery] = useState("")
+  const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState<number>(PAGE_SIZE_OPTIONS[0])
   const manager = useCategoryManager(true)
   const { setEditing, reset, isLoading, error } = manager
   const [open, setOpen] = useState(false)
   const [deleting, setDeleting] = useState<Category | null>(null)
   const categories = manager.categories.filter(category => category.type === "EXPENSE")
-  categories.sort((a, b) => (b.totalExpense ?? 0) - (a.totalExpense ?? 0))
-  const canExpand = compact && categories.length > MOBILE_CATEGORY_LIMIT
-  const visibleCategories = canExpand && !showAll ? categories.slice(0, MOBILE_CATEGORY_LIMIT) : categories
+  const searchTerm = query.trim().toLocaleLowerCase()
+  const filteredCategories = categories
+    .filter(category => category.name.toLocaleLowerCase().includes(searchTerm))
+    .sort((a, b) => (b.totalExpense ?? 0) - (a.totalExpense ?? 0))
+  const totalPage = Math.max(1, Math.ceil(filteredCategories.length / pageSize))
+  const currentPage = Math.min(page, totalPage)
+  if (page !== currentPage) setPage(currentPage)
+  const start = (currentPage - 1) * pageSize
+  const visibleCategories = filteredCategories.slice(start, start + pageSize)
   const totals = categories.reduce((total, category) => ({
     expense: total.expense + (category.totalExpense ?? 0),
     budget: total.budget + (category.budget ?? 0),
@@ -101,6 +110,19 @@ export function CategoryBudgetTable({ compact = false }: { compact?: boolean }) 
           Pantau pengeluaran dan sisa anggaran setiap kategori.
         </p>
       </div>
+      <div className="px-3 pb-3 sm:px-6 sm:pb-4">
+        <div className="relative sm:max-w-xs">
+          <SearchIcon aria-hidden="true" className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            type="search"
+            aria-label="Cari kategori anggaran berdasarkan nama"
+            placeholder="Cari kategori..."
+            value={query}
+            onChange={(event) => { setQuery(event.target.value); setPage(1) }}
+            className="h-10 pl-9"
+          />
+        </div>
+      </div>
       <div className="md:overflow-x-auto">
         <table role="table" aria-labelledby={titleId} className="w-full text-sm max-md:block md:min-w-[800px]">
           <thead className="border-y border-border bg-muted/40 text-muted-foreground max-md:hidden">
@@ -112,7 +134,7 @@ export function CategoryBudgetTable({ compact = false }: { compact?: boolean }) 
               <th scope="col" className="px-3 py-3 md:px-6 md:py-4 text-right font-medium">Aksi</th>
             </tr>
           </thead>
-          <tbody id={rowsId} role="rowgroup" className="divide-y divide-border max-md:block">
+          <tbody role="rowgroup" className="divide-y divide-border max-md:block">
             {visibleCategories.map(category => {
               const remaining = category.remainingBudget
               return (
@@ -145,13 +167,19 @@ export function CategoryBudgetTable({ compact = false }: { compact?: boolean }) 
                 </tr>
               )
             })}
-            {categories.length === 0 && (
-              <tr role="row" className="max-md:block"><td role="cell" colSpan={5} className="px-6 py-10 text-center text-muted-foreground max-md:block">{isLoading ? "Memuat anggaran kategori..." : error ?? "Belum ada kategori pengeluaran."}</td></tr>
+            {filteredCategories.length === 0 && (
+              <tr role="row" className="max-md:block">
+                <td role="cell" colSpan={5} className="px-6 py-10 text-center text-muted-foreground max-md:block">
+                  {categories.length > 0
+                    ? "Kategori tidak ditemukan. Coba kata kunci lain."
+                    : isLoading ? "Memuat anggaran kategori..." : error ?? "Belum ada kategori pengeluaran."}
+                </td>
+              </tr>
             )}
           </tbody>
           <tfoot role="rowgroup" className="border-t border-border bg-muted/40 font-semibold max-md:hidden">
             <tr role="row" className={mobileRowClass}>
-              <th role="rowheader" scope="row" className="text-left max-md:col-span-2 md:px-6 md:py-4">Total</th>
+              <th role="rowheader" scope="row" className="text-left max-md:col-span-2 md:px-6 md:py-4">{searchTerm ? "Total semua kategori" : "Total"}</th>
               <BudgetAmount label="Total Pengeluaran" amount={totals.expense} />
               <BudgetAmount label="Total Anggaran" amount={totals.budget} />
               <BudgetAmount label="Sisa Anggaran" amount={totals.remaining} className={totals.remaining < 0 ? "text-red-600" : "text-[#14864A]"} />
@@ -160,18 +188,19 @@ export function CategoryBudgetTable({ compact = false }: { compact?: boolean }) 
           </tfoot>
         </table>
       </div>
-      {canExpand && (
-        <div className="flex justify-center border-t border-border p-3">
-          <Button
-            type="button"
-            variant="outline"
-            aria-controls={rowsId}
-            aria-expanded={showAll}
-            onClick={() => setShowAll(current => !current)}
-          >
-            {showAll ? "See less" : "See more"}
-          </Button>
-        </div>
+      {filteredCategories.length > PAGE_SIZE_OPTIONS[0] && (
+        <TablePagination
+          currentPage={currentPage}
+          totalPage={totalPage}
+          pageSize={pageSize}
+          itemCount={visibleCategories.length}
+          totalItem={filteredCategories.length}
+          onPageChange={setPage}
+          onPageSizeChange={(size) => { setPageSize(size); setPage(1) }}
+          pageSizeOptions={PAGE_SIZE_OPTIONS}
+          disabled={isLoading}
+          className="mt-0 flex-wrap border-t border-border p-3 sm:px-6"
+        />
       )}
       {error && !open && categories.length > 0 && <p role="alert" className="p-4 text-sm text-destructive">{error}</p>}
       <Dialog open={open} onOpenChange={handleOpenChange}>

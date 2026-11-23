@@ -34,6 +34,7 @@ function NavLink({ label, href, icon: Icon, isActive }: NavItem & { isActive: bo
     <li>
       <Link
         href={href}
+        data-guidance={href === "/category" ? "category-nav" : undefined}
         aria-current={isActive ? "page" : undefined}
         className={cn(
           "flex h-full flex-col items-center justify-center gap-1 text-xs font-medium transition-colors active:opacity-60",

@@ -128,7 +128,11 @@ export function createTutorialRunner({ steps, navigate, onFinish, onError, onLoa
       document.addEventListener("keyup", onKeyUp, true)
       instance.highlight({
         element,
-        popover: { title: step.title, description: step.description, side: "bottom", align: "center", showButtons: ["close"] },
+        popover: {
+          title: mobile ? step.mobileTitle ?? step.title : step.title,
+          description: mobile ? step.mobileDescription ?? step.description : step.description,
+          side: "bottom", align: "center", showButtons: ["close"],
+        },
       })
     } catch (error) {
       if (controller.signal.aborted || stopped) return
