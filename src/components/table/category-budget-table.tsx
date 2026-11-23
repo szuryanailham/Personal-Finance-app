@@ -14,6 +14,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog"
 import { cn } from "@/lib/utils"
 
+const MOBILE_CATEGORY_LIMIT = 5
 const PAGE_SIZE_OPTIONS = [5, 10, 20] as const
 
 const mobileRowClass = "max-md:grid max-md:grid-cols-[minmax(0,1fr)_auto] max-md:gap-y-2 max-md:p-3"
@@ -57,6 +58,8 @@ function BudgetUsage({ expense, budget }: { expense?: number; budget?: number })
 
 export function CategoryBudgetTable({ compact = false }: { compact?: boolean }) {
   const titleId = useId()
+  const rowsId = useId()
+  const [showAll, setShowAll] = useState(false)
   const [query, setQuery] = useState("")
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState<number>(PAGE_SIZE_OPTIONS[0])
@@ -73,7 +76,10 @@ export function CategoryBudgetTable({ compact = false }: { compact?: boolean }) 
   const currentPage = Math.min(page, totalPage)
   if (page !== currentPage) setPage(currentPage)
   const start = (currentPage - 1) * pageSize
-  const visibleCategories = filteredCategories.slice(start, start + pageSize)
+  const canExpand = compact && filteredCategories.length > MOBILE_CATEGORY_LIMIT
+  const visibleCategories = compact
+    ? (showAll ? filteredCategories : filteredCategories.slice(0, MOBILE_CATEGORY_LIMIT))
+    : filteredCategories.slice(start, start + pageSize)
   const totals = categories.reduce((total, category) => ({
     expense: total.expense + (category.totalExpense ?? 0),
     budget: total.budget + (category.budget ?? 0),
@@ -118,7 +124,11 @@ export function CategoryBudgetTable({ compact = false }: { compact?: boolean }) 
             aria-label="Cari kategori anggaran berdasarkan nama"
             placeholder="Cari kategori..."
             value={query}
-            onChange={(event) => { setQuery(event.target.value); setPage(1) }}
+            onChange={(event) => {
+              setQuery(event.target.value)
+              setPage(1)
+              setShowAll(false)
+            }}
             className="h-10 pl-9"
           />
         </div>
@@ -134,7 +144,7 @@ export function CategoryBudgetTable({ compact = false }: { compact?: boolean }) 
               <th scope="col" className="px-3 py-3 md:px-6 md:py-4 text-right font-medium">Aksi</th>
             </tr>
           </thead>
-          <tbody role="rowgroup" className="divide-y divide-border max-md:block">
+          <tbody id={rowsId} role="rowgroup" className="divide-y divide-border max-md:block">
             {visibleCategories.map(category => {
               const remaining = category.remainingBudget
               return (
@@ -188,7 +198,20 @@ export function CategoryBudgetTable({ compact = false }: { compact?: boolean }) 
           </tfoot>
         </table>
       </div>
-      {filteredCategories.length > PAGE_SIZE_OPTIONS[0] && (
+      {canExpand && (
+        <div className="flex justify-center border-t border-border p-3">
+          <Button
+            type="button"
+            variant="outline"
+            aria-controls={rowsId}
+            aria-expanded={showAll}
+            onClick={() => setShowAll(current => !current)}
+          >
+            {showAll ? "See less" : "See more"}
+          </Button>
+        </div>
+      )}
+      {!compact && filteredCategories.length > PAGE_SIZE_OPTIONS[0] && (
         <TablePagination
           currentPage={currentPage}
           totalPage={totalPage}
