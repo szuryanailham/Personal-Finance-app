@@ -7,6 +7,7 @@ import { AUTH_EXPIRED_AT_COOKIE, AUTH_TOKEN_COOKIE, isSessionValid } from "@/lib
 import heroIllustration from "@/components/images/illustrations/demo-application.png";
 import { HomeFooter } from "@/components/home/home-footer";
 import { HomeNavbar } from "@/components/home/home-navbar";
+import { InstallAppButton } from "@/components/home/install-app-button";
 import { FaqSection } from "@/components/home/faq-section";
 import { GetStartedSection } from "@/components/home/get-started-section";
 import { HowItWorksSection } from "@/components/home/how-it-works-section";
@@ -46,8 +47,11 @@ export default async function Home() {
                 Setiap keputusan keuangan dimulai dari pemahaman yang lebih baik.
               </p>
               <div className="mt-10 flex flex-col gap-3 font-inter sm:mt-12 sm:flex-row sm:flex-wrap">
-                <Link href={isLoggedIn ? "/dashboard" : "/sign-up"} className="inline-flex min-h-12 items-center justify-center rounded-xl bg-[#14864A] px-7 text-sm font-semibold text-white transition-colors hover:bg-[#10733e] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#14864A]">
-                  {isLoggedIn ? "Masuk Dashboard" : "Mulai Catat Keuangan"}
+                <InstallAppButton className="inline-flex min-h-12 items-center justify-center rounded-xl bg-[#14864A] px-7 text-sm font-semibold text-white transition-colors hover:bg-[#10733e] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#14864A] cursor-pointer md:hidden">
+                  Unduh Aplikasi
+                </InstallAppButton>
+                <Link href={isLoggedIn ? "/dashboard" : "/login"} className="hidden min-h-12 items-center justify-center rounded-xl bg-[#14864A] px-7 text-sm font-semibold text-white transition-colors hover:bg-[#10733e] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#14864A] md:inline-flex">
+                  {isLoggedIn ? "Masuk Dashboard" : "Login di Website"}
                 </Link>
                 <Link href="#features" className="inline-flex min-h-12 items-center justify-center rounded-xl border border-[#14864A]/30 bg-white px-7 text-sm font-semibold text-[#14864A] transition-colors hover:bg-[#DCF8E6] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#14864A]">
                   Kenali Myartoku
