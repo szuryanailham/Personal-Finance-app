@@ -1,5 +1,8 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { InstallAppButton } from "@/components/home/install-app-button";
+
+const actionClassName = "mt-8 min-h-12 max-w-full items-center justify-center gap-2 rounded-xl border border-white bg-transparent px-6 py-3 font-inter text-sm font-semibold text-white transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white";
 
 export function LandingCtaSection({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
   return (
@@ -30,10 +33,11 @@ export function LandingCtaSection({ isLoggedIn = false }: { isLoggedIn?: boolean
               Tidak perlu menunggu sampai keuangan terasa berantakan. Mulai catat pemasukan dan pengeluaranmu bersama MyArtoku.
             </p>
           </div>
-          <Link
-            href={isLoggedIn ? "/dashboard" : "/sign-up"}
-            className="mt-8 inline-flex min-h-12 max-w-full items-center justify-center gap-2 rounded-xl border border-white bg-transparent px-6 py-3 font-inter text-sm font-semibold text-white transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
-          >
+          <InstallAppButton className={`${actionClassName} inline-flex cursor-pointer md:hidden`}>
+            Mulai Catat Keuangan
+            <ArrowRight aria-hidden="true" className="size-4" />
+          </InstallAppButton>
+          <Link href={isLoggedIn ? "/dashboard" : "/login"} className={`${actionClassName} hidden md:inline-flex`}>
             {isLoggedIn ? "Masuk Dashboard" : "Mulai Catat Keuangan"}
             <ArrowRight aria-hidden="true" className="size-4" />
           </Link>
