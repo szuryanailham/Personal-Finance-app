@@ -17,9 +17,9 @@ const currencyFormatter = new Intl.NumberFormat("id-ID", {
 })
 
 const summaryMetrics = [
-  { key: "totalIncome", label: "Pemasukan" },
-  { key: "totalExpense", label: "Pengeluaran" },
-  { key: "totalSaving", label: "Tabungan" },
+  { key: "totalIncome", label: "Pemasukan", color: "text-[#08783e]" },
+  { key: "totalExpense", label: "Pengeluaran", color: "text-[#c43825]" },
+  { key: "totalSaving", label: "Tabungan", color: "text-[#6d28d9]" },
 ] as const
 
 export function MobileSummaryCard() {
@@ -41,41 +41,42 @@ export function MobileSummaryCard() {
       data-guidance="summary"
       aria-busy={isLoading}
       aria-label="Ringkasan transaksi"
-      className="flex flex-col gap-3 px-4 pt-4"
+      className="flex flex-col"
     >
-      <PersonalizedGreeting />
-
-      <div className="rounded-2xl bg-linear-to-br from-[#168D50] via-[#14864A] to-[#0D6738] p-4 text-white shadow-sm">
+      <div className="rounded-b-[28px] bg-[#0d4e31] bg-[radial-gradient(circle_at_84%_35%,#386537_0_32px,transparent_33px),radial-gradient(circle_at_8%_55%,#12643c_0_68px,transparent_69px)] px-4 pt-4 pb-20 text-white">
+        <PersonalizedGreeting compact />
         <MobileBudgetCard isHidden={isHidden} />
       </div>
 
-      <section aria-label="Saldo, pemasukan, pengeluaran, dan tabungan" className="rounded-2xl border border-border bg-background p-4 shadow-sm">
+      <section aria-label="Saldo, pemasukan, pengeluaran, dan tabungan" className="relative mx-4 -mt-12 rounded-[20px] border border-slate-100 bg-white p-4 text-slate-900 shadow-md">
         <div className="flex items-center justify-between gap-2">
-          <h2 className="text-sm font-medium text-muted-foreground">Total Saldo</h2>
+          <div className="min-w-0">
+            <h2 className="text-xs font-semibold text-slate-500">Total saldo</h2>
+            <p className="text-xl font-bold break-words tabular-nums">
+              {renderAmount("totalBalance")}
+            </p>
+          </div>
           <button
             type="button"
             onClick={toggleHidden}
             aria-label={isHidden ? "Tampilkan semua nominal" : "Sembunyikan semua nominal"}
-            className="grid size-10 shrink-0 place-items-center rounded-lg hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring"
+            className="grid size-10 shrink-0 place-items-center rounded-full bg-[#daf3e4] text-[#08783e] hover:bg-[#c9ebd7] focus-visible:outline-2 focus-visible:outline-ring"
           >
             <ToggleIcon aria-hidden="true" className="size-5" />
           </button>
         </div>
-        <p className="text-2xl font-bold break-words tabular-nums">
-          {renderAmount("totalBalance")}
-        </p>
 
-        <dl className="mt-4 space-y-2 border-t border-border pt-3 text-sm">
-          {summaryMetrics.map(({ key, label }) => (
-            <div key={key} className="flex items-baseline justify-between gap-3">
-              <dt className="text-muted-foreground">{label}</dt>
-              <dd className="min-w-0 text-right font-semibold break-words tabular-nums">{renderAmount(key)}</dd>
+        <dl className="mt-3 grid grid-cols-3 divide-x divide-slate-100 text-center text-[11px] leading-tight">
+          {summaryMetrics.map(({ key, label, color }) => (
+            <div key={key} className="min-w-0 space-y-1 px-1">
+              <dt className="text-slate-600 [overflow-wrap:anywhere]">{label}</dt>
+              <dd className={`font-bold tabular-nums [overflow-wrap:anywhere] ${color}`}>{renderAmount(key)}</dd>
             </div>
           ))}
         </dl>
       </section>
 
-      {!isLoading && error && <p className="text-sm text-destructive">{error}</p>}
+      {!isLoading && error && <p className="mx-4 mt-2 text-sm text-destructive">{error}</p>}
     </section>
   )
 }

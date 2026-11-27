@@ -10,6 +10,16 @@ export type TransactionFilter =
   | { period: Exclude<FilterPeriod, "custom"> }
   | { period: "custom"; startDate: string; endDate: string }
 
+export function getMonthYearRange(year: number, month: string): Extract<TransactionFilter, { period: "custom" }> {
+  const yearText = String(year).padStart(4, "0")
+  const lastDay = month ? new Date(Date.UTC(2000 + year % 400, Number(month), 0)).getUTCDate() : 31
+  return {
+    period: "custom",
+    startDate: yearText + "-" + (month || "01") + "-01",
+    endDate: yearText + "-" + (month || "12") + "-" + lastDay,
+  }
+}
+
 const DEFAULT_FILTER: TransactionFilter = { period: "monthly" }
 const FILTER_STORAGE_KEY = "transaction-filter"
 const PRESET_PERIODS: readonly FilterPeriod[] = ["yearly", "monthly", "weekly"]

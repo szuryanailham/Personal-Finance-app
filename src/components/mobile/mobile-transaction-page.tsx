@@ -3,16 +3,15 @@
 import { useState } from "react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
-import { PencilIcon, SearchIcon } from "lucide-react"
+import { PencilIcon } from "lucide-react"
 import { CATEGORY_OPTIONS } from "@/components/header/category-type-field"
-import { TransactionFilterDrawer } from "@/components/header/transaction-filter-drawer"
+import { getMonthYearRange, useTransactionFilter } from "@/components/header/transaction-filter-context"
 import { formatAmount, type Transaction, type TransactionType } from "@/components/table/TableComponent"
 import { SortableHead, fromServerSort, nextServerSort, type SortKey } from "@/components/table/SortableHead"
 import { DEFAULT_PAGE_SIZE, TablePagination } from "@/components/table/TablePagination"
 import { EditTransactionDialog } from "@/components/table/edit-transaction-dialog"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Spinner, LoadingState } from "@/components/ui/spinner"
+import { LoadingState } from "@/components/ui/spinner"
 import {
   Table,
   TableBody,
@@ -21,17 +20,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { useDebouncedValue } from "@/hooks/use-debounced-value"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { useTransactions } from "@/hooks/use-transactions"
 import { useCategoriesById } from "@/hooks/use-categories"
 import { CategoryIcon } from "@/components/table/category-icon"
 import {
+  dateFilterKey,
   DEFAULT_TRANSACTION_LIST_FILTER,
-  type TransactionListFilter,
+  type TransactionDateFilter,
   type TransactionSortValue,
 } from "@/lib/api/transaction"
-import { ACCENT_ICON_CLASS, ACCENT_OUTLINE_CLASS } from "@/lib/styles"
 import { cn } from "@/lib/utils"
 
 // Tipe transaksi (lowercase) -> icon tipe kategori (uppercase di backend)
@@ -44,11 +42,6 @@ const AMOUNT_CLASS: Record<TransactionType, string> = {
   expense: "text-[#282458]",
   saving: "text-[#14864A]",
 }
-
-const INPUT_ICON_CLASS = cn(
-  "pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2",
-  ACCENT_ICON_CLASS
-)
 
 const MOBILE_HEAD_CLASS = "px-4 font-semibold text-[#282458]"
 
@@ -146,31 +139,31 @@ function MobileTransactionTable({ transactions, sort: serverSort, onSortChange }
 }
 
 function MobileTransactionList() {
-  const [query, setQuery] = useState("")
-  const [page, setPage] = useState(1)
+  const { filter } = useTransactionFilter()
+  const now = new Date()
+  const range = filter.period === "custom" ? filter : getMonthYearRange(
+    now.getFullYear(),
+    filter.period === "monthly" ? String(now.getMonth() + 1).padStart(2, "0") : ""
+  )
+  const dateRange: TransactionDateFilter = filter.period === "weekly"
+    ? { preset: "last7" }
+    : { preset: "custom", startDate: range.startDate, endDate: range.endDate }
+  const periodKey = dateFilterKey(dateRange)
+  const [pagination, setPagination] = useState({ periodKey, page: 1 })
+  if (pagination.periodKey !== periodKey) setPagination({ periodKey, page: 1 })
+  const page = pagination.periodKey === periodKey ? pagination.page : 1
+  const setPage = (page: number) => setPagination({ periodKey, page })
   const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE)
-  const [filter, setFilter] = useState<TransactionListFilter>(DEFAULT_TRANSACTION_LIST_FILTER)
-  const trimmedQuery = query.trim()
-  const debouncedQuery = useDebouncedValue(trimmedQuery)
+  const [sort, setSort] = useState(DEFAULT_TRANSACTION_LIST_FILTER.sort)
   const skip = (page - 1) * pageSize
   const { transactions, paging, isLoading, isFetching, error } = useTransactions(
     pageSize,
     skip,
-    debouncedQuery,
     "",
-    filter
+    "",
+    { ...DEFAULT_TRANSACTION_LIST_FILTER, sort, dateRange }
   )
-  const isSearching = trimmedQuery !== debouncedQuery || isFetching
 
-  // Filter/ukuran halaman berubah -> hasil berbeda, jadi kembali ke halaman pertama
-  const handleQueryChange = (value: string) => {
-    setQuery(value)
-    setPage(1)
-  }
-  const handleFilterChange = (value: TransactionListFilter) => {
-    setFilter(value)
-    setPage(1)
-  }
   const handlePageSizeChange = (size: number) => {
     setPageSize(size)
     setPage(1)
@@ -178,27 +171,6 @@ function MobileTransactionList() {
 
   return (
     <>
-      <header className="flex items-center gap-2 mt-5">
-        <div className="group/accent relative min-w-0 flex-1">
-          {isSearching ? (
-            <Spinner className={cn(INPUT_ICON_CLASS, "animate-spin")} />
-          ) : (
-            <SearchIcon className={INPUT_ICON_CLASS} />
-          )}
-          <Input
-            type="search"
-            placeholder="Cari transaksi..."
-            value={query}
-            onChange={(e) => handleQueryChange(e.target.value)}
-        className={cn("h-11 rounded-xl bg-white pl-9 placeholder:text-[#14864A]/60", ACCENT_OUTLINE_CLASS)}
-            aria-label="Cari transaksi"
-          />
-        </div>
-        <div className="shrink-0 rounded-xl bg-white">
-          <TransactionFilterDrawer value={filter} onApply={handleFilterChange} />
-        </div>
-      </header>
-
       {error ? (
         <p className="text-sm text-destructive">{error}</p>
       ) : isLoading ? (
@@ -206,13 +178,16 @@ function MobileTransactionList() {
       ) : (
         // Data lama tetap tampil (diredupkan) selama hasil baru dimuat
         <div
-          className={cn("flex flex-col gap-3 transition-opacity", isSearching && "pointer-events-none opacity-50")}
-          aria-busy={isSearching}
+          className={cn("flex flex-col gap-3 transition-opacity", isFetching && "pointer-events-none opacity-50")}
+          aria-busy={isFetching}
         >
           <MobileTransactionTable
             transactions={transactions}
-            sort={filter.sort}
-            onSortChange={(sort) => handleFilterChange({ ...filter, sort })}
+            sort={sort}
+            onSortChange={(value) => {
+              setSort(value)
+              setPage(1)
+            }}
           />
           <TablePagination
             currentPage={paging?.currentPage ?? page}
@@ -222,7 +197,7 @@ function MobileTransactionList() {
             totalItem={paging?.totalItem}
             onPageChange={setPage}
             onPageSizeChange={handlePageSizeChange}
-            disabled={isSearching}
+            disabled={isFetching}
           />
         </div>
       )}
