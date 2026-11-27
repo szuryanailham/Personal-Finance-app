@@ -91,7 +91,14 @@ export function ExpenseCategoryChart({ statistic, isLoading, error, categoriesBy
           >
             <PieChart>
               <ChartTooltip content={<ChartTooltipContent hideLabel />} />
-              <Pie data={data} dataKey="amount" label={renderPercentageLabel} nameKey="key" />
+              <Pie
+                data={data}
+                dataKey="amount"
+                nameKey="key"
+                innerRadius="48%"
+                outerRadius="72%"
+                label={renderPercentageLabel}
+              />
             </PieChart>
           </ChartContainer>
         )}

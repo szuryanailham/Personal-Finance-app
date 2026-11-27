@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useRef, useState } from "react"
 import Image from "next/image"
 import { CircleCheckIcon, PlusIcon } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
@@ -43,6 +43,7 @@ interface AddTransactionDialogProps {
 
 // Dialog dikontrol dari luar (dibuka lewat tombol AddActionMenu)
 export function AddTransactionDialog({ open, onOpenChange }: AddTransactionDialogProps) {
+  const titleRef = useRef<HTMLHeadingElement>(null)
   const [categoryOpen, setCategoryOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -108,14 +109,14 @@ export function AddTransactionDialog({ open, onOpenChange }: AddTransactionDialo
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       {/* Tinggi dibatasi layar; di mobile hanya area field yang di-scroll, header & tombol tetap terlihat */}
-      <DialogContent className="flex max-h-[calc(100svh-2rem)] flex-col overflow-hidden overscroll-none p-4 sm:max-w-xl sm:p-6">
+      <DialogContent initialFocus={titleRef} className="flex max-h-[calc(100svh-2rem)] flex-col overflow-hidden overscroll-none p-4 sm:max-w-xl sm:p-6">
         {/* Form diletakkan di dalam DialogContent karena konten dirender lewat portal */}
         <form onSubmit={handleSubmit} className="flex min-h-0 flex-col gap-4">
           <DialogHeader>
             <div className="mb-1 sm:mb-2">
               <Image src={createTransactionIcon} alt="" width={52} height={53} className="size-10 sm:size-[52px]" />
             </div>
-            <DialogTitle>Tambah Transaksi</DialogTitle>
+            <DialogTitle ref={titleRef} tabIndex={-1}>Tambah Transaksi</DialogTitle>
             <DialogDescription>
              Isi form transaksi di bawah ini
             </DialogDescription>

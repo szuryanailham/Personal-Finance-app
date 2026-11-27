@@ -3,7 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  ArrowLeftRightIcon,
+  ChartPieIcon,
   HouseIcon,
   PlusIcon,
   SettingsIcon,
@@ -21,7 +21,7 @@ interface NavItem {
 
 const NAV_ITEMS_LEFT: NavItem[] = [
   { label: "Beranda", href: "/dashboard", icon: HouseIcon },
-  { label: "Transaksi", href: "/transaction", icon: ArrowLeftRightIcon },
+  { label: "Analisis", href: "/analysis", icon: ChartPieIcon },
 ];
 
 const NAV_ITEMS_RIGHT: NavItem[] = [

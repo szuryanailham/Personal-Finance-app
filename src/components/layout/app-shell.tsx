@@ -11,17 +11,18 @@ interface AppShellProps {
   title: string;
   /** Konten halaman versi mobile; kosong jika halaman mobile belum dibuat */
   mobile?: ReactNode;
+  mobileHeader?: ReactNode;
   children: ReactNode;
 }
 
 // Kerangka halaman aplikasi: sidebar di kiri, header + konten di kanan (desktop),
 // layout terpisah untuk mobile. Provider dipasang di luar agar dipakai kedua layout.
-export function AppShell({ title, mobile, children }: AppShellProps) {
+export function AppShell({ title, mobile, mobileHeader, children }: AppShellProps) {
   return (
     <div data-guidance-shell>
     <TransactionRevisionProvider>
       <TransactionFilterProvider>
-        <ResponsiveShell mobile={<MobileShell>{mobile}</MobileShell>}>
+        <ResponsiveShell mobile={<MobileShell header={mobileHeader}>{mobile}</MobileShell>}>
           <SidebarProvider className="md:[--sidebar:#14864A] md:[--sidebar-foreground:#ffffff] md:[--sidebar-accent:#10733e] md:[--sidebar-accent-foreground:#ffffff]">
             <AppSidebar />
             <div className="flex min-w-0 flex-1 flex-col px-6">
