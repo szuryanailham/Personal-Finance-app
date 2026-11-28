@@ -1,0 +1,19 @@
+@media (prefers-reduced-motion: no-preference) {
+  @supports (interpolate-size: allow-keywords) and selector(details::details-content) {
+    .guide::details-content {
+      interpolate-size: allow-keywords;
+      block-size: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition:
+        block-size 280ms ease-in-out,
+        opacity 220ms ease-in-out,
+        content-visibility 280ms allow-discrete;
+    }
+
+    .guide[open]::details-content {
+      block-size: auto;
+      opacity: 1;
+    }
+  }
+}

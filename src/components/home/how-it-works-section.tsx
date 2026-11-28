@@ -1,86 +1,103 @@
-import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight, Bike, Cookie, Utensils } from "lucide-react";
 
-import firstFeatureIllustration from "@/components/images/illustrations/fiture-ilustration -1.svg";
-import secondFeatureIllustration from "@/components/images/illustrations/fiture-ilustration -2.svg";
-import thirdFeatureIllustration from "@/components/images/illustrations/fiture-ilustration -3.svg";
-
-const STEPS = [
+const steps = [
   {
-    number: "01",
-    image: firstFeatureIllustration,
-    imageAlt: "Ilustrasi fitur pencatatan keuangan Artoku",
-    title: "Catat Pemasukan dan Pengeluaran",
-    description:
-      "Simpan catatan uang masuk dan keluar dalam satu tempat agar transaksi sehari-hari tidak mudah terlupakan.",
+    title: "Catat transaksi",
+    description: "Masukkan nominal dan nama, misalnya makan siang Rp28.000.",
   },
   {
-    number: "02",
-    image: secondFeatureIllustration,
-    imageAlt: "Ilustrasi fitur memahami pola pengeluaran Artoku",
-    title: "Bangun Kebiasaan Finansial yang Lebih Baik",
-    description:
-      "Mulai lebih sadar terhadap penggunaan uang dengan membiasakan diri mencatat aktivitas keuangan secara rutin.",
+    title: "Cek kategori pengeluaran",
+    description: "Lihat mana yang paling besar: makan, ongkos kerja, atau jajan.",
   },
   {
-    number: "03",
-    image: thirdFeatureIllustration,
-    imageAlt: "Ilustrasi fitur memantau saldo dan tabungan Artoku",
-    title: "Pahami Aktivitas Keuangan Pribadi",
-    description:
-      "Gunakan catatan keuanganmu untuk melihat kembali pemasukan dan pengeluaran, sehingga kamu dapat mengevaluasi kebiasaan menggunakan uang.",
+    title: "Lihat ringkasanmu",
+    description: "Ringkasan mingguan membantumu tahu sisa uang sampai gajian.",
   },
-] as const;
+];
 
-export function HowItWorksSection() {
+const categories = [
+  { label: "Makan", amount: "Rp164.000", bar: "w-[70%] bg-[#ff785f]", icon: Utensils },
+  { label: "Ongkos kerja", amount: "Rp75.000", bar: "w-[32%] bg-[#14864a]", icon: Bike },
+  { label: "Jajan", amount: "Rp38.000", bar: "w-[16%] bg-[#c8f169]", icon: Cookie },
+];
+
+export function HowItWorksSection({ transactionHref }: { transactionHref: string }) {
   return (
-    <section
-      id="how-it-works"
-      aria-labelledby="how-it-works-title"
-      className="bg-white px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24"
-    >
-      <div className="mx-auto w-full max-w-7xl">
-        <header className="mx-auto max-w-3xl text-center">
-          <h2 id="how-it-works-title" className="font-inter text-3xl leading-[1.15] font-semibold tracking-[-0.04em] text-slate-950 sm:text-4xl lg:text-5xl">
-            Kenapa Menggunakan<br />
-            <span className="text-[#14864A]">MyArtoku?</span>
+    <section id="how-it-works" aria-labelledby="how-it-works-title" className="bg-[#fbf7ef] font-(family-name:--font-landing-inter)">
+      <div className="mx-auto grid max-w-[70rem] items-center gap-8 px-5 py-12 sm:px-8 md:grid-cols-2 lg:w-[80%] lg:gap-12 lg:px-0 lg:py-16">
+        <div>
+          <h2 id="how-it-works-title" className="max-w-[14em] font-(family-name:--font-landing-heading) text-3xl leading-none font-extrabold tracking-tight text-[#0d4f30] sm:text-4xl lg:text-[clamp(2rem,3.25vw,3rem)]">
+            Setelah belajar, coba catat satu transaksi
           </h2>
-          <p className="mx-auto mt-5 max-w-2xl font-inter text-base leading-7 text-slate-600 sm:text-lg sm:leading-8">
-            MyArtoku membantu kamu mencatat transaksi dengan mudah, memantau kondisi keuangan, dan memahami kebiasaan pengeluaran agar lebih bijak mengelola uang.
+          <p className="mt-4 text-sm leading-relaxed text-[#334b4a] sm:text-base">
+            Tidak perlu langsung sempurna. Mulai dari makan siang tadi, nanti kebiasaanmu terbentuk sendiri. Soal anggaran dan tabungan, kamu bisa pelajari pelan-pelan di topik <Link href="#features" className="font-semibold text-[#0d4f30] underline underline-offset-2">Belajar</Link>.
           </p>
-        </header>
 
-        <ol className="mt-12 flex flex-col gap-14 sm:mt-16 sm:gap-16 lg:mt-20 lg:gap-24">
-          {STEPS.map((step, index) => (
-            <li
-              key={step.number}
-              className={`flex flex-col gap-7 md:items-center md:gap-10 lg:gap-16 ${index % 2 === 1 ? "md:flex-row-reverse" : "md:flex-row"}`}
-            >
-              <div className="flex w-full flex-col justify-center md:min-w-0 md:flex-1">
-                <span className="font-inter text-xl font-semibold tracking-[0.16em] text-[#14864A] sm:text-2xl">
-                  {step.number}
+          <ol className="mt-6 space-y-3">
+            {steps.map(({ title, description }, index) => (
+              <li key={title} className="flex items-start gap-3 rounded-2xl border border-[#0d4f30]/12 bg-white p-4 text-[#132b2b]">
+                <span aria-hidden="true" className="grid size-9 shrink-0 place-items-center rounded-full bg-[#c8f169] text-sm font-bold text-[#0d4f30]">
+                  {index + 1}
                 </span>
-                <h3 className="mt-3 max-w-xl font-inter text-3xl leading-[1.15] font-bold tracking-[-0.03em] text-slate-950 sm:text-4xl lg:text-5xl">
-                  {step.title}
-                </h3>
-                <p className="mt-4 max-w-xl font-inter text-base leading-7 text-slate-600 sm:text-lg sm:leading-8">
-                  {step.description}
-                </p>
+                <div>
+                  <h3 className="text-sm font-bold">{title}</h3>
+                  <p className="mt-1 text-sm leading-relaxed text-[#334b4a]">{description}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+
+          <Link href={transactionHref} className="mt-6 inline-flex min-h-12 items-center gap-2 rounded-full bg-[#0d4f30] px-5 text-sm font-bold text-white hover:bg-[#146440] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0d4f30]">
+            Mulai Catat di Artoku
+            <ArrowRight aria-hidden="true" className="size-4" />
+          </Link>
+        </div>
+
+        <div className="rounded-3xl bg-[#ddf5e6] p-4 sm:p-6">
+          <p className="mb-2 text-right">
+            <span className="rounded-full bg-[#ffd9d1] px-3 py-1 text-xs font-bold text-[#8f3528]">Contoh data</span>
+          </p>
+          <div className="rounded-2xl bg-white p-4 text-[#132b2b] shadow-sm sm:p-5">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h3 className="text-sm font-bold">Ringkasan minggu ini</h3>
+              <span className="rounded-full bg-[#c8f169] px-2.5 py-1 text-xs font-semibold text-[#0d4f30]">Senin – Minggu</span>
+            </div>
+            <p className="mt-2 text-3xl font-extrabold tracking-tight text-[#0d4f30]">Rp164.000</p>
+            <p className="mt-1 text-xs text-[#334b4a]">Total pengeluaran makan siang</p>
+
+            <ul className="mt-5 space-y-3">
+              {categories.map(({ label, amount, bar, icon: Icon }) => (
+                <li key={label}>
+                  <div className="flex items-center justify-between gap-2 text-xs font-semibold">
+                    <span className="flex items-center gap-1.5">
+                      <Icon aria-hidden="true" className="size-4 text-[#14864a]" />
+                      {label}
+                    </span>
+                    <span>{amount}</span>
+                  </div>
+                  <div aria-hidden="true" className="mt-1.5 h-2 rounded-full bg-[#fbf7ef]">
+                    <div className={`h-full rounded-full ${bar}`} />
+                  </div>
+                </li>
+              ))}
+            </ul>
+
+            <dl className="mt-5 space-y-2 border-t border-[#0d4f30]/12 pt-3 text-xs">
+              <div className="flex justify-between gap-2">
+                <dt><span className="font-semibold">Makan siang</span> · Hari ini</dt>
+                <dd className="font-semibold">−Rp28.000</dd>
               </div>
-              <div className="mx-auto flex aspect-square w-full max-w-96 shrink-0 items-center justify-center overflow-hidden rounded-3xl bg-[#F7FBF8] p-4 sm:max-w-md sm:p-6 md:mx-0 md:w-[45%] md:max-w-lg">
-                {step.image ? (
-                  <Image
-                    src={step.image}
-                    alt={step.imageAlt}
-                    sizes="(max-width: 639px) min(352px, calc(100vw - 72px)), (max-width: 767px) 400px, (max-width: 1279px) 40vw, 464px"
-                    className={`h-full w-full object-contain ${step.number === "02" || step.number === "03" ? "scale-125" : "scale-90 md:scale-100"}`}
-                  />
-                ) : (
-                  <div aria-hidden="true" className="h-full w-full rounded-2xl bg-[#D9D9D9]" />
-                )}
+              <div className="flex justify-between gap-2">
+                <dt><span className="font-semibold">Ongkos kerja</span> · Hari ini</dt>
+                <dd className="font-semibold">−Rp15.000</dd>
               </div>
-            </li>
-          ))}
-        </ol>
+            </dl>
+            <Link href={transactionHref} className="mt-4 flex min-h-11 items-center justify-center rounded-full bg-[#14864a] px-4 text-sm font-bold text-white hover:bg-[#10733e] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0d4f30]">
+              Catat Transaksi
+            </Link>
+          </div>
+        </div>
       </div>
     </section>
   );
